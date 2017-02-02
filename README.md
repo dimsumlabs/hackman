@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/dimsumlabs/dsl-accounts.svg?branch=master)](https://travis-ci.org/dimsumlabs/dsl-accounts?branch=master)
 # NaNNaNNaNNaNNaNNaNNaNNaN Hackman!
 The Dim Sum Labs payment, door and membership system.
 Allows members to register their (cash or paypal) payment and receive login credentials.
