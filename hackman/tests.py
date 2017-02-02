@@ -157,7 +157,7 @@ def test_rfid_pair_form_error(rf, paid_user):
 
 
 @pytest.mark.django_db
-def test_rfid_pair_card_unpaired(rf, paid_user, card_unpaired, mocker):
+def test_rfid_pair_card_unpaired(rf, paid_user, card_unpaired):
     request = inject_session(rf.post('/rfid_pair/', {
         'card_id': str(card_unpaired.id)
     }), user=paid_user)
@@ -167,7 +167,7 @@ def test_rfid_pair_card_unpaired(rf, paid_user, card_unpaired, mocker):
 
 
 @pytest.mark.django_db
-def test_rfid_pair_card_paired(rf, card_paired, mocker):
+def test_rfid_pair_card_paired(rf, card_paired):
     user, card_paired = card_paired
     request = inject_session(rf.post('/rfid_pair/', {
         'card_id': str(card_paired.id)
