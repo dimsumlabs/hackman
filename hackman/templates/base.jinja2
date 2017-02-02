@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>DSL Door 點心樂部門</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+  <body>
+
+    <header>
+      <img src="/static/dsl_logo.svg" width="30px" />
+      <span id="header">Dim Sum Labs 點心樂部</span>
+    </header>
+
+    <main>
+
+      {% include "dsl_text.jinja2" %}
+
+      <ul class="messages">
+        {% for message in messages %}
+          <li style="color: #00b115;" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+
+      {% block content %}
+      {% endblock %}
+
+    </main>
+
+    <footer>
+      <a href="http://dimsumlabs.com">Dim Sum Labs Website 點心樂部网站</a>
+ 	  <br/>
+	  <a href="mailto:info@dimsumlabs.com">Send us mail 给我们发邮件</a>
+    </footer>
+
+  </body>
+</html>

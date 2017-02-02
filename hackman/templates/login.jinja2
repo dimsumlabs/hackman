@@ -1,0 +1,23 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+
+  <hr />
+  <h2>Login</h2>
+  <form method="POST" action="/login/">
+    {% csrf_token %}
+    {{ login_form.as_p }}
+    <label for="submit">Login</label>
+    <button name="submit" type="submit">Login</button>
+  </form>
+
+  <hr />
+  <h2>Create account</h2>
+  <form method="POST" action="/account_create/">
+    {% csrf_token %}
+    {{ login_form.as_p }}
+    <label for="submit">Create account</label>
+    <button name="submit" type="submit">Submit</button>
+  </form>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+[Unit]
+Description=Run hackman rfid daemon
+
+[Service]
+WorkingDirectory=/var/www/hackman/
+Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
+Restart=always
+User=www-data
+Group=www-data
+ExecStart=/var/www/virtualenvs/hackman/bin/python manage.py rfidd
+
+[Install]
+WantedBy=multi-user.target
