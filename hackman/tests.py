@@ -130,7 +130,7 @@ def test_door_open_paid(rf, paid_user):
     response = views.door_open(request, _door_api=m)
     assert response.status_code == 302
     assert response.url == '/'
-    m.open.assert_called()
+    assert m.open.called is True
 
 
 @pytest.mark.django_db
