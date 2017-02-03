@@ -1,0 +1,8 @@
+[Unit]
+Description=Run payment reminders on the 27th of each month
+
+[Timer]
+OnCalendar=*-*-27 08:00:00
+
+[Install]
+WantedBy=timers.target
