@@ -176,6 +176,36 @@ def test_rfid_pair_card_paired(rf, card_paired):
     response = views.rfid_pair(request)
     assert response.status_code == 400
 
+
+@pytest.mark.django_db
+def test_payment_submit_non_post(rf, paid_user):
+    request = inject_session(rf.get('/payment_submit/'), user=paid_user)
+    response = views.payment_submit(request)
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_payment_submit_form_invalid(rf, paid_user):
+    request = inject_session(rf.post('/payment_submit/', {
+        'not_exist_field': 'hallo',
+    }), user=paid_user)
+    response = views.payment_submit(request)
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_payment_submit(rf, not_paid_user):
+    now = datetime.utcnow()
+    request = inject_session(rf.post('/payment_submit/', {
+        'year_month': '{year}-{month:02d}'.format(year=now.year,
+                                                  month=now.month),
+        'amount': '500',
+    }), user=not_paid_user)
+    response = views.payment_submit(request, r=True)
+    assert response.status_code == 302
+    assert response.url == '/'
+
+
 # END VIEW TESTS
 
 # BEGIN API TESTS

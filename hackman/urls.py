@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^door_open/', views.door_open),
     url(r'^rfid_pair/', views.rfid_pair),
     url(r'^account_create/', views.account_create),
+    url(r'^payment_submit/', views.payment_submit),
     url(r'^$', views.index),
 ]

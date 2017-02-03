@@ -8,3 +8,23 @@ class LoginForm(forms.Form):
 
 class RfidCardPairForm(forms.Form):
     card_id = forms.IntegerField(label='Pair by card ID')
+
+
+class PaymentForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        year_month_choices = kwargs.pop('year_month_choices')
+        super().__init__(*args, **kwargs)
+        self.fields['year_month'] = forms.ChoiceField(
+            label='Submit payment',
+            choices=[(i, i) for i in year_month_choices])
+
+        self.fields['amount'] = forms.ChoiceField(
+            choices=[
+                ('500', '500'),
+                ('300', '300'),
+            ])
+
+    def clean_year_month(self):
+        yrm = self.cleaned_data['year_month'].split('-')
+        return [int(i) for i in yrm]
