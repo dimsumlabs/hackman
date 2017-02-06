@@ -5,6 +5,6 @@ Description=Run hackman door daemon
 WorkingDirectory=/var/www/hackman/
 Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Type=oneshot
-User=www-data
-Group=www-data
-ExecStart=/usr/bin/sh -c '/var/www/virtualenvs/hackman/bin/python manage.py dumpdata | ssh hackman@backuphost "cat > $(date --iso).json"'
+User=hackman
+Group=hackman
+ExecStart=/usr/bin/sh -c '/var/www/hackman/.venv/bin/python manage.py dumpdata | ssh hackman@backuphost "cat > $(date --iso).json"'

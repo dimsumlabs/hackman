@@ -7,11 +7,11 @@ Before=nginx.service
 WorkingDirectory=/var/www/hackman/
 Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Restart=always
-User=www-data
-Group=www-data
-ExecStart=/var/www/virtualenvs/hackman/bin/gunicorn \
-          --workers 4                               \
-          --bind=127.0.0.1:8000                     \
+User=hackman
+Group=hackman
+ExecStart=/var/www/hackman/.venv/bin/gunicorn \
+          --workers 4                         \
+          --bind=127.0.0.1:8000               \
           hackman.wsgi
 
 [Install]

@@ -11,14 +11,14 @@ test.unit:
 test: test.style test.unit
 
 install-production:
-	apt-get install libzmq libzmq-dev libpgm libpgm-dev git nginx-extras
+	apt-get install libzmq-dev libpgm-dev git nginx-extras
 
-	mkdir -p /var/www/virtualenvs/hackman
-	mkdir -p /var/www/hackman
-	virtualenv --python=$(which python3) /var/www/virtualenvs/hackman
-	chown -R /var/www/hackman
+	mkdir -p /var/www/hackman/.venv
+	/usr/local/bin/python3.6 -m venv /var/www/hackman/.venv/
+	useradd hackman
+	chown -R hackman:hackman /var/www/hackman
 
-	sudo -u www-data /var/www/virtualenvs/hackman/bin/pip install -r requirements.txt
+	sudo -u hackman /var/www/hackman/.venv/bin/pip install -r /var/www/hackman/requirements.txt
 
 	install -m 0644 systemd/hackman-backup.service $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman-backup.timer $(SYSTEMD_UNIT_DIR)

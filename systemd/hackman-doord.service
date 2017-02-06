@@ -5,9 +5,9 @@ Description=Run hackman door daemon
 WorkingDirectory=/var/www/hackman/
 Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Restart=always
-User=www-data
-Group=www-data
-ExecStart=/var/www/virtualenvs/hackman/bin/python manage.py doord
+User=hackman
+Group=hackman
+ExecStart=/var/www/hackman/.venv/bin/python manage.py doord
 
 [Install]
 WantedBy=multi-user.target
