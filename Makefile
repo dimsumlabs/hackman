@@ -11,7 +11,7 @@ test.unit:
 test: test.style test.unit
 
 install-production:
-	apt-get install libzmq libzmq-dev libpgm libpgm-dev python3 python3-virtualenv python3-pip git nginx-extras
+	apt-get install libzmq libzmq-dev libpgm libpgm-dev git nginx-extras
 
 	mkdir -p /var/www/virtualenvs/hackman
 	mkdir -p /var/www/hackman
