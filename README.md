@@ -20,7 +20,6 @@ Not yet implemented
 * Continuous deployment based on Travis-ci builds
 * Integrate dsl-accounts repository
 * Integrate paypal payments
-* Systemd timer for payment reminders
 
 ## Prerequisites
 * Debian testing or newer (requires Python 3.5)
