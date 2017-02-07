@@ -21,7 +21,7 @@ RFID_READER = {
 
 # Door lock config
 DOOR_LOCK = {
-    'BACKEND': 'hackman_door.door_impls.dimsumlabs_door',
+    'BACKEND': 'hackman_door.door.impls.dimsumlabs_door',
     'CONFIG': {  # Implementation specific config
         'gpio_mode': 'BCM',
         'output_pin': 17,
