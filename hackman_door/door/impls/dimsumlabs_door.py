@@ -1,6 +1,6 @@
 from django.conf import settings
 from threading import Timer
-from RPi.GPIO import GPIO
+import RPi.GPIO as GPIO
 
 
 class Door:
