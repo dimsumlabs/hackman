@@ -10,15 +10,39 @@ test.unit:
 
 test: test.style test.unit
 
+update-production: export DJANGO_SETTINGS_MODULE=hackman.settings_prod
+update-production:
+	# Conditional stop since units might not be running
+	test `systemctl is-active hackman-doord.service` == "active" && systemctl stop hackman-doord.service
+	test `systemctl is-active hackman-rfidd.service` == "active" && systemctl stop hackman-rfidd.service
+	test `systemctl is-active hackman.service` == "active" && systemctl stop hackman.service
+
+	# PyZMQ needs some extra massaging due to libpgm
+	sudo -u hackman /var/www/hackman/.venv/bin/pip install pyzmq --install-option="--zmq=/usr"
+	sudo -u hackman /var/www/hackman/.venv/bin/pip install -r /var/www/hackman/requirements.txt
+
+	# Create django static files in same static directory as project
+	sudo -u hackman /var/www/hackman/.venv/bin/python manage.py collectstatic
+
+	# Migrate database changes
+	sudo -u hackman /var/www/hackman/.venv/bin/python manage.py migrate
+
+	systemctl start hackman-doord.service
+	systemctl start hackman-rfidd.service
+	systemctl start hackman.service
+
+install-production: export DJANGO_SETTINGS_MODULE=hackman.settings_prod
 install-production:
 	apt-get install libzmq-dev libpgm-dev git nginx-extras
 
 	mkdir -p /var/www/hackman/.venv
 	/usr/local/bin/python3.6 -m venv /var/www/hackman/.venv/
-	useradd hackman
+	useradd -d /var/www/hackman hackman
 	chown -R hackman:hackman /var/www/hackman
 
-	sudo -u hackman /var/www/hackman/.venv/bin/pip install -r /var/www/hackman/requirements.txt
+	update-production
+
+	install -m 0644 nginx/default /etc/nginx/sites-available/default
 
 	install -m 0644 systemd/hackman-backup.service $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman-backup.timer $(SYSTEMD_UNIT_DIR)
@@ -32,9 +56,3 @@ install-production:
 	systemctl enable hackman-rfidd.service
 	systemctl enable hackman.service
 	systemctl enable hackman.service
-
-	systemctl restart hackman-paymentreminder.timer
-	systemctl restart hackman-backup.timer
-	systemctl restart hackman-doord.service
-	systemctl restart hackman-rfidd.service
-	systemctl restart hackman.service
