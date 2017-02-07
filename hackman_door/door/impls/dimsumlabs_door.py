@@ -7,7 +7,7 @@ class Door:
 
     def __init__(self):
         GPIO.setmode(getattr(GPIO, settings.DOOR_LOCK['CONFIG']['gpio_mode']))
-        GPIO.setup(settings.DOOR_LOCK['CONFIG']['output_pin'])
+        GPIO.setup(settings.DOOR_LOCK['CONFIG']['output_pin'], GPIO.OUT)
 
         # Hack to run cancel without conditionals
         self.timer = Timer(0, lambda: None)
