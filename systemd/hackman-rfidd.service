@@ -5,8 +5,7 @@ Description=Run hackman rfid daemon
 WorkingDirectory=/var/www/hackman/
 Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Restart=always
-User=hackman
-Group=hackman
+User=root
 ExecStart=/var/www/hackman/.venv/bin/python manage.py rfidd
 
 [Install]

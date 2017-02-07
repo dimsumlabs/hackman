@@ -4,6 +4,7 @@ import zmq
 
 _zmq_ctx = zmq.Context()
 _srv_sock = _zmq_ctx.socket(zmq.PUB)
+_srv_sock.setsockopt(zmq.RATE, 150)  # Asserts without this
 _srv_sock.bind(settings.NOTIFICATIONS_BIND_URI)
 
 
