@@ -51,8 +51,9 @@ install-production:
 	install -m 0644 systemd/hackman-paymentreminder.timer $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman.service $(SYSTEMD_UNIT_DIR)
 
+	systemctl enable hackman-paymentreminder.timer
 	systemctl enable hackman-backup.timer
 	systemctl enable hackman-doord.service
 	systemctl enable hackman-rfidd.service
 	systemctl enable hackman.service
-	systemctl enable hackman.service
+	systemctl enable nginx.service
