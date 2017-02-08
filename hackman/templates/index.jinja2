@@ -26,11 +26,13 @@
     <hr />
 
     <li>
-      <form action="/payment_submit/" method="POST">
-        {% csrf_token %}
-        {{ payment_form.as_p }}
-        <input type="submit" value="Submit">
-      </form>
+      <p>
+        <form action="/payment_submit/" method="POST">
+          {% csrf_token %}
+          {{ payment_form }}
+          <input type="submit" value="Submit">
+        </form>
+      </p>
     </li>
 
     <hr />

@@ -17,8 +17,6 @@
 
     <main>
 
-      {% include "dsl_text.jinja2" %}
-
       <ul class="messages">
         {% for message in messages %}
           <li style="color: #00b115;" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
