@@ -30,8 +30,7 @@ def paid_user():
         password='testpass')
     payment_api.payment_submit(user.id,
                                next_month.year,
-                               next_month.month,
-                               500)
+                               next_month.month)
     return user
 
 
@@ -199,7 +198,6 @@ def test_payment_submit(rf, not_paid_user):
     request = inject_session(rf.post('/payment_submit/', {
         'year_month': '{year}-{month:02d}'.format(year=now.year,
                                                   month=now.month),
-        'amount': '500',
     }), user=not_paid_user)
     response = views.payment_submit(request, r=True)
     assert response.status_code == 302
@@ -217,7 +215,6 @@ def user_paid():
     user = get_user_model().objects.create(username='testhesten')
     Payment.objects.create(
         user=user,
-        amount=500,
         valid_until=(datetime.utcnow()+timedelta(days=30)))
     return user
 
@@ -228,7 +225,6 @@ def user_paid_grace():
     user = get_user_model().objects.create(username='testhesten')
     Payment.objects.create(
         user=user,
-        amount=500,
         valid_until=(datetime.utcnow()-timedelta(days=1)))
     return user
 
@@ -239,7 +235,6 @@ def user_not_paid():
     user = get_user_model().objects.create(username='testhesten')
     Payment.objects.create(
         user=user,
-        amount=500,
         valid_until=(datetime.utcnow()-timedelta(days=60)))
     return user
 

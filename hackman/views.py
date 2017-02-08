@@ -143,8 +143,7 @@ def payment_submit(request, r=False):
         return http.HttpResponseBadRequest('Form error')
 
     year, month = form.cleaned_data['year_month']
-    payment_api.payment_submit(request.user.id, year, month,
-                               form.cleaned_data['amount'])
+    payment_api.payment_submit(request.user.id, year, month)
 
     try:
         messages.add_message(

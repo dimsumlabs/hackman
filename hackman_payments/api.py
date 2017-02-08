@@ -1,7 +1,6 @@
 from django.template.loader import render_to_string
 from datetime import datetime, timedelta, date
 from django.db.models import Max
-from decimal import Decimal
 import calendar
 
 from .enums import PaymentGrade
@@ -59,8 +58,7 @@ def payment_reminder_email_format():  # pragma: no cover
     })
 
 
-def payment_submit(user_id: int, year: int, month: int,
-                   amount: Decimal) -> int:
+def payment_submit(user_id: int, year: int, month: int) -> int:
 
     valid_until = datetime(year, month,
                            calendar.monthrange(year, month)[1],
@@ -68,5 +66,4 @@ def payment_submit(user_id: int, year: int, month: int,
 
     return Payment.objects.create(
         user_id=user_id,
-        amount=amount,
         valid_until=valid_until).id

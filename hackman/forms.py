@@ -19,12 +19,6 @@ class PaymentForm(forms.Form):
             label='Submit payment',
             choices=[(i, i) for i in year_month_choices])
 
-        self.fields['amount'] = forms.ChoiceField(
-            choices=[
-                ('500', '500'),
-                ('300', '300'),
-            ])
-
     def clean_year_month(self):
         yrm = self.cleaned_data['year_month'].split('-')
         return [int(i) for i in yrm]

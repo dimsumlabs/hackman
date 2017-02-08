@@ -12,7 +12,6 @@ def user_paid():
     user = get_user_model().objects.create(username='testhesten-paid')
     Payment.objects.create(
         user=user,
-        amount=500,
         valid_until=(datetime.utcnow()+timedelta(days=30)))
     return user
 
@@ -22,7 +21,6 @@ def user_paid_grace():
     user = get_user_model().objects.create(username='testhesten-grace')
     Payment.objects.create(
         user=user,
-        amount=500,
         valid_until=(datetime.utcnow()-timedelta(days=1)))
     return user
 
@@ -32,7 +30,6 @@ def user_not_paid():
     user = get_user_model().objects.create(username='testhesten-notpaid')
     Payment.objects.create(
         user=user,
-        amount=500,
         valid_until=(datetime.utcnow()-timedelta(days=60)))
     return user
 
