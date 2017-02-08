@@ -33,7 +33,7 @@ update-production:
 
 install-production: export DJANGO_SETTINGS_MODULE=hackman.settings_prod
 install-production:
-	apt-get install libzmq-dev libpgm-dev git nginx-extras
+	apt-get install libpgm-dev git nginx-extras
 
 	mkdir -p /var/www/hackman/.venv
 	/usr/local/bin/python3.6 -m venv /var/www/hackman/.venv/

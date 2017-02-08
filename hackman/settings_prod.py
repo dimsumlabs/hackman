@@ -34,4 +34,7 @@ DOOR_LOCK = {
 NOTIFICATIONS_BIND_URI = 'epgm://eth0;239.192.1.1:5555'
 
 
+SCREEN_VIEWS_WHITELIST = set(['127.0.0.1'])
+
+
 # TODO: Get settings from env vars

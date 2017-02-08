@@ -43,3 +43,18 @@ def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     card.save()
 
     return card
+
+
+def access_last(paired=None):
+    qs = models.RFIDLog.objects.all()
+
+    if paired is None:
+        pass
+
+    elif paired:
+        qs = qs.filter(card__user__isnull=False)
+
+    else:
+        qs = qs.filter(card__user__isnull=True)
+
+    return qs.order_by('-time').first().card

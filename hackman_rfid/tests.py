@@ -96,3 +96,35 @@ def test_card_pair(card_user, random_card):
     assert isinstance(c, models.RFIDCard)
     assert c.id == random_card.id
     assert c.user.id == card_user.id
+
+
+@pytest.fixture
+def logged_cards():
+    cards = []
+    for h in (hashlib.sha256(b'a').hexdigest(),
+              hashlib.sha256(b'b').hexdigest(),
+              hashlib.sha256(b'c').hexdigest()):
+        c = models.RFIDCard.objects.create(rfid_hash=h)
+        models.RFIDLog.objects.create(card=c)
+        cards.append(c)
+
+    return cards
+
+
+@pytest.mark.django_db
+def test_access_last_unpaired_and_paired(logged_cards, card_user):
+    logged_cards[0].user = card_user
+    logged_cards[0].save()
+    assert api.access_last().id == logged_cards[-1].id
+
+
+@pytest.mark.django_db
+def test_access_last_unpaired(logged_cards, card_user):
+    assert api.access_last(paired=False).id == logged_cards[-1].id
+
+
+@pytest.mark.django_db
+def test_access_last_paired(logged_cards, card_user):
+    logged_cards[0].user = card_user
+    logged_cards[0].save()
+    assert api.access_last(paired=True).id == logged_cards[0].id

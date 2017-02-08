@@ -17,10 +17,12 @@ from django.conf.urls import url
 from django.contrib import admin
 
 from . import views
+from . import screen_urls
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^screen/', screen_urls.urls),
     url(r'^login/', views.login),
     url(r'^logout/', views.logout),
     url(r'^door_open/', views.door_open),
