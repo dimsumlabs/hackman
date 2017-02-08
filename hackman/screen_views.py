@@ -47,7 +47,6 @@ def poll(request, _timeout=30, _sock=None):
     s = dict(poller.poll(1000 * _timeout))
     if sock not in s:  # No event, timeout
         return http.HttpResponseNotModified()
-        return shortcuts.redirect('/screen/')
 
     msg = sock.recv()
 
