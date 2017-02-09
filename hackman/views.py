@@ -57,7 +57,7 @@ def login(request):
             if user is not None and user.is_active:
                 auth.login(request, user)
 
-                redir_url = request.GET.get('next')
+                redir_url = form.cleaned_data['redir_url']
                 if redir_url and is_safe_url(redir_url):  # pragma: no cover
                     return shortcuts.redirect(redir_url)
                 else:
@@ -67,11 +67,16 @@ def login(request):
                 return http.HttpResponseBadRequest(
                     '<h1>Wrong username/password</h1>')
 
+    redir_url = request.GET.get('next')
+    if not is_safe_url(redir_url):
+        redir_url = '/'
     return shortcuts.render(
         request, 'login.jinja2', context=_ctx_from_request(
             request, {
-                'login_form': forms.LoginForm(),
-                'signup_form': forms.SignupForm(),
+                'login_form': forms.LoginForm(initial={
+                    'redir_url': redir_url}),
+                'signup_form': forms.SignupForm(initial={
+                    'redir_url': redir_url}),
             }))
 
 
@@ -88,10 +93,10 @@ def account_create(request):
     if not form_data['username']:
         form_data['username'] = form_data['email']
 
+    redir_url = form.cleaned_data.pop('redir_url')
     user = get_user_model().objects.create_user(**form.cleaned_data)
     auth.login(request, user)
 
-    redir_url = request.GET.get('next')
     if redir_url and is_safe_url(redir_url):  # pragma: no cover
         return shortcuts.redirect(redir_url)
     else:
@@ -120,6 +125,12 @@ def door_open(request, _door_api=None):
 
     if not hackman_api.door_open_if_paid(request.user.id, _door_api):
         return http.HttpResponseForbidden('<h1>You have not paid!</h1>')
+
+    try:
+        messages.add_message(
+            request, messages.SUCCESS, 'Opened door!')
+    except MessageFailure:  # pragma: no cover
+        pass
 
     return shortcuts.redirect('/')
 

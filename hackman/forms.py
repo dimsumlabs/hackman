@@ -5,12 +5,16 @@ class LoginForm(forms.Form):
     username = forms.CharField(label='Username/Email', max_length=50)
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
+    redir_url = forms.CharField(widget=forms.HiddenInput(), required=False)
+
 
 class SignupForm(forms.Form):
     username = forms.CharField(label='Username (optional)', max_length=50,
                                required=False)
     email = forms.EmailField(label='Email', max_length=50)
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
+
+    redir_url = forms.CharField(widget=forms.HiddenInput(), required=False)
 
 
 class RfidCardPairForm(forms.Form):
