@@ -17,7 +17,7 @@
   <h2>Create account</h2>
   <form method="POST" action="/account_create/">
     {% csrf_token %}
-    {{ login_form.as_p }}
+    {{ signup_form.as_p }}
     <label for="submit">Create account</label>
     <button name="submit" type="submit">Submit</button>
   </form>

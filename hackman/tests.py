@@ -104,7 +104,7 @@ def test_account_create_non_post(rf):
 
 def test_account_create_form_invalid(rf):
     request = rf.post('/account_create/', {
-        'err_field': 'not a username',
+        'err_field': 'not an email',
         'password': 'not a real password'
     })
     response = views.account_create(request)
@@ -112,9 +112,19 @@ def test_account_create_form_invalid(rf):
 
 
 @pytest.mark.django_db
+def test_account_create_invalid_email(rf):
+    request = inject_session(rf.post('/account_create/', {
+        'email': 'testhesten',
+        'password': 'not a real password'
+    }))
+    response = views.account_create(request)
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
 def test_account_create(rf):
     request = inject_session(rf.post('/account_create/', {
-        'username': 'testhesten',
+        'email': 'test@hest.se',
         'password': 'not a real password'
     }))
     response = views.account_create(request)

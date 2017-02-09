@@ -65,6 +65,7 @@ def login(request):
         request, 'login.jinja2', context=_ctx_from_request(
             request, {
                 'login_form': forms.LoginForm(),
+                'signup_form': forms.SignupForm(),
             }))
 
 
@@ -72,10 +73,14 @@ def account_create(request):
     if request.method != 'POST':
         return http.HttpResponseBadRequest('Request not POST')
 
-    form = forms.LoginForm(request.POST)
+    form = forms.SignupForm(request.POST)
     if not form.is_valid():
         return http.HttpResponseBadRequest(
             '<h1>Error</h1>')
+
+    form_data = form.cleaned_data
+    if not form_data['username']:
+        form_data['username'] = form_data['email']
 
     user = get_user_model().objects.create_user(**form.cleaned_data)
     auth.login(request, user)
