@@ -58,7 +58,7 @@ def login(request):
                 auth.login(request, user)
 
                 redir_url = request.GET.get('next')
-                if redir_url and is_safe_url(redir_url):
+                if redir_url and is_safe_url(redir_url):  # pragma: no cover
                     return shortcuts.redirect(redir_url)
                 else:
                     return shortcuts.redirect('/')
@@ -92,7 +92,7 @@ def account_create(request):
     auth.login(request, user)
 
     redir_url = request.GET.get('next')
-    if redir_url and is_safe_url(redir_url):
+    if redir_url and is_safe_url(redir_url):  # pragma: no cover
         return shortcuts.redirect(redir_url)
     else:
         return shortcuts.redirect('/')
