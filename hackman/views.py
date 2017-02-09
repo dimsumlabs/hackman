@@ -3,6 +3,7 @@ from django.contrib.messages.api import MessageFailure
 from django.contrib.messages import get_messages
 from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
+from django.utils.http import is_safe_url
 from django.contrib import messages
 from django.contrib import auth
 from django import shortcuts
@@ -55,7 +56,12 @@ def login(request):
 
             if user is not None and user.is_active:
                 auth.login(request, user)
-                return shortcuts.redirect('/')
+
+                redir_url = request.GET.get('next')
+                if redir_url and is_safe_url(redir_url):
+                    return shortcuts.redirect(redir_url)
+                else:
+                    return shortcuts.redirect('/')
 
             else:
                 return http.HttpResponseBadRequest(
@@ -84,7 +90,12 @@ def account_create(request):
 
     user = get_user_model().objects.create_user(**form.cleaned_data)
     auth.login(request, user)
-    return shortcuts.redirect('/')
+
+    redir_url = request.GET.get('next')
+    if redir_url and is_safe_url(redir_url):
+        return shortcuts.redirect(redir_url)
+    else:
+        return shortcuts.redirect('/')
 
 
 def logout(request):  # pragma: no cover
