@@ -26,7 +26,7 @@ def test_whitelist_not_whitelisted_ip(rf):
 def test_poll_timeout(rf):
     request = rf.get('/screen/poll/')
     response = views.poll(request, _timeout=0.001)
-    assert response.status_code == 304
+    assert response.status_code == 200
 
 
 def test_poll(rf):
@@ -55,14 +55,14 @@ def test_poll(rf):
                        _sock=sock,
                        _timeout=0.01))
 
-    assert responses[0].status_code == 302
-    assert responses[0].url == '/screen/welcome/'
+    assert responses[0].status_code == 200
+    assert responses[0].content == b'/screen/welcome/'
 
-    assert responses[1].status_code == 302
-    assert responses[1].url == '/screen/remind_payment/'
+    assert responses[1].status_code == 200
+    assert responses[1].content == b'/screen/remind_payment/'
 
-    assert responses[2].status_code == 302
-    assert responses[2].url == '/screen/unpaid_membership/'
+    assert responses[2].status_code == 200
+    assert responses[2].content == b'/screen/unpaid_membership/'
 
-    assert responses[3].status_code == 302
-    assert responses[3].url == '/screen/unpaired_card/'
+    assert responses[3].status_code == 200
+    assert responses[3].content == b'/screen/unpaired_card/'

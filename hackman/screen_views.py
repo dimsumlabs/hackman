@@ -26,19 +26,20 @@ def screen_whitelist_check(f):
 
 
 @screen_whitelist_check
-def poll(request, _timeout=30, _sock=None):
+def poll(request, _timeout=20, _sock=None):
     """Long polling view that redirects screen to correct view"""
 
     redirects = {
-        b'DOOR_OPEN': shortcuts.redirect('/screen/welcome/'),
-        b'DOOR_OPEN_GRACE': shortcuts.redirect('/screen/remind_payment/'),
-        b'DOOR_OPEN_DENIED': shortcuts.redirect('/screen/unpaid_membership/'),
-        b'CARD_UNPAIRED': shortcuts.redirect('/screen/unpaired_card/'),
+        b'DOOR_OPEN': http.HttpResponse('/screen/welcome/'),
+        b'DOOR_OPEN_GRACE': http.HttpResponse('/screen/remind_payment/'),
+        b'DOOR_OPEN_DENIED': http.HttpResponse('/screen/unpaid_membership/'),
+        b'CARD_UNPAIRED': http.HttpResponse('/screen/unpaired_card/'),
     }
 
     sock = _sock or zmq.Context().socket(zmq.SUB)
     for chan in redirects.keys():
         sock.setsockopt(zmq.SUBSCRIBE, chan)
+
     sock.connect(settings.NOTIFICATIONS_BIND_URI)
 
     poller = zmq.Poller()
@@ -46,7 +47,7 @@ def poll(request, _timeout=30, _sock=None):
 
     s = dict(poller.poll(1000 * _timeout))
     if sock not in s:  # No event, timeout
-        return http.HttpResponseNotModified()
+        return http.HttpResponse()
 
     msg = sock.recv()
 
