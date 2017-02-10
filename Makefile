@@ -17,8 +17,6 @@ update-production:
 	test `systemctl is-active hackman-rfidd.service` == "active" && systemctl stop hackman-rfidd.service
 	test `systemctl is-active hackman.service` == "active" && systemctl stop hackman.service
 
-	# PyZMQ needs some extra massaging due to libpgm
-	sudo -u hackman /var/www/hackman/.venv/bin/pip install pyzmq --install-option="--zmq=/usr"
 	sudo -u hackman /var/www/hackman/.venv/bin/pip install -r /var/www/hackman/requirements.txt
 
 	# Create django static files in same static directory as project
