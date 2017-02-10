@@ -20,3 +20,8 @@ omit =
     # Ignore management commands for now, they are tiny and mostly
     # just a tiny bit of wrapping around well-tested APIs
     */management/commands/*.py
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __str__

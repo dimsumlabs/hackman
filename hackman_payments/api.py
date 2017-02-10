@@ -22,7 +22,7 @@ def has_paid(user_id: int) -> bool:
     # Grace period for payments
     now = datetime.utcnow()
     qs = qs.filter(valid_until__gt=(now-timedelta(weeks=2)))
-    qs = qs.order_by('payment_date')
+    qs = qs.order_by('valid_until')
     payment = qs.first()
 
     if not payment:

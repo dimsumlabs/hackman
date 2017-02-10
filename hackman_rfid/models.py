@@ -10,6 +10,12 @@ class RFIDCard(models.Model):
     rfid_hash = models.CharField(max_length=64, db_index=True)
     revoked = models.BooleanField(default=False, db_index=True)
 
+    def __str__(self):
+        return ' - '.join((
+            self.user.username,
+            self.rfid_hash
+        ))
+
 
 class RFIDLog(models.Model):
 
