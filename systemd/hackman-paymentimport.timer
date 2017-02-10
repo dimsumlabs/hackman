@@ -1,0 +1,10 @@
+[Unit]
+Description=Run hackman payment import once every hour
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+Unit=hackman-paymentimport.service
+
+[Install]
+WantedBy=timers.target
