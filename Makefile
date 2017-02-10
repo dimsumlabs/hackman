@@ -48,10 +48,14 @@ install-production:
 	install -m 0644 systemd/hackman-backup.timer $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman-doord.service $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman-rfidd.service $(SYSTEMD_UNIT_DIR)
+	install -m 0644 systemd/hackman-paymentreminder.service $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman-paymentreminder.timer $(SYSTEMD_UNIT_DIR)
+	install -m 0644 systemd/hackman-paymentimport.service $(SYSTEMD_UNIT_DIR)
+	install -m 0644 systemd/hackman-paymentimport.timer $(SYSTEMD_UNIT_DIR)
 	install -m 0644 systemd/hackman.service $(SYSTEMD_UNIT_DIR)
 
 	systemctl enable hackman-paymentreminder.timer
+	systemctl enable hackman-paymentimport.timer
 	systemctl enable hackman-backup.timer
 	systemctl enable hackman-doord.service
 	systemctl enable hackman-rfidd.service
