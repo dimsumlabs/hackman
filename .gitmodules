@@ -1,0 +1,3 @@
+[submodule "dsl-accounts"]
+	path = dsl-accounts
+	url = https://github.com/dimsumlabs/dsl-accounts/
