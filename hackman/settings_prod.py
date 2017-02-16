@@ -3,7 +3,7 @@ from .settings import *  # noqa
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '+v*pw9!3la*0*09z+uh6-tl)@m-32j9n%4sx4j#2()#c4ysif5'
 
-ALLOWED_HOSTS = ['door2', '192.168.100.132']
+ALLOWED_HOSTS = ['door', 'door.lan', '192.168.100.132']
 
 STATIC_ROOT = '/var/www/hackman/hackman/static/'
 
@@ -31,10 +31,20 @@ DOOR_LOCK = {
 }
 
 
-NOTIFICATIONS_BIND_URI = 'epgm://eth0;239.192.1.1:5555'
+# Put sessions into memcached
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 
-SCREEN_VIEWS_WHITELIST = set(['127.0.0.1'])
+NOTIFICATIONS_BIND_URI = 'norm://224.1.2.3:5556'
+
+
+SCREEN_VIEWS_WHITELIST = set(['127.0.0.1', '192.168.100.173'])
 
 
 # TODO: Get settings from env vars

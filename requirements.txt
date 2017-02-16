@@ -8,3 +8,4 @@ pytest-django>=3.1.2
 gunicorn>=19.6.0
 coverage>=4.3.4
 pytest-cov>=2.4.0
+pylibmc==1.5.1
