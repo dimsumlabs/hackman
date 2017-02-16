@@ -7,4 +7,4 @@ Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Type=oneshot
 User=hackman
 Group=hackman
-ExecStart=/usr/bin/sh -c '/var/www/hackman/.venv/bin/python manage.py import_payments'
+ExecStart=/bin/sh -c '/var/www/hackman/.venv/bin/python manage.py import_payments'
