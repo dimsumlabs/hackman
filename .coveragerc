@@ -21,6 +21,9 @@ omit =
     # just a tiny bit of wrapping around well-tested APIs
     */management/commands/*.py
 
+    # dsl-accounts should not be tested here
+    dsl-accounts/*.py
+
 [report]
 exclude_lines =
     pragma: no cover
