@@ -22,7 +22,4 @@ DOOR_LOCK = {
 }
 
 
-NOTIFICATIONS_BIND_URI = 'inproc://notifications'
-
-
 SCREEN_VIEWS_WHITELIST = set(['127.0.0.1'])

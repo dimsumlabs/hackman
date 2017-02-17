@@ -31,17 +31,7 @@ DOOR_LOCK = {
 }
 
 
-# Put sessions into memcached
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-
-
-NOTIFICATIONS_BIND_URI = 'norm://224.1.2.3:5556'
 
 
 SCREEN_VIEWS_WHITELIST = set(['127.0.0.1', '192.168.100.173'])

@@ -15,7 +15,7 @@ function make_req() {
         }
 
     };
-    http.timeout = 40000;
+    http.timeout = 240*1000;
     http.ontimeout = function () {
         if(window.location.pathname !== '/screen/'){
             window.location.href = '/screen';

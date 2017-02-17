@@ -45,16 +45,8 @@ def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     return card
 
 
-def access_last(paired=None):
-    qs = models.RFIDLog.objects.all()
-
-    if paired is None:
-        pass
-
-    elif paired:
-        qs = qs.filter(card__user__isnull=False)
-
-    else:
-        qs = qs.filter(card__user__isnull=True)
-
-    return qs.order_by('-time').first().card
+def card_get(card_id: int) -> models.RFIDCard:
+    try:
+        return models.RFIDCard.objects.get(id=card_id)
+    except models.RFIDCard.DoesNotExist:
+        return None

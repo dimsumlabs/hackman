@@ -1,5 +1,4 @@
 from django import http
-import zmq
 
 from . import screen_views as views
 
@@ -27,42 +26,3 @@ def test_poll_timeout(rf):
     request = rf.get('/screen/poll/')
     response = views.poll(request, _timeout=0.001)
     assert response.status_code == 200
-
-
-def test_poll(rf):
-    messages = [
-        b'DOOR_OPEN',
-        b'DOOR_OPEN_GRACE',
-        b'DOOR_OPEN_DENIED',
-        b'CARD_UNPAIRED',
-    ]
-
-    ctx = zmq.Context()
-    srv_sock = ctx.socket(zmq.PUB)
-    sock = ctx.socket(zmq.SUB)
-    for msg in messages:
-        sock.setsockopt(zmq.SUBSCRIBE, msg)
-    srv_sock.bind('inproc://hackman_test_poll')
-    sock.connect('inproc://hackman_test_poll')
-    for msg in messages:
-        srv_sock.send(msg)
-
-    responses = []
-    request = rf.get('/screen/poll/')
-    for _ in messages:
-        responses.append(
-            views.poll(request,
-                       _sock=sock,
-                       _timeout=0.01))
-
-    assert responses[0].status_code == 200
-    assert responses[0].content == b'/screen/welcome/'
-
-    assert responses[1].status_code == 200
-    assert responses[1].content == b'/screen/remind_payment/'
-
-    assert responses[2].status_code == 200
-    assert responses[2].content == b'/screen/unpaid_membership/'
-
-    assert responses[3].status_code == 200
-    assert responses[3].content == b'/screen/unpaired_card/'

@@ -2,6 +2,7 @@ from hackman_notifier import api as notification_api
 from hackman_payments import enums as payment_enums
 from hackman_payments import api as payment_api
 from hackman_door import api as door_api
+import json
 
 
 def door_open_if_paid(user_id, _door_api=None):
@@ -11,14 +12,20 @@ def door_open_if_paid(user_id, _door_api=None):
 
     if paid == 'PAID':
         (_door_api or door_api).open()
-        notification_api.notify_subject(b'DOOR_OPEN')
-        return True
+        notify_event = 'DOOR_OPEN'
+        ret = True
 
     elif paid == 'GRACE':
         (_door_api or door_api).open()
-        notification_api.notify_subject(b'DOOR_OPEN_GRACE')
-        return True
+        ret = True
+        notify_event = 'DOOR_OPEN_GRACE'
 
     else:
-        notification_api.notify_subject(b'DOOR_OPEN_DENIED')
-        return False
+        ret = False
+        notify_event = 'DOOR_OPEN_DENIED'
+
+    notification_api.notify_subject(b'door_event', json.dumps({
+        'event': notify_event,
+        'user_id': user_id
+    }))
+    return ret

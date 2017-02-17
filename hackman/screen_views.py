@@ -1,8 +1,11 @@
+from django.contrib.auth import get_user_model
+from django_redis import get_redis_connection
 from django.conf import settings
 from django import shortcuts
 from django import http
+import urllib.parse
 import functools
-import zmq
+import json
 
 from hackman_rfid import api as rfid_api
 
@@ -26,32 +29,40 @@ def screen_whitelist_check(f):
 
 
 @screen_whitelist_check
-def poll(request, _timeout=20, _sock=None):
+def poll(request, _timeout=60):
     """Long polling view that redirects screen to correct view"""
 
     redirects = {
-        b'DOOR_OPEN': http.HttpResponse('/screen/welcome/'),
-        b'DOOR_OPEN_GRACE': http.HttpResponse('/screen/remind_payment/'),
-        b'DOOR_OPEN_DENIED': http.HttpResponse('/screen/unpaid_membership/'),
-        b'CARD_UNPAIRED': http.HttpResponse('/screen/unpaired_card/'),
+        'DOOR_OPEN': '/screen/welcome/',
+        'DOOR_OPEN_GRACE': '/screen/remind_payment/',
+        'DOOR_OPEN_DENIED': '/screen/unpaid_membership/',
+        'CARD_UNPAIRED': '/screen/unpaired_card/',
     }
 
-    sock = _sock or zmq.Context().socket(zmq.SUB)
-    for chan in redirects.keys():
-        sock.setsockopt(zmq.SUBSCRIBE, chan)
+    r = get_redis_connection("default")
+    ps = r.pubsub()
+    try:
+        ps.subscribe('door_event')
 
-    sock.connect(settings.NOTIFICATIONS_BIND_URI)
+        msg = None
+        while not msg:
+            m = ps.get_message(
+                timeout=_timeout)
 
-    poller = zmq.Poller()
-    poller.register(sock, zmq.POLLIN)
+            if not m:
+                return http.HttpResponse()
 
-    s = dict(poller.poll(1000 * _timeout))
-    if sock not in s:  # No event, timeout
-        return http.HttpResponse()
+            if m['type'] == 'message':
+                msg = m
 
-    msg = sock.recv()
+        msg = json.loads(msg['data'])
 
-    return redirects[msg]
+        url = redirects[msg.pop('event')]
+        url = '?'.join((url, urllib.parse.urlencode(msg)))
+        return http.HttpResponse(url)
+
+    finally:
+        ps.unsubscribe()
 
 
 @screen_whitelist_check
@@ -60,40 +71,41 @@ def index(request):  # pragma: no cover
         request, 'screen/index.jinja2')
 
 
+def _user_view(request, tpl):  # pragma: no cover
+    try:
+        user = get_user_model().objects.get(id=request.GET.get('user_id'))
+    except get_user_model().DoesNotExist:
+        return shortcuts.redirect('/screen/')
+    return shortcuts.render(
+        request, tpl, context={
+            'user': user
+        })
+
+
 @screen_whitelist_check
 def welcome(request):  # pragma: no cover
     # Get last access and show welcome screen
-    card = rfid_api.access_last(paired=True)
-    return shortcuts.render(
-        request, 'screen/welcome.jinja2', context={
-            'user': card.user
-        })
+    return _user_view(request, 'screen/welcome.jinja2')
 
 
 @screen_whitelist_check
 def remind_payment(request):  # pragma: no cover
     """Member is under grace period, say hi and remind to pay"""
     # Get last access and show payment reminder screen
-    card = rfid_api.access_last(paired=True)
-    return shortcuts.render(
-        request, 'screen/remind_payment.jinja2', context={
-            'user': card.user
-        })
+    return _user_view(request, 'screen/remind_payment.jinja2')
 
 
 @screen_whitelist_check
 def unpaid_membership(request):  # pragma: no cover
     """Unpaid membership, shame on you"""
-    card = rfid_api.access_last(paired=True)
-    return shortcuts.render(
-        request, 'screen/unpaid_membership.jinja2', context={
-            'user': card.user
-        })
+    return _user_view(request, 'screen/unpaid_membership.jinja2')
 
 
 @screen_whitelist_check
 def unpaired_card(request):  # pragma: no cover
-    card = rfid_api.access_last(paired=False)
+    card = rfid_api.card_get(request.GET.get('card_id'))
+    if not card:
+        return shortcuts.redirect('/screen/')
     return shortcuts.render(
         request, 'screen/unpaired_card.jinja2', context={
             'card': card
