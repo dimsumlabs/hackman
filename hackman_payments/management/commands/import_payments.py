@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
-from django.db import transaction
-import datetime
+from hackman_payments import api as payment_api
+from django_redis import get_redis_connection
 import subprocess
-import calendar
 import json
 
 from hackman_payments import models
@@ -10,12 +9,11 @@ from hackman_payments import models
 
 class Command(BaseCommand):
 
-    @transaction.atomic
     def handle(self, *args, **kwargs):
         p = subprocess.run([
             'git', '-C', 'dsl-accounts/', 'pull', '-f', 'origin', 'master'
         ], stdout=subprocess.PIPE)
-        if not p.returncode == 0:
+        if p.returncode != 0:
             raise RuntimeError(p)
 
         p = subprocess.run([
@@ -31,14 +29,17 @@ class Command(BaseCommand):
         tags = tags.filter(tag__in=data.keys())
         tags = tags.prefetch_related('user')
 
+        r = redis_pipe = get_redis_connection('default')
+        pipe = r.pipeline()
         for t in tags:
-            for paid_period in data[t.tag].keys():
-                year, month = map(int, paid_period.split('-'))
-                valid_until = datetime.date(
-                    year,
-                    month,
-                    calendar.monthrange(year, month)[1])
+            last_payment = sorted(
+                data[t.tag].keys(),
+                key=lambda x: tuple(map(int, x.split('-'))))[-1]
 
-                payment, created = models.Payment.objects.get_or_create(
-                    user=t.user,
-                    valid_until=valid_until)
+            year, month = map(int, last_payment.split('-'))
+            payment_api.payment_submit(t.user.id,
+                                       year,
+                                       month,
+                                       _redis_pipe=redis_pipe)
+
+        pipe.execute()

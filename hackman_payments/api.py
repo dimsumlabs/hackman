@@ -1,56 +1,51 @@
 from django.template.loader import render_to_string
 from datetime import datetime, timedelta, date
-from django.db.models import Max
+from django.contrib.auth import get_user_model
+from django_redis import get_redis_connection
 import calendar
 
 from .enums import PaymentGrade
-from .models import Payment
 
 
-def _get_next_month():
-    now = datetime.utcnow()
-    cur = date(now.year, now.month,
-               calendar.monthrange(now.year, now.month)[1])
-    return (cur+timedelta(days=1))
+def _get_now():
+    """Simple functionality but have to wrap up in function to test"""
+    return datetime.utcnow().date()
 
 
 def has_paid(user_id: int) -> bool:
-    qs = Payment.objects.all()
-    qs = qs.filter(user_id=user_id)
-    qs = qs.filter(paymentinvalid=None)
 
-    # Grace period for payments
-    now = datetime.utcnow()
-    qs = qs.filter(valid_until__gt=(now-timedelta(weeks=2)))
-    qs = qs.order_by('valid_until')
-    payment = qs.first()
-
-    if not payment:
+    r = get_redis_connection('default')
+    valid_until = r.get('payment_user_id_{}'.format(user_id))
+    if valid_until is None:
         return PaymentGrade.NOT_PAID
 
-    elif payment.valid_until < now.date():
+    valid_until = datetime.strptime(
+        valid_until.decode('utf8'), '%Y-%m-%dT%H:%M:%S').date()
+
+    now = _get_now()
+    if valid_until < now and valid_until+timedelta(weeks=2) >= now:
         return PaymentGrade.GRACE
 
-    else:
+    elif valid_until >= now:
         return PaymentGrade.PAID
+
+    else:
+        return PaymentGrade.NOT_PAID
 
 
 def unpaid_users():
     """Yield all user ids that have not paid in advance"""
 
-    next_month_date = _get_next_month()
-
-    qs = Payment.objects.filter(paymentinvalid__isnull=True)
-    qs = qs.values('user_id')
-    qs = qs.annotate(valid_until=Max('valid_until'))
-
-    for o in qs:
-        if o['valid_until'] <= next_month_date:
-            yield o['user_id']
+    for uid in get_user_model().objects.all().values_list('id', flat=True):
+        if has_paid(uid) != PaymentGrade.PAID:
+            yield uid
 
 
 def payment_reminder_email_format():  # pragma: no cover
-    next_month_date = _get_next_month()
+    now = _get_now()
+    cur = date(now.year, now.month,
+               calendar.monthrange(now.year, now.month)[1])
+    next_month_date = (cur+timedelta(days=1))
     month_name = calendar.month_name[next_month_date.month]
 
     return render_to_string('payment_reminder.jinja2', context={
@@ -58,12 +53,12 @@ def payment_reminder_email_format():  # pragma: no cover
     })
 
 
-def payment_submit(user_id: int, year: int, month: int) -> int:
+def payment_submit(user_id: int, year: int, month: int,
+                   _redis_pipe=None) -> int:
 
     valid_until = datetime(year, month,
                            calendar.monthrange(year, month)[1],
                            23, 59)
 
-    return Payment.objects.create(
-        user_id=user_id,
-        valid_until=valid_until).id
+    r = _redis_pipe or get_redis_connection('default')
+    r.set('payment_user_id_{}'.format(user_id), valid_until.isoformat())

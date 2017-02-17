@@ -1,6 +1,7 @@
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.contrib.auth import get_user_model
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from django_redis import get_redis_connection
 from unittest import mock
 import hashlib
 import pytest
@@ -26,18 +27,19 @@ def paid_user():
     next_month = datetime.utcnow()+timedelta(days=32)
 
     user = get_user_model().objects.create_user(
-        username='testhesten',
+        username='testhesten_paid',
         password='testpass')
     payment_api.payment_submit(user.id,
                                next_month.year,
                                next_month.month)
-    return user
+    yield user
+    get_redis_connection('default').flushall()
 
 
 @pytest.fixture
 def not_paid_user():
     user = get_user_model().objects.create_user(
-        username='testhesten',
+        username='testhesten_notpaid',
         password='testpass')
     return user
 
@@ -221,46 +223,44 @@ def test_payment_submit(rf, not_paid_user):
 
 @pytest.fixture
 def user_paid():
-    from hackman_payments.models import Payment
-    user = get_user_model().objects.create(username='testhesten')
-    Payment.objects.create(
-        user=user,
-        valid_until=(datetime.utcnow()+timedelta(days=30)))
-    return user
+    from hackman_payments import api as payments_api
+    user = get_user_model().objects.create(username='testhesten_fullpay')
+    payments_api.payment_submit(user.id, 2017, 2)
+    yield user
+    get_redis_connection('default').flushall()
 
 
 @pytest.fixture
 def user_paid_grace():
-    from hackman_payments.models import Payment
-    user = get_user_model().objects.create(username='testhesten')
-    Payment.objects.create(
-        user=user,
-        valid_until=(datetime.utcnow()-timedelta(days=1)))
-    return user
+    from hackman_payments import api as payments_api
+    user = get_user_model().objects.create(username='testhesten_gracepay')
+    payments_api.payment_submit(user.id, 2017, 1)
+    yield user
+    get_redis_connection('default').flushall()
 
 
 @pytest.fixture
 def user_not_paid():
-    from hackman_payments.models import Payment
-    user = get_user_model().objects.create(username='testhesten')
-    Payment.objects.create(
-        user=user,
-        valid_until=(datetime.utcnow()-timedelta(days=60)))
+    user = get_user_model().objects.create(username='testhesten_nopayment')
     return user
 
 
 @pytest.mark.django_db
 def test_has_paid_has_paid(user_paid):
-    ret = hackman_api.door_open_if_paid(user_paid.id,
-                                        _door_api=mock.Mock())
-    assert ret is True
+    with mock.patch('hackman_payments.api._get_now',
+                    return_value=date(2017, 2, 20)):
+        ret = hackman_api.door_open_if_paid(user_paid.id,
+                                            _door_api=mock.Mock())
+        assert ret is True
 
 
 @pytest.mark.django_db
 def test_has_paid_has_paid_grace(user_paid_grace):
-    ret = hackman_api.door_open_if_paid(user_paid_grace.id,
-                                        _door_api=mock.Mock())
-    assert ret is True
+    with mock.patch('hackman_payments.api._get_now',
+                    return_value=date(2017, 2, 12)):
+        ret = hackman_api.door_open_if_paid(user_paid_grace.id,
+                                            _door_api=mock.Mock())
+        assert ret is True
 
 
 @pytest.mark.django_db
