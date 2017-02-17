@@ -96,3 +96,12 @@ def test_card_pair(card_user, random_card):
     assert isinstance(c, models.RFIDCard)
     assert c.id == random_card.id
     assert c.user.id == card_user.id
+
+
+@pytest.mark.django_db
+def test_card_get(random_card):
+    c1 = api.card_get(random_card.id)
+    c2 = api.card_get(31337)
+    assert isinstance(c1, models.RFIDCard)
+    assert c1.id == random_card.id
+    assert c2 is None

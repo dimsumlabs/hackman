@@ -29,7 +29,7 @@ def screen_whitelist_check(f):
 
 
 @screen_whitelist_check
-def poll(request, _timeout=60):
+def poll(request, _timeout=60):  # pragma: no cover
     """Long polling view that redirects screen to correct view"""
 
     redirects = {
