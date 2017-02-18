@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand
-from django.conf import settings
-import zmq
+from django_redis import get_redis_connection
 
 from hackman_door.door import Door
 
@@ -10,23 +9,22 @@ class Command(BaseCommand):
     help = 'Run door opening daemon'
 
     def handle(self, *args, **options):
-        print("TODO: Move away logic from here into libs (more testable)")
-
-        ctx = zmq.Context()
-        subscriber = ctx.socket(zmq.SUB)
-        subscriber.setsockopt(zmq.SUBSCRIBE, b'OPEN')
-        subscriber.setsockopt(zmq.SUBSCRIBE, b'CLOSE')
-        subscriber.bind(settings.DOOR_LOCK['BIND_URI'])
+        r = get_redis_connection()
+        ps = r.pubsub()
+        ps.subscribe('door_action')
 
         door = Door()
 
         while True:
-            msg = subscriber.recv()
+            msg = ps.get_message(timeout=10)
+            if not msg or msg['type'] != 'message':
+                continue
 
-            if msg == b'OPEN':
+            action = msg['data']
+            if action == b'OPEN':
                 door.open()
 
-            elif msg == b'CLOSE':
+            elif action == b'CLOSE':
                 door.close()
 
             else:  # pragma: no cover

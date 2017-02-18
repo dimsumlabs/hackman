@@ -1,21 +1,13 @@
-from django.conf import settings
-import zmq
+from hackman_notifier import api as notification_api
 
 __all__ = ['open', 'close']
 
 
-_zmq_ctx = zmq.Context()
-_client_sock = _zmq_ctx.socket(zmq.PUB)
-_client_sock.connect(settings.DOOR_LOCK['BIND_URI'])
-
-
-def open(_sock=None):
+def open(_r=None):
     """Send open door command to door daemon instance"""
-    sock = _sock or _client_sock
-    sock.send(b'OPEN', flags=zmq.NOBLOCK)
+    notification_api.notify_subject('door_action', 'OPEN', _r=_r)
 
 
-def close(_sock=None):
+def close(_r=None):
     """Send close door command to door daemon instance"""
-    sock = _sock or _client_sock
-    sock.send(b'CLOSE', flags=zmq.NOBLOCK)
+    notification_api.notify_subject('door_action', 'CLOSE', _r=_r)
