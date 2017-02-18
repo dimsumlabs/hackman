@@ -48,10 +48,11 @@ def test_card_validate_db_entry_created():
 def test_card_validate_no_user(random_card):
     """Check access attempt without a user"""
 
-    user = api.card_validate(random_card.rfid_hash)
+    card = api.card_validate(random_card.rfid_hash)
 
-    assert user is None
-    assert models.RFIDCard.objects.get(rfid_hash=random_card.rfid_hash)
+    assert card.user_id is None
+    c = models.RFIDCard.objects.get(rfid_hash=random_card.rfid_hash)
+    assert c.id == random_card.id
 
 
 @pytest.mark.django_db
@@ -59,14 +60,6 @@ def test_card_validate_user(paired_card, card_user):
     """Check that validate returns correct user if user is associated"""
     user = api.card_validate(paired_card.rfid_hash)
     assert user.id == card_user.id
-
-
-@pytest.mark.django_db
-def test_card_validate_log_entry(random_card):
-    """Check that log entry has been created for access attempt"""
-    api.card_validate(random_card.rfid_hash)
-    assert len(models.RFIDLog.objects.filter(
-        card__rfid_hash=random_card.rfid_hash)) == 1
 
 
 @pytest.mark.django_db

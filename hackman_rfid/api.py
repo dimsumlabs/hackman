@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-from django.db import transaction
+from django.core.cache import cache
 from django.conf import settings
 import importlib
 import hashlib
@@ -8,6 +8,10 @@ import hashlib
 from . import models
 
 __all__ = ['cards_read', 'card_validate', 'card_pair']
+
+
+def _make_cache_key(card_hash: str) -> str:
+    return 'rfid_card_{}'.format(card_hash)
 
 
 def cards_read():
@@ -26,12 +30,15 @@ def card_validate(card_hash: str) -> User:
     """Validate card hash and return associated user
     Will create RFIDCard if it doesnt already exist"""
 
-    with transaction.atomic():
+    cache_key = _make_cache_key(card_hash)
+    c = cache.get(cache_key)
+
+    if not c:
         c, _ = models.RFIDCard.objects.get_or_create(rfid_hash=card_hash)
-        models.RFIDLog.objects.create(card_id=c.id)
+        cache.set(cache_key, c)
 
     if not c.revoked:
-        return c.user
+        return c
 
 
 def card_pair(user_id: int, card_id: int) -> models.RFIDCard:

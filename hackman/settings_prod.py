@@ -31,9 +31,6 @@ DOOR_LOCK = {
 }
 
 
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
-
-
 SCREEN_VIEWS_WHITELIST = set(['127.0.0.1', '192.168.100.173'])
 
 

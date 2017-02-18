@@ -9,8 +9,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         for card_hash in rfid_api.cards_read():
 
-            user = rfid_api.card_validate(card_hash)
-            if not user:
+            card = rfid_api.card_validate(card_hash)
+            if not card:
                 continue
 
-            hackman_api.door_open_if_paid(user.id)
+            hackman_api.door_open_if_paid(card.user_id)

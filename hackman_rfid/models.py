@@ -1,3 +1,7 @@
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.cache import cache
+
 from django.conf import settings
 from django.db import models
 
@@ -12,12 +16,12 @@ class RFIDCard(models.Model):
 
     def __str__(self):
         return ' - '.join((
-            self.user.username,
+            self.user.username if self.user else 'unpaired',
             self.rfid_hash
         ))
 
 
-class RFIDLog(models.Model):
-
-    card = models.ForeignKey(RFIDCard)
-    time = models.DateTimeField(auto_now_add=True, db_index=True)
+@receiver(post_save, sender=RFIDCard)
+def invalidate_card(sender, instance, **kwargs):
+    from .api import _make_cache_key
+    cache.set(_make_cache_key(instance.rfid_hash), instance)
