@@ -5,10 +5,10 @@ from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
 from django.utils.http import is_safe_url
 from django.contrib import messages
+from calendar import monthrange
 from django.contrib import auth
 from django import shortcuts
 from django import http
-import calendar
 
 from hackman_payments import api as payment_api
 from hackman_rfid import api as rfid_api
@@ -26,20 +26,14 @@ def _ctx_from_request(request, update_ctx=None):
     return ctx
 
 
-def _get_next_month(year, month):
-    cur = date(year, month, calendar.monthrange(year, month)[1])
-    return cur+timedelta(days=1)
-
-
-def _get_prev_current_and_three_next_months():
+def _get_month_choices():
     now = datetime.utcnow().date()
-    prev_month = (date(now.year, now.month, 1)-timedelta(days=1))
-
-    months = [prev_month, now]
-
-    for _ in range(3):
-        prev = months[-1]
-        months.append(_get_next_month(prev.year, prev.month))
+    months = (
+        (date(now.year, now.month, 1)-timedelta(days=1)),
+        now,
+        date(now.year, now.month, monthrange(now.year,
+                                             now.month)[1]) + timedelta(days=1)
+    )
 
     return [
         '{year}-{month:02d}'.format(year=i.year, month=i.month)
@@ -115,8 +109,8 @@ def index(request):  # pragma: no cover
         request, 'index.jinja2',
         context=_ctx_from_request(request, update_ctx={
             'payment_form': forms.PaymentForm(
-                year_month_choices=_get_prev_current_and_three_next_months())
-            }))
+                year_month_choices=_get_month_choices()
+            )}))
 
 
 @login_required(login_url='/login/')
@@ -165,7 +159,7 @@ def payment_submit(request, r=False):
 
     form = forms.PaymentForm(
         request.POST,
-        year_month_choices=_get_prev_current_and_three_next_months())
+        year_month_choices=_get_month_choices())
     if not form.is_valid():
         return http.HttpResponseBadRequest('Form error')
 
