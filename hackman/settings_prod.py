@@ -1,7 +1,37 @@
 from .settings import *  # noqa
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+v*pw9!3la*0*09z+uh6-tl)@m-32j9n%4sx4j#2()#c4ysif5'
+
+def _gen_key():
+    """Generate deterministic key per bootup,
+    this makes sure not to invalidate sessions and similar things
+    between restarts of app while not having to check in anything to git"""
+    from datetime import timedelta, datetime
+    import string
+    import random
+    import os
+
+    with open('/proc/uptime') as f:
+        uptime = float(f.readline().split()[0])
+
+    chars = ''.join((string.ascii_letters, string.digits, string.punctuation))
+
+    dt = datetime.utcnow()-timedelta(seconds=uptime)
+    uname = os.uname()
+    seed = ''.join((
+        dt.strftime('%s'),
+        uname.nodename,
+        uname.version))
+
+    key = []
+    for _ in range(50):
+        random.seed(seed)
+        seed = seed[-1] + seed[:-1]
+        key.append(random.choice(chars))
+
+    return ''.join(key)
+
+
+SECRET_KEY = _gen_key()
 
 ALLOWED_HOSTS = ['door', 'door.lan', '192.168.100.132']
 
