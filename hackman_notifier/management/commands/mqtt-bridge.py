@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django_redis import get_redis_connection
+from django.conf import settings
 import paho.mqtt.client as mqtt
 import json
 
@@ -12,7 +13,7 @@ class Command(BaseCommand):
         rps = r.pubsub()
 
         client = mqtt.Client()
-        client.connect('127.0.0.1', 1883)
+        client.connect(*settings.MQTT_CONNECT)
         client.loop_start()
 
         try:
