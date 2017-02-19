@@ -8,3 +8,4 @@ gunicorn>=19.6.0
 coverage>=4.3.4
 pytest-cov>=2.4.0
 django-redis>=4.7.0
+paho-mqtt==1.2

@@ -142,3 +142,6 @@ CACHES = {
     }
 }
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+
+MQTT_CONNECT = ('localhost', 1883)
