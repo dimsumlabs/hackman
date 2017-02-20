@@ -33,8 +33,6 @@ def _gen_key():
 
 SECRET_KEY = _gen_key()
 
-ALLOWED_HOSTS = ['door', 'door.lan', '192.168.100.132']
-
 STATIC_ROOT = '/var/www/hackman/hackman/static/'
 
 # RFID reader config
