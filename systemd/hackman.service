@@ -1,7 +1,8 @@
 [Unit]
 Description=Run hackman
-Requires=nginx.service
+Requires=nginx.service hackman-paymentimport.service
 Before=nginx.service
+After=hackman-paymentimport.service
 
 [Service]
 WorkingDirectory=/var/www/hackman/
