@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.http import HttpResponse
 from django.conf.urls import url
 from django.contrib import admin
 
@@ -20,9 +21,15 @@ from . import views
 from . import screen_urls
 
 
+def robots(request):
+    return HttpResponse('User-agent: *\nDisallow: /',
+                        content_type='text/plain')
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^screen/', screen_urls.urls),
+    url(r'^robots.txt$', robots),
     url(r'^login/', views.login),
     url(r'^logout/', views.logout),
     url(r'^door_open/', views.door_open),

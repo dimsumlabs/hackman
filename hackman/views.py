@@ -3,16 +3,20 @@ from django.contrib.messages.api import MessageFailure
 from django.contrib.messages import get_messages
 from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
+from ratelimit.decorators import ratelimit
 from django.utils.http import is_safe_url
 from django.contrib import messages
 from calendar import monthrange
 from django.contrib import auth
 from django import shortcuts
 from django import http
+from IPy import IP
 
 from hackman_payments import api as payment_api
 from hackman_rfid import api as rfid_api
 
+
+from .lib import get_remote_ip
 from . import forms
 
 
@@ -41,6 +45,7 @@ def _get_month_choices():
     ]
 
 
+@ratelimit(key='ip', rate='5/m')
 def login(request):
 
     if request.method == 'POST':
@@ -75,6 +80,10 @@ def login(request):
 
 
 def account_create(request):
+    if IP(get_remote_ip(request)).iptype() != 'PRIVATE':
+        return http.HttpResponseForbidden(
+            'You can only register an account from within DSL')
+
     if request.method != 'POST':
         return http.HttpResponseBadRequest('Request not POST')
 

@@ -10,7 +10,8 @@ from .enums import PaymentGrade
 
 @pytest.fixture
 def user_paid():
-    user = get_user_model().objects.create(username='testhesten-paid')
+    user = get_user_model().objects.create(username='testhesten-paid',
+                                           email='p@test.se')
     payment_api.payment_submit(user.id, 2017, 2)
     yield user
     get_redis_connection('default').flushall()
@@ -18,7 +19,8 @@ def user_paid():
 
 @pytest.fixture
 def user_paid_grace():
-    user = get_user_model().objects.create(username='testhesten-grace')
+    user = get_user_model().objects.create(username='testhesten-grace',
+                                           email='g@test.se')
     payment_api.payment_submit(user.id, 2017, 1)
     yield user
     get_redis_connection('default').flushall()
@@ -26,7 +28,8 @@ def user_paid_grace():
 
 @pytest.fixture
 def user_not_paid():
-    user = get_user_model().objects.create(username='testhesten-notpaid')
+    user = get_user_model().objects.create(username='testhesten-notpaid',
+                                           email='np@test.se')
     payment_api.payment_submit(user.id, 2016, 12)
     yield user
     get_redis_connection('default').flushall()

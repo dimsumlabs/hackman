@@ -104,6 +104,12 @@ def test_account_create_non_post(rf):
     assert response.status_code == 400
 
 
+def test_account_create_nonlocal_ip(rf):
+    request = rf.post('/account_create/', REMOTE_ADDR='8.8.8.8')
+    response = views.account_create(request)
+    assert response.status_code == 403
+
+
 def test_account_create_form_invalid(rf):
     request = rf.post('/account_create/', {
         'err_field': 'not an email',

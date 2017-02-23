@@ -8,6 +8,7 @@ import functools
 import json
 
 from hackman_rfid import api as rfid_api
+from .lib import get_remote_ip
 
 
 def screen_whitelist_check(f):
@@ -15,9 +16,7 @@ def screen_whitelist_check(f):
 
     @functools.wraps(f)
     def auth(request, *args, **kwargs):
-        remote_ip = request.META.get('HTTP_X_FORWARDED_FOR',
-                                     request.META.get('REMOTE_ADDR'))
-        remote_ip = remote_ip.split(',')[0]
+        remote_ip = get_remote_ip(request)
 
         if remote_ip not in settings.SCREEN_VIEWS_WHITELIST:
             return http.HttpResponseForbidden(
