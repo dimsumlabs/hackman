@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ] + [
+    # Third party apps
+    'oauth2_provider',
+    'corsheaders',
+] + [
+    # Local apps
     'hackman',
     'hackman_door',
     'hackman_rfid',
@@ -43,9 +49,16 @@ INSTALLED_APPS = [
     'hackman_notifier',
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'oauth2_provider.backends.OAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend'
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,6 +144,7 @@ STATIC_URL = '/static/'
 
 EMAILS_FROM = 'accounts@dimsumlabs.com'
 
+LOGIN_URL = '/login/'
 
 CACHES = {
     "default": {

@@ -14,10 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.http import HttpResponse
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 
 from . import views
+from . import rest_api
 from . import screen_urls
 
 
@@ -37,4 +38,8 @@ urlpatterns = [
     url(r'^account_create/', views.account_create),
     url(r'^payment_submit/', views.payment_submit),
     url(r'^$', views.index),
+    url(r'^oauth/', include('oauth2_provider.urls',
+                            namespace='oauth2_provider')),
+
+    url(r'^api/v1/profile/', rest_api.profile),
 ]

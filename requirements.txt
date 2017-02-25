@@ -8,7 +8,8 @@ gunicorn>=19.6.0
 coverage>=4.3.4
 pytest-cov>=2.4.0
 django-redis>=4.7.0
-paho-mqtt==1.2
-IPy==0.83
-django-ratelimit==1.0.1
-django-ratelimit==1.0.1
+paho-mqtt>=1.2
+IPy>=0.83
+django-ratelimit>=1.0.1
+django-cors-headers>=2.0.2
+django-oauth-toolkit>=0.11.0
