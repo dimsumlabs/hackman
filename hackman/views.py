@@ -107,7 +107,8 @@ def account_create(request):
 
     redir_url = form.cleaned_data.pop('redir_url')
     user = get_user_model().objects.create_user(**form.cleaned_data)
-    auth.login(request, user)
+    auth.login(request, user,
+               backend='django.contrib.auth.backends.ModelBackend')
 
     if redir_url and is_safe_url(redir_url):  # pragma: no cover
         return shortcuts.redirect(redir_url)
