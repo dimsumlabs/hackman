@@ -20,6 +20,3 @@ DOOR_LOCK = {
     'BACKEND': 'hackman_door.door.impls.dummy_dev',
     'BIND_URI': 'tcp://127.0.0.1:9001'
 }
-
-
-SCREEN_VIEWS_WHITELIST = set(['127.0.0.1'])

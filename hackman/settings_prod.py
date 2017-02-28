@@ -62,9 +62,6 @@ DOOR_LOCK = {
     'BIND_URI': 'tcp://127.0.0.1:9001'
 }
 
-
-SCREEN_VIEWS_WHITELIST = set(['127.0.0.1', '192.168.100.173'])
-
 EMAIL_USE_TLS = True
 EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT'))

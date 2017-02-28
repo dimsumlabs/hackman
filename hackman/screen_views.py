@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
-from django.conf import settings
 from django import shortcuts
 from django import http
 import urllib.parse
+from IPy import IP
 import functools
 import json
 
@@ -11,23 +11,21 @@ from hackman_rfid import api as rfid_api
 from .lib import get_remote_ip
 
 
-def screen_whitelist_check(f):
+def screen_ip_check(f):
     """Check if device accessing screen endpoints are in IP whitelist"""
 
     @functools.wraps(f)
     def auth(request, *args, **kwargs):
-        remote_ip = get_remote_ip(request)
-
-        if remote_ip not in settings.SCREEN_VIEWS_WHITELIST:
+        if IP(get_remote_ip(request)).iptype() != 'PRIVATE':
             return http.HttpResponseForbidden(
-                '<h1>Not in screen whitelist</h1>')
+                'Screen views can only be accessed on lan')
 
         return f(request, *args, **kwargs)
 
     return auth
 
 
-@screen_whitelist_check
+@screen_ip_check
 def poll(request, _timeout=60):  # pragma: no cover
     """Long polling view that redirects screen to correct view"""
 
@@ -64,7 +62,7 @@ def poll(request, _timeout=60):  # pragma: no cover
         ps.unsubscribe()
 
 
-@screen_whitelist_check
+@screen_ip_check
 def index(request):  # pragma: no cover
     return shortcuts.render(
         request, 'screen/index.jinja2')
@@ -81,26 +79,26 @@ def _user_view(request, tpl):  # pragma: no cover
         })
 
 
-@screen_whitelist_check
+@screen_ip_check
 def welcome(request):  # pragma: no cover
     # Get last access and show welcome screen
     return _user_view(request, 'screen/welcome.jinja2')
 
 
-@screen_whitelist_check
+@screen_ip_check
 def remind_payment(request):  # pragma: no cover
     """Member is under grace period, say hi and remind to pay"""
     # Get last access and show payment reminder screen
     return _user_view(request, 'screen/remind_payment.jinja2')
 
 
-@screen_whitelist_check
+@screen_ip_check
 def unpaid_membership(request):  # pragma: no cover
     """Unpaid membership, shame on you"""
     return _user_view(request, 'screen/unpaid_membership.jinja2')
 
 
-@screen_whitelist_check
+@screen_ip_check
 def unpaired_card(request):  # pragma: no cover
     card = rfid_api.card_get(request.GET.get('card_id'))
     if not card:
