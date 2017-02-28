@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ] + [
     # Third party apps
+    'django.contrib.sites',
     'oauth2_provider',
     'corsheaders',
 ] + [
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     'hackman_payments',
     'hackman_notifier',
 ]
+
+SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = (
     'oauth2_provider.backends.OAuth2Backend',
