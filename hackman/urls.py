@@ -13,8 +13,9 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.http import HttpResponse
+from django.contrib.auth import views as auth_views
 from django.conf.urls import url, include
+from django.http import HttpResponse
 from django.contrib import admin
 
 from . import views
@@ -33,6 +34,20 @@ urlpatterns = [
     url(r'^robots.txt$', robots),
     url(r'^login/', views.login),
     url(r'^logout/', views.logout),
+
+    url('^password_change/$', auth_views.password_change,
+        name='password_change'),
+    url('^password_change/done/$', views.password_change_done,
+        name='password_change_done'),
+    url('^password_reset/$', auth_views.password_reset, name='password_reset'),
+    url('^password_reset/done/$', auth_views.password_reset_done,
+        name='password_reset_done'),
+    url('^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',  # noqa
+        auth_views.password_reset_confirm,
+        name='password_reset_confirm'),
+    url('^reset/done/$', auth_views.password_reset_complete,
+        name='password_reset_complete'),
+
     url(r'^door_open/', views.door_open),
     url(r'^rfid_pair/', views.rfid_pair),
     url(r'^account_create/', views.account_create),

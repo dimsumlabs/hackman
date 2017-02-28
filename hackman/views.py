@@ -45,6 +45,15 @@ def _get_month_choices():
     ]
 
 
+def password_change_done(request):  # pragma: no cover
+    try:
+        messages.add_message(
+            request, messages.SUCCESS, 'Password changed!')
+    except MessageFailure:
+        pass
+    return shortcuts.redirect('/')
+
+
 @ratelimit(key='ip', rate='5/m')
 def login(request):
 
