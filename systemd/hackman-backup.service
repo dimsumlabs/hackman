@@ -3,7 +3,7 @@ Description=Run hackman door daemon
 
 [Service]
 WorkingDirectory=/var/www/hackman/
-Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
+EnvironmentFile=/etc/hackman.env
 Type=oneshot
 User=hackman
 Group=hackman

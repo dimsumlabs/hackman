@@ -1,4 +1,8 @@
 from .settings import *  # noqa
+import os
+
+
+DEBUG = False
 
 
 def _gen_key():
@@ -61,5 +65,8 @@ DOOR_LOCK = {
 
 SCREEN_VIEWS_WHITELIST = set(['127.0.0.1', '192.168.100.173'])
 
-
-# TODO: Get settings from env vars
+EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')

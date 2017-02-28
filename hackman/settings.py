@@ -141,8 +141,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-EMAILS_FROM = 'accounts@dimsumlabs.com'
+EMAILS_FROM = os.getenv('EMAIL_HOST_USER', 'accounts@dimsumlabs.com')
 
 LOGIN_URL = '/login/'
 
