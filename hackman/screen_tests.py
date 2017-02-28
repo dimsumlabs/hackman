@@ -3,7 +3,7 @@ from django import http
 from . import screen_views as views
 
 
-@views.screen_whitelist_check
+@views.screen_ip_check
 def whitelisted_view(request):
     return http.HttpResponse()
 
@@ -17,7 +17,7 @@ def test_whitelist(rf):
 
 def test_whitelist_not_whitelisted_ip(rf):
     request = rf.get('/mock_url/')
-    request.META['REMOTE_ADDR'] = '127.0.0.2'
+    request.META['REMOTE_ADDR'] = '8.8.8.8'
     response = whitelisted_view(request)
     assert response.status_code == 403
 
