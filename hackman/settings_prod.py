@@ -1,4 +1,5 @@
 from .settings import *  # noqa
+import raven
 import os
 
 
@@ -67,3 +68,9 @@ EMAIL_HOST = os.getenv('EMAIL_HOST')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT'))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+
+RAVEN_CONFIG = {
+    'dsn': os.getenv('RAVEN_DSN'),
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
