@@ -18,7 +18,9 @@ class SignupForm(forms.Form):
 
 
 class RfidCardPairForm(forms.Form):
-    card_id = forms.IntegerField(label='Pair by card ID')
+    card_id = forms.IntegerField(
+        label='Pair by card ID (defaults to last unpaired)',
+        widget=forms.TextInput())
 
 
 class PaymentForm(forms.Form):

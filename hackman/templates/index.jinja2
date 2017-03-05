@@ -17,8 +17,7 @@
     <li>
       <form action="/rfid_pair/" method="POST">
         {% csrf_token %}
-        <label for="card_id">Pair card by ID</label>
-        <input class="input-number-nospinner" type="number" name="card_id">
+        {{ rfid_pair_form }}
         <input type="submit" value="Submit">
       </form>
     </li>

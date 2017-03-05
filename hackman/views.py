@@ -3,6 +3,7 @@ from django.contrib.messages.api import MessageFailure
 from django.contrib.messages import get_messages
 from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
+from django_redis import get_redis_connection
 from ratelimit.decorators import ratelimit
 from django.utils.http import is_safe_url
 from django.contrib import messages
@@ -123,13 +124,17 @@ def logout(request):  # pragma: no cover
 
 @login_required(login_url='/login/')
 def index(request):  # pragma: no cover
-
+    r = get_redis_connection('default')
     return shortcuts.render(
         request, 'index.jinja2',
         context=_ctx_from_request(request, update_ctx={
             'payment_form': forms.PaymentForm(
-                year_month_choices=_get_month_choices()
-            )}))
+                year_month_choices=_get_month_choices()),
+            'rfid_pair_form': forms.RfidCardPairForm(
+                initial={
+                    'card_id': r.get('rfid_last_unpaired')
+                })
+        }))
 
 
 @login_required(login_url='/login/')
