@@ -4,7 +4,7 @@ from . import models
 
 
 class PaymentTagAdmin(admin.ModelAdmin):
-    list_display = ('user', 'tag')
+    list_display = ('user', 'hashtag', 'tag')
 
 
 admin.site.register(models.PaymentTag, PaymentTagAdmin)

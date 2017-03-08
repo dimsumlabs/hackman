@@ -19,23 +19,19 @@ class Command(BaseCommand):
         p = subprocess.run([
             './dsl-accounts/balance.py',
             '--split',
-            'json_dues'], stdout=subprocess.PIPE)
+            'json_payments'], stdout=subprocess.PIPE)
         if not p.returncode == 0:
             raise RuntimeError(p)
 
         data = json.loads(p.stdout)
 
         tags = models.PaymentTag.objects.all()
-        tags = tags.filter(tag__in=data.keys())
         tags = tags.prefetch_related('user')
 
         r = redis_pipe = get_redis_connection('default')
         pipe = r.pipeline()
         for t in tags:
-            last_payment = sorted(
-                data[t.tag].keys(),
-                key=lambda x: tuple(map(int, x.split('-'))))[-1]
-
+            last_payment = data[t.make_key()]
             year, month = map(int, last_payment.split('-'))
             payment_api.payment_submit(t.user.id,
                                        year,
