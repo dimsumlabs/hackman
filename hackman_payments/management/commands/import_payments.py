@@ -3,6 +3,7 @@ from hackman_payments import api as payment_api
 from django_redis import get_redis_connection
 import subprocess
 import json
+import sys
 
 from hackman_payments import models
 
@@ -14,7 +15,8 @@ class Command(BaseCommand):
             'git', '-C', 'dsl-accounts/', 'pull', '-f', 'origin', 'master'
         ], stdout=subprocess.PIPE)
         if p.returncode != 0:
-            raise RuntimeError(p)
+            sys.stderr.write('Git exited with non-zero exit code: {}\n'.format(
+                p.returncode))
 
         p = subprocess.run([
             './dsl-accounts/balance.py',
