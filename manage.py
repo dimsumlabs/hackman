@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-import gevent
+import gevent.monkey
 import os
 import sys
 
 if __name__ == "__main__":
+    gevent.monkey.patch_all()
+
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hackman.settings_dev")
     p = os.path.dirname(__file__)
     if p:
