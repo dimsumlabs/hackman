@@ -9,7 +9,7 @@ from django.db import models
 class RFIDCard(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
-                             default=None)
+                             default=None, on_delete=models.CASCADE)
 
     rfid_hash = models.CharField(max_length=64, db_index=True)
     revoked = models.BooleanField(default=False, db_index=True)

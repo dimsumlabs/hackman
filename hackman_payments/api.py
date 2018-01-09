@@ -15,6 +15,17 @@ def _get_now():
 def has_paid(user_id: int) -> bool:
 
     r = get_redis_connection('default')
+    user_model = get_user_model()
+
+    user_active = r.get('user_active_{}'.format(user_id))
+    if user_active is None:
+        u = user_model.objects.get(id=user_id)
+        r.set('user_active_{}'.format(user_id),
+              bytes(u.is_active),
+              ex=3600*24)
+    elif not bool(user_active):
+        return PaymentGrade.NOT_PAID
+
     valid_until = r.get('payment_user_id_{}'.format(user_id))
     if valid_until is None:
         return PaymentGrade.NOT_PAID
