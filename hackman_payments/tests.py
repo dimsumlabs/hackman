@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
 from datetime import date
 from unittest import mock
@@ -6,6 +7,14 @@ import pytest
 
 from . import api as payment_api
 from .enums import PaymentGrade
+
+
+@pytest.fixture
+def paymenttag_no_user():
+    yield PaymentTag.objects.create(
+        user=None,
+        hashtag='dues',
+        tag='somedude')
 
 
 @pytest.fixture
@@ -44,6 +53,12 @@ def user_not_active():
     payment_api.payment_submit(user.id, 2016, 12)
     yield user
     get_redis_connection('default').flushall()
+
+
+@pytest.mark.django_db
+def test_non_matching_user(paymenttag_no_user):
+    tags = payment_api.tags_not_matching()
+    assert tags == ['dues:somedude']
 
 
 @pytest.mark.django_db

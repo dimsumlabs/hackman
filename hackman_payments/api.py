@@ -2,6 +2,7 @@ from django.template.loader import render_to_string
 from datetime import datetime, timedelta, date
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
+from .models import PaymentTag
 import calendar
 
 from .enums import PaymentGrade
@@ -10,6 +11,14 @@ from .enums import PaymentGrade
 def _get_now():
     """Simple functionality but have to wrap up in function to test"""
     return datetime.utcnow().date()
+
+
+def tags_not_matching():
+    """Return all tags not matching any user"""
+    return [
+        ':'.join(t) for t in PaymentTag.objects.filter(
+            user=None).values_list('hashtag', 'tag')
+    ]
 
 
 def has_paid(user_id: int) -> bool:
