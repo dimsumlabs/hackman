@@ -6,7 +6,9 @@ class PaymentTag(models.Model):
     """Map tags in git payment repo to users"""
 
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True)
     hashtag = models.CharField(max_length=20, db_index=True, default='dues')
     tag = models.CharField(max_length=50,
                            db_index=True,

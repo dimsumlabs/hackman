@@ -33,11 +33,15 @@ class Command(BaseCommand):
         r = redis_pipe = get_redis_connection('default')
         pipe = r.pipeline()
         for t in tags:
-            last_payment = data[t.make_key()]
+            try:
+                last_payment = data[t.make_key()]
+            except KeyError:
+                continue
             year, month = map(int, last_payment.split('-'))
-            payment_api.payment_submit(t.user.id,
-                                       year,
-                                       month,
-                                       _redis_pipe=redis_pipe)
+            payment_api.payment_submit(
+                t.user.id,
+                year,
+                month,
+                _redis_pipe=redis_pipe)
 
         pipe.execute()

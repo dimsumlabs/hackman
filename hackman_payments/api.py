@@ -18,11 +18,16 @@ def has_paid(user_id: int) -> bool:
     user_model = get_user_model()
 
     user_active = r.get('user_active_{}'.format(user_id))
+
     if user_active is None:
         u = user_model.objects.get(id=user_id)
         r.set('user_active_{}'.format(user_id),
               bytes(u.is_active),
               ex=3600*24)
+
+        if not u.is_active:
+            return PaymentGrade.NOT_PAID
+
     elif not bool(user_active):
         return PaymentGrade.NOT_PAID
 

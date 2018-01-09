@@ -35,6 +35,17 @@ def user_not_paid():
     get_redis_connection('default').flushall()
 
 
+@pytest.fixture
+def user_not_active():
+    user = get_user_model().objects.create(username='testhesten-notactive',
+                                           email='na@test.se')
+    user.is_active = False
+    user.save()
+    payment_api.payment_submit(user.id, 2016, 12)
+    yield user
+    get_redis_connection('default').flushall()
+
+
 @pytest.mark.django_db
 def test_has_paid_has_paid(user_paid):
     with mock.patch('hackman_payments.api._get_now',
@@ -54,6 +65,16 @@ def test_has_paid_has_paid_grace(user_paid_grace):
 @pytest.mark.django_db
 def test_has_paid_has_not_paid(user_not_paid):
     paid = payment_api.has_paid(user_not_paid.id)
+    assert paid == PaymentGrade.NOT_PAID
+
+
+@pytest.mark.django_db
+def test_has_paid_not_active(user_not_active):
+    paid = payment_api.has_paid(user_not_active.id)
+    assert paid == PaymentGrade.NOT_PAID
+
+    # Test again to check for cached
+    paid = payment_api.has_paid(user_not_active.id)
     assert paid == PaymentGrade.NOT_PAID
 
 
