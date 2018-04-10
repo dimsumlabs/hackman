@@ -142,7 +142,12 @@ def door_open(request, _door_api=None):
     from hackman import api as hackman_api
 
     if not hackman_api.door_open_if_paid(request.user.id, _door_api):
-        return http.HttpResponseForbidden('<h1>You have not paid!</h1>')
+        result = shortcuts.render(
+            request, 'unpaid.jinja2',
+            context=_ctx_from_request(request)
+        )
+        result.status_code = 403
+        return result
 
     try:
         messages.add_message(
