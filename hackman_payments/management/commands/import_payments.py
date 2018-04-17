@@ -13,16 +13,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         p = subprocess.run([
-            'git', '-C', 'dsl-accounts/', 'pull', '-f', 'origin', 'master'
+            'curl', 'curl https://dimsumlabs.github.io/dsl-accounts-pages/payments.json'
         ], stdout=subprocess.PIPE)
-        if p.returncode != 0:
-            sys.stderr.write('Git exited with non-zero exit code: {}\n'.format(
-                p.returncode))
-
-        p = subprocess.run([
-            './dsl-accounts/balance.py',
-            '--split',
-            'json_payments'], stdout=subprocess.PIPE)
         if not p.returncode == 0:
             raise RuntimeError(p)
 
