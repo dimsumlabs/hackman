@@ -73,8 +73,12 @@ def login(request):
                     return shortcuts.redirect('/')
 
             else:
-                return http.HttpResponseBadRequest(
-                    '<h1>Wrong username/password</h1>')
+                result = shortcuts.render(
+                    request, 'login_bad.jinja2',
+                    context=_ctx_from_request(request)
+                )
+                result.status_code = 400
+                return result
 
     redir_url = request.GET.get('next')
     if not is_safe_url(redir_url):

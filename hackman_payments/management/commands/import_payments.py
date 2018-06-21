@@ -2,31 +2,31 @@ from django.core.management.base import BaseCommand
 from hackman_payments import api as payment_api
 from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
-import subprocess
 import json
-import sys
+import urllib2
+import os
 
 from hackman_payments import models
+
+URL = "https://dimsumlabs.github.io/dsl-accounts-pages/payments.json"
 
 
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-        p = subprocess.run([
-            'git', '-C', 'dsl-accounts/', 'pull', '-f', 'origin', 'master'
-        ], stdout=subprocess.PIPE)
-        if p.returncode != 0:
-            sys.stderr.write('Git exited with non-zero exit code: {}\n'.format(
-                p.returncode))
+        try:
+            res = urllib2.urlopen(URL)
+            text = res.read()
+            cache = open('payments.json.tmp', 'w')
+            cache.write(text)
+            cache.close()
+            os.rename('payments.json.tmp', 'payments.json')
+        except:  # noqa - go jump in a lake pyflakes
+            # any error at all, we try to fall back to the cached data
+            cache = open('payments.json', 'r')
+            text = cache.read()
 
-        p = subprocess.run([
-            './dsl-accounts/balance.py',
-            '--split',
-            'json_payments'], stdout=subprocess.PIPE)
-        if not p.returncode == 0:
-            raise RuntimeError(p)
-
-        data = json.loads(p.stdout)
+        data = json.loads(text)
 
         import_tags = set(
             k for k in data.keys()
