@@ -2,8 +2,8 @@ from django.core.management.base import BaseCommand
 from hackman_payments import api as payment_api
 from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
+from urllib.request import urlopen
 import json
-import urllib2
 import os
 
 from hackman_payments import models
@@ -15,8 +15,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         try:
-            res = urllib2.urlopen(URL)
-            text = res.read()
+            res = urlopen(URL)
+            text = res.read().decode()
             cache = open('payments.json.tmp', 'w')
             cache.write(text)
             cache.close()
