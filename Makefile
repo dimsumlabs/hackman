@@ -14,6 +14,7 @@ PACKAGES := \
     python3-django-ratelimit \
     python3-django-cors-headers \
     python3-django-oauth-toolkit \
+    redis-server \
 
 # TODO - from the requirements.txt
 # pyserial>=3.2.1
