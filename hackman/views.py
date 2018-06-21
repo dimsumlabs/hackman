@@ -4,7 +4,6 @@ from django.contrib.messages import get_messages
 from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
-from ratelimit.decorators import ratelimit
 from django.utils.http import is_safe_url
 from django.contrib import messages
 from calendar import monthrange
@@ -19,6 +18,19 @@ from hackman_rfid import api as rfid_api
 
 from .lib import get_remote_ip
 from . import forms
+
+
+# Hack to avoid using the old python3-django-ratelimit in debian
+import ratelimit
+if ratelimit.__version__ < '1.0.1':
+    def ratelimit(**kwargs):
+        def decorator(fn):
+            def _wrapped(*args, **kwargs):
+                return fn(*args, **kwargs)
+            return _wrapped
+        return decorator
+else:
+    from ratelimit.decorators import ratelimit
 
 
 def _ctx_from_request(request, update_ctx=None):
