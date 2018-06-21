@@ -18,8 +18,6 @@ PACKAGES := \
 # TODO - from the requirements.txt
 # pyserial>=3.2.1
 # RPi.GPIO>=0.6.3
-# paho-mqtt>=1.2
-# raven>=6.0.0
 # gevent>=1.2.2
 
 
