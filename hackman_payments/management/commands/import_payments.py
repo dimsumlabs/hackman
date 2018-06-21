@@ -4,7 +4,6 @@ from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
 import subprocess
 import json
-import sys
 
 from hackman_payments import models
 
@@ -13,7 +12,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         p = subprocess.run([
-            'curl', 'curl https://dimsumlabs.github.io/dsl-accounts-pages/payments.json'
+            'curl', 'curl https://dimsumlabs.github.io/dsl-accounts-pages/paym'
+            'ents.json'  # yeah, this is better, thanks pyflakes ...
         ], stdout=subprocess.PIPE)
         if not p.returncode == 0:
             raise RuntimeError(p)
