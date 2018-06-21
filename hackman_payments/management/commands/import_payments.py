@@ -21,7 +21,9 @@ class Command(BaseCommand):
             cache.write(text)
             cache.close()
             os.rename('payments.json.tmp', 'payments.json')
-        except:  # noqa - go jump in a lake pyflakes
+        except Exception as e:  # noqa - go jump in a lake pyflakes
+            sys.stderr.write(repr(e))
+
             # any error at all, we try to fall back to the cached data
             cache = open('payments.json', 'r')
             text = cache.read()
