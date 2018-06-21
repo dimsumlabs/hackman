@@ -1,10 +1,30 @@
 all: test
 
 # Packages to install if we are running on Debian
+PACKAGES := \
+    python3-django \
+    python3-flake8 \
+    python3-jinja2 \
+    python3-pytest-django \
+    python3-gunicorn \
+    python3-coverage \
+    python3-pytest-cov \
+    python3-django-redis \
+    python3-ipy \
+    python3-django-ratelimit \
+    python3-django-cors-headers \
+    python3-django-oauth-toolkit \
+
+# TODO - from the requirements.txt
+# pyserial>=3.2.1
+# RPi.GPIO>=0.6.3
+# paho-mqtt>=1.2
+# raven>=6.0.0
+# gevent>=1.2.2
+
+
 build-depends:
-	sudo apt-get install -y python3-pytest python3-pytest-cov \
-            python3-django python3-django-redis python3-ipy \
-            python3-django-ratelimit
+	sudo apt-get install -y $(PACKAGES)
 
 # Try to automatically detect if we are running on Debian, or in a virtualenv
 # (Debian has /usr/bin/pytest-3 for the python3 version of pytest)
