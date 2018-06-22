@@ -1,5 +1,4 @@
 from .settings import *  # noqa
-import raven
 import os
 
 
@@ -70,8 +69,3 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
 
-INSTALLED_APPS.append('raven.contrib.django.raven_compat')  # noqa
-RAVEN_CONFIG = {
-    'dsn': os.getenv('RAVEN_DSN'),
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
-}
