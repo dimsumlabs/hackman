@@ -18,6 +18,9 @@ from django.conf.urls import url, include
 from django.http import HttpResponse
 from django.contrib import admin
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from . import views
 from . import rest_api
 from . import screen_urls
@@ -58,4 +61,4 @@ urlpatterns = [
 
     url(r'^api/v1/profile/', rest_api.profile),
     url(r'^api/v1/tags_not_matching/', rest_api.tags_not_matching),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
