@@ -15,15 +15,24 @@ PACKAGES := \
     python3-django-cors-headers \
     python3-django-oauth-toolkit \
     redis-server \
+    gunicorn3 \
+    python3-gevent \
 
 # TODO - from the requirements.txt
 # pyserial>=3.2.1
 # RPi.GPIO>=0.6.3
-# gevent>=1.2.2
 
 
 build-depends:
 	sudo apt-get install -y $(PACKAGES)
+
+# Create or update the database
+dev.db:
+	python3 manage.py migrate
+
+# Run the site with a development server
+dev.run:
+	python3 manage.py runserver
 
 # Try to automatically detect if we are running on Debian, or in a virtualenv
 # (Debian has /usr/bin/pytest-3 for the python3 version of pytest)
