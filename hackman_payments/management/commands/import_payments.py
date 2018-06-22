@@ -4,6 +4,7 @@ from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
 from urllib.request import urlopen
 import json
+import sys
 import os
 
 from hackman_payments import models
