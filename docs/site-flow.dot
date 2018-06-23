@@ -3,6 +3,7 @@
 #
 
 digraph g{
+    pack=true;
 
     # All the templates, with internal names for them
     account_create;
@@ -29,7 +30,7 @@ digraph g{
 
     index -> password_change;
     password_change -> password_change_done [label=post];
-    password_change_done -> index;
+    password_change_done -> index [label=302];
 
     index -> payment_submit [label=post];
     payment_submit -> index [label=302];
@@ -43,9 +44,17 @@ digraph g{
     index -> logout;
     logout -> login [label=302];
 
+    admin -> "django admin interface";
 
-    admin;
-    screen;
+    screen -> welcome;
+    screen -> remind_payment;
+    screen -> unpaid_membership;
+    screen -> unpaired_card;
+    screen -> poll;
+
     oauth;
-    api;
+
+    api -> v1;
+    v1 -> profile;
+    v1 -> tags_not_matching;
 }
