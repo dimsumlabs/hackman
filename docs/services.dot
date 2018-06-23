@@ -23,6 +23,7 @@ graph g{
     gunicorn -- hackman;
     hackman -- hackman_static; # only for development
     hackman -- redis [label="publish"];
+    hackman -- database [constraint=false];
 
     hardware_rfid -- rfidd [label="usb serial"];
     rfidd -- redis [label="publish"];
@@ -35,4 +36,25 @@ graph g{
 
     redis -- dsl_log [label="subscribe"];
     dsl_log -- journald [label=stdout];
+
+    systemd;
+    hackman_backup;
+    hackman_paymentimport;
+    hackman_paymentreminder;
+    "dsl-accounts";
+    github_pages;
+
+    systemd -- hackman_paymentimport [label="timer"];
+    "dsl-accounts" -- github_pages [label="travisCI"];
+    github_pages -- hackman_paymentimport [label="curl"];
+    hackman_paymentimport -- database [dir=forward];
+
+    systemd -- hackman_backup [label="timer"];
+    hackman_backup -- backuphost [label="manage.py dumpdata"];
+    database -- hackman_backup [dir=forward constraint=false];
+
+    systemd -- hackman_paymentreminder [label="timer"];
+    hackman_paymentreminder -- email;
+    database -- hackman_paymentreminder [dir=forward constraint=false];
+
 }
