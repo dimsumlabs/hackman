@@ -4,21 +4,45 @@
 
 digraph g{
 
-    login -> login_bad;
-    login -> account_create;
-    login -> password_reset;
+    # All the templates, with internal names for them
+    account_create;
+    index [label="/\nindex.jinja2"];
+    login [label="\N\nlogin.jinja2"];
+    login_bad [label="login\nlogin_bad.jinja2"];
+    door_open_bad [label="door_open\nunpaid.jinja2"];
 
-    login -> index;
+    error1 [label="\N\nnot form.is_valid()"];
+    error2 [label="\N\nnot form.is_valid()"];
+    error3 [label="\N\nCard already paired"];
+    error4 [label="\N\nnot form.is_valid()"];
+
+    login -> login_bad [label=post];
+    login -> password_reset;
+    login -> account_create [label=post];
+    login -> index [label=post];
+
+    account_create -> error1;
 
     index -> door_open;
-    index -> rfid_pair;
-    index -> payment_submit;
+    door_open -> door_open_bad;
+    door_open -> index [label=302];
+
     index -> password_change;
+    password_change -> password_change_done [label=post];
+    password_change_done -> index;
+
+    index -> payment_submit [label=post];
+    payment_submit -> index [label=302];
+    payment_submit -> error4;
+
+    index -> rfid_pair [label=post];
+    rfid_pair -> index [label=302];
+    rfid_pair -> error2;
+    rfid_pair -> error3;
+
     index -> logout;
+    logout -> login [label=302];
 
-    index -> door_bad;
-
-    logout -> login;
 
     admin;
     screen;
