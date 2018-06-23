@@ -1,0 +1,38 @@
+#
+# Show how the various services interact
+#
+
+graph g{
+
+    nginx;
+    gunicorn;
+    hackman;
+    redis;
+    dsl_lights;
+    dsl_log;
+    rfidd;
+    doord;
+    hackman_static;
+    hardware_lights;
+    hardware_rfid;
+    hardware_door;
+
+    nginx -- gunicorn [label="unix:/tmp/hackman.sock"];
+    nginx -- hackman_static;
+
+    gunicorn -- hackman;
+    hackman -- hackman_static; # only for development
+    hackman -- redis [label="publish"];
+
+    hardware_rfid -- rfidd [label="usb serial"];
+    rfidd -- redis [label="publish"];
+
+    redis -- doord [label="subscribe"];
+    doord -- hardware_door [label="GPIO"];
+
+    redis -- dsl_lights [label="subscribe"];
+    dsl_lights -- hardware_lights [label="Mote"];
+
+    redis -- dsl_log [label="subscribe"];
+    dsl_log -- journald [label=stdout];
+}

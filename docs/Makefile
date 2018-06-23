@@ -4,6 +4,7 @@
 
 DIAGRAMS := \
     site-flow \
+    services \
 
 all: $(addsuffix .svg,$(DIAGRAMS))
 all: $(addsuffix .pdf,$(DIAGRAMS))
