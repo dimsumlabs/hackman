@@ -1,0 +1,27 @@
+#
+# Outline of the various pages and how they link to each other
+#
+
+digraph g{
+
+    login -> login_bad;
+    login -> account_create;
+    login -> password_reset;
+
+    login -> index;
+
+    index -> door_open;
+    index -> rfid_pair;
+    index -> payment_submit;
+    index -> password_change;
+    index -> logout;
+
+    index -> door_bad;
+
+    logout -> login;
+
+    admin;
+    screen;
+    oauth;
+    api;
+}
