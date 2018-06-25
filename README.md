@@ -26,7 +26,6 @@ Not yet implemented
 
 ## Installation
 1. `git clone` into `/var/www/hackman`
-2. Run `make install-production`
-   This should set up everything necessary to run application including nginx,
-   backups, continuous deployment etc etc
+2. collect underpants?  (There used to be an install makefile target, but that
+   has been removed)
 3. Never run anything manually again \o/
