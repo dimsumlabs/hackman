@@ -111,6 +111,15 @@ def account_create(request):
             'You can only register an account from within DSL')
 
     if request.method != 'POST':
+        redir_url = request.GET.get('next')
+        if not is_safe_url(redir_url):
+            redir_url = '/'
+        return shortcuts.render(
+            request, 'account_create.jinja2', context=_ctx_from_request(
+                request, {
+                    'signup_form': forms.SignupForm(initial={
+                        'redir_url': redir_url}),
+                }))
         return http.HttpResponseBadRequest('Request not POST')
 
     form = forms.SignupForm(request.POST)
