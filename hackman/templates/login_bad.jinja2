@@ -1,1 +1,16 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
 <h1>Wrong username/password</h1>
+
+    <p>
+      Do you want to <a href="{% url 'password_reset' %}">reset your password</a>?
+    </p>
+    <p>
+      or Create a <a href="{% url 'account_create' %}">new account</a>
+    </p>
+
+  <hr />
+  Back to <a href="{% url 'login' %}">login page</a>
+
+{% endblock %}
