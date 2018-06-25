@@ -2,27 +2,16 @@
 
 {% block content %}
 
-  <hr />
   <h2>Login</h2>
   <form method="POST" action="/login/">
     {% csrf_token %}
     {{ login_form.as_p }}
-
-    <p>
-      <a href="{% url 'password_reset' %}">Reset password</a>
-    </p>
 
     <label for="submit">Login</label>
     <button name="submit" type="submit">Login</button>
   </form>
 
   <hr />
-  <h2>Create account</h2>
-  <form method="POST" action="/account_create/">
-    {% csrf_token %}
-    {{ signup_form.as_p }}
-    <label for="submit">Create account</label>
-    <button name="submit" type="submit">Submit</button>
-  </form>
+  Create a <a href="{% url 'account_create' %}">new account</a>
 
 {% endblock %}
