@@ -23,7 +23,8 @@ class Command(BaseCommand):
             cache.close()
             os.rename('payments.json.tmp', 'payments.json')
         except Exception as e:  # noqa - go jump in a lake pyflakes
-            sys.stderr.write(repr(e))
+            sys.stderr.write(repr(e)+"\n")
+            sys.stderr.write("Attempting to fallback to cached local file\n")
 
             # any error at all, we try to fall back to the cached data
             cache = open('payments.json', 'r')
