@@ -120,7 +120,6 @@ def account_create(request):
                     'signup_form': forms.SignupForm(initial={
                         'redir_url': redir_url}),
                 }))
-        return http.HttpResponseBadRequest('Request not POST')
 
     form = forms.SignupForm(request.POST)
     if not form.is_valid():
