@@ -103,7 +103,7 @@ def test_login_post_user_not_exist(rf):
 def test_account_create_non_post(rf):
     request = rf.get('/account_create/')
     response = views.account_create(request)
-    assert response.status_code == 400
+    assert response.status_code == 200
 
 
 def test_account_create_nonlocal_ip(rf):
