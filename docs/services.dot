@@ -1,0 +1,60 @@
+#
+# Show how the various services interact
+#
+
+graph g{
+
+    nginx;
+    gunicorn;
+    hackman;
+    redis;
+    dsl_lights;
+    dsl_log;
+    rfidd;
+    doord;
+    hackman_static;
+    hardware_lights;
+    hardware_rfid;
+    hardware_door;
+
+    nginx -- gunicorn [label="unix:/tmp/hackman.sock"];
+    nginx -- hackman_static;
+
+    gunicorn -- hackman;
+    hackman -- hackman_static; # only for development
+    hackman -- redis [label="publish"];
+    hackman -- database [constraint=false];
+
+    hardware_rfid -- rfidd [label="usb serial"];
+    rfidd -- redis [label="publish"];
+
+    redis -- doord [label="subscribe"];
+    doord -- hardware_door [label="GPIO"];
+
+    redis -- dsl_lights [label="subscribe"];
+    dsl_lights -- hardware_lights [label="Mote"];
+
+    redis -- dsl_log [label="subscribe"];
+    dsl_log -- journald [label=stdout];
+
+    systemd;
+    hackman_backup;
+    hackman_paymentimport;
+    hackman_paymentreminder;
+    "dsl-accounts";
+    github_pages;
+
+    systemd -- hackman_paymentimport [label="timer"];
+    "dsl-accounts" -- github_pages [label="travisCI"];
+    github_pages -- hackman_paymentimport [label="curl"];
+    hackman_paymentimport -- database [dir=forward];
+
+    systemd -- hackman_backup [label="timer"];
+    hackman_backup -- backuphost [label="manage.py dumpdata"];
+    database -- hackman_backup [dir=forward constraint=false];
+
+    systemd -- hackman_paymentreminder [label="timer"];
+    hackman_paymentreminder -- email;
+    database -- hackman_paymentreminder [dir=forward constraint=false];
+
+}

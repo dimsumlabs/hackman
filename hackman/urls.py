@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^screen/', screen_urls.urls),
     url(r'^robots.txt$', robots),
-    url(r'^login/', views.login),
+    url(r'^login/', views.login, name='login'),
     url(r'^logout/', views.logout),
 
     url('^password_change/$', auth_views.password_change,
@@ -53,7 +53,7 @@ urlpatterns = [
 
     url(r'^door_open/', views.door_open),
     url(r'^rfid_pair/', views.rfid_pair),
-    url(r'^account_create/', views.account_create),
+    url(r'^account_create/', views.account_create, name='account_create'),
     url(r'^payment_submit/', views.payment_submit),
     url(r'^$', views.index),
     url(r'^oauth/', include('oauth2_provider.urls',

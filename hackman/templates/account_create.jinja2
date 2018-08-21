@@ -1,0 +1,16 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+
+  <h2>Create account</h2>
+  <form method="POST" action="/account_create/">
+    {% csrf_token %}
+    {{ signup_form.as_p }}
+    <label for="submit">Create account</label>
+    <button name="submit" type="submit">Submit</button>
+  </form>
+
+  <hr />
+  Back to <a href="{% url 'login' %}">login page</a>
+
+{% endblock %}
