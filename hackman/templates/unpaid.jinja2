@@ -1,1 +1,24 @@
-<h1>You have not paid!</h1>
+{% extends "base.jinja2" %}
+
+{% block content %}
+
+<h1>Door Not Opened!</h1>
+
+<hr />
+There could be several reasons for this:
+<ul>
+  <li>You have not paid
+  <li>You have paid, but the internet is down
+  <li>Payments batch processing might be late
+</ul>
+
+If you have paid, please go back a page and inform the door of your payment.
+
+<p>
+If you continue to have trouble with the door, please email us and we will
+fix it promptly.
+
+<hr />
+<a href="javascript:window.history.back()">Back</a>
+
+{% endblock %}
