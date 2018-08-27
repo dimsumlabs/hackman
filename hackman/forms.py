@@ -29,7 +29,7 @@ class PaymentForm(forms.Form):
         year_month_choices = kwargs.pop('year_month_choices')
         super().__init__(*args, **kwargs)
         self.fields['year_month'] = forms.ChoiceField(
-            label='Submit payment',
+            label='Inform the door of a payment',
             choices=[(i, i) for i in year_month_choices])
 
     def clean_year_month(self):
