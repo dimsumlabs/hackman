@@ -14,12 +14,12 @@
       <table width=100%>
         <tr>
           <td>
-      <img src="/static/dsl_logo.svg" width="30px" />
-       Dim Sum Labs 點心樂部
+            <img src="/static/dsl_logo.svg" width="30px" />
+            Dim Sum Labs 點心樂部
           <td align=right valign=bottom>
-      {% if user.is_authenticated %}
-        Logged in as {{ user.username }}, <a href="/logout/">Logout</a>
-      {% endif %}
+            {% if user.is_authenticated %}
+              Logged in as {{ user.username }}, <a href="/logout/">Logout</a>
+            {% endif %}
       </table>
     </header>
 
