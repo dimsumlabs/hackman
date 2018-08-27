@@ -11,15 +11,16 @@
   <body>
 
     <header>
+      <table width=100%>
+        <tr>
+          <td>
       <img src="/static/dsl_logo.svg" width="30px" />
-      <span id="header">
        Dim Sum Labs 點心樂部
-      </span>
+          <td align=right valign=bottom>
       {% if user.is_authenticated %}
-      <span id="header" style="position: fixed; right: 0;">
         Logged in as {{ user.username }}, <a href="/logout/">Logout</a>
-      </span>
       {% endif %}
+      </table>
     </header>
 
     <main>
