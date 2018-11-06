@@ -45,7 +45,7 @@ urlpatterns = [
     url('^password_reset/$', auth_views.password_reset, name='password_reset'),
     url('^password_reset/done/$', auth_views.password_reset_done,
         name='password_reset_done'),
-    url('^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',  # noqa
+    url('^reset/(?P<uidb64>[0-9A-Za-z_-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',  # noqa
         auth_views.password_reset_confirm,
         name='password_reset_confirm'),
     url('^reset/done/$', auth_views.password_reset_complete,
