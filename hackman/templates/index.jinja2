@@ -11,34 +11,8 @@
     </li>
   </ul>
 
-  <h2>Account actions</h2>
-  <ul class="action-list">
-
-    <li>
-      <form action="/rfid_pair/" method="POST">
-        {% csrf_token %}
-        {{ rfid_pair_form }}
-        <input type="submit" value="Submit">
-      </form>
-    </li>
-
-    <hr />
-
-    <li>
-      <p>
-        <form action="/payment_submit/" method="POST">
-          {% csrf_token %}
-          {{ payment_form }}
-          <input type="submit" value="Submit">
-        </form>
-      </p>
-    </li>
-
-    <li>
-      <p>
-        &nbsp;&nbsp;<a href="{% url 'password_change' %}">Change password</a>
-      </p>
-    </li>
-
-  </ul>
+  <hr />
+  <p>
+    &nbsp;&nbsp;<a href="{% url 'account_actions' %}">Account actions</a>
+  </p>
 {% endblock %}
