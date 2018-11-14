@@ -167,6 +167,13 @@ def test_rfid_pair_non_post(rf, paid_user):
 
 
 @pytest.mark.django_db
+def test_account_actions(rf, paid_user):
+    request = inject_session(rf.get('/account_actions/'), user=paid_user)
+    response = views.account_actions(request)
+    assert response.status_code == 200
+
+
+@pytest.mark.django_db
 def test_rfid_pair_form_error(rf, paid_user):
     request = inject_session(rf.post('/rfid_pair/', {
         'err_field': 'didum'
@@ -221,7 +228,7 @@ def test_payment_submit(rf, not_paid_user):
     }), user=not_paid_user)
     response = views.payment_submit(request, r=True)
     assert response.status_code == 302
-    assert response.url == '/'
+    assert response.url == '/account_actions'
 
 
 @pytest.mark.django_db

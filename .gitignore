@@ -7,3 +7,6 @@ hackman/static/admin
 
 # compiled objects
 *.pyc
+
+# directory created during test runs
+.pytest_cache/

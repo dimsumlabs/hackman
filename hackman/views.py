@@ -64,7 +64,7 @@ def password_change_done(request):  # pragma: no cover
             request, messages.SUCCESS, 'Password changed!')
     except MessageFailure:
         pass
-    return shortcuts.redirect('/')
+    return shortcuts.redirect('/account_actions')
 
 
 @ratelimit(key='ip', rate='5/m')
@@ -148,17 +148,9 @@ def logout(request):  # pragma: no cover
 
 @login_required(login_url='/login/')
 def index(request):  # pragma: no cover
-    r = get_redis_connection('default')
     return shortcuts.render(
         request, 'index.jinja2',
-        context=_ctx_from_request(request, update_ctx={
-            'payment_form': forms.PaymentForm(
-                year_month_choices=_get_month_choices()),
-            'rfid_pair_form': forms.RfidCardPairForm(
-                initial={
-                    'card_id': r.get('rfid_last_unpaired')
-                })
-        }))
+        context=_ctx_from_request(request))
 
 
 @login_required(login_url='/login/')
@@ -183,6 +175,21 @@ def door_open(request, _door_api=None):
 
 
 @login_required(login_url='/login/')
+def account_actions(request):
+    r = get_redis_connection('default')
+    return shortcuts.render(
+        request, 'account_actions.jinja2',
+        context=_ctx_from_request(request, update_ctx={
+            'payment_form': forms.PaymentForm(
+                year_month_choices=_get_month_choices()),
+            'rfid_pair_form': forms.RfidCardPairForm(
+                initial={
+                    'card_id': r.get('rfid_last_unpaired')
+                })
+        }))
+
+
+@login_required(login_url='/login/')
 def rfid_pair(request):
     if request.method != 'POST':
         return http.HttpResponseBadRequest('Request not POST')
@@ -202,7 +209,7 @@ def rfid_pair(request):
     except MessageFailure:  # pragma: no cover
         pass
 
-    return shortcuts.redirect('/')
+    return shortcuts.redirect('/account_actions')
 
 
 @login_required(login_url='/login/')
@@ -225,4 +232,4 @@ def payment_submit(request, r=False):
     except MessageFailure:  # pragma: no cover
         pass
 
-    return shortcuts.redirect('/')
+    return shortcuts.redirect('/account_actions')

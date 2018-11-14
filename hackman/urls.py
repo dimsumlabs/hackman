@@ -45,7 +45,7 @@ urlpatterns = [
     url('^password_reset/$', auth_views.password_reset, name='password_reset'),
     url('^password_reset/done/$', auth_views.password_reset_done,
         name='password_reset_done'),
-    url('^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',  # noqa
+    url('^reset/(?P<uidb64>[0-9A-Za-z_-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',  # noqa
         auth_views.password_reset_confirm,
         name='password_reset_confirm'),
     url('^reset/done/$', auth_views.password_reset_complete,
@@ -53,9 +53,10 @@ urlpatterns = [
 
     url(r'^door_open/', views.door_open),
     url(r'^rfid_pair/', views.rfid_pair),
+    url(r'^account_actions/', views.account_actions, name='account_actions'),
     url(r'^account_create/', views.account_create, name='account_create'),
     url(r'^payment_submit/', views.payment_submit),
-    url(r'^$', views.index),
+    url(r'^$', views.index, name='index'),
     url(r'^oauth/', include('oauth2_provider.urls',
                             namespace='oauth2_provider')),
 
