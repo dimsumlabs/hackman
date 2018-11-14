@@ -29,3 +29,11 @@ Not yet implemented
 2. collect underpants?  (There used to be an install makefile target, but that
    has been removed)
 3. Never run anything manually again \o/
+
+## Upgrades
+1. Ensure the CI tests are showing green (See the top of this README)
+2. ssh to door system
+3. `sudo -s`
+4. `cd /var/www/hackman`
+5. `git pull`
+6. `systemctl restart hackman`
