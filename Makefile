@@ -42,7 +42,7 @@ ifeq (,$(wildcard $(PYTEST)))
 endif
 
 test.style:
-	@flake8
+	flake8
 
 test.unit:
 	env DJANGO_SETTINGS_MODULE=hackman.settings_test $(PYTEST) --cov-report=term-missing --cov-fail-under=98 --cov=.
