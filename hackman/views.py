@@ -183,6 +183,21 @@ def door_open(request, _door_api=None):
 
 
 @login_required(login_url='/login/')
+def account_actions(request):
+    r = get_redis_connection('default')
+    return shortcuts.render(
+        request, 'account_actions.jinja2',
+        context=_ctx_from_request(request, update_ctx={
+            'payment_form': forms.PaymentForm(
+                year_month_choices=_get_month_choices()),
+            'rfid_pair_form': forms.RfidCardPairForm(
+                initial={
+                    'card_id': r.get('rfid_last_unpaired')
+                })
+        }))
+
+
+@login_required(login_url='/login/')
 def rfid_pair(request):
     if request.method != 'POST':
         return http.HttpResponseBadRequest('Request not POST')

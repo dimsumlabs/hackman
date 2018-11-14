@@ -11,6 +11,7 @@ digraph g{
     login [label="\N\nlogin.jinja2"];
     login_bad [label="login\nlogin_bad.jinja2"];
     door_open_bad [label="door_open\nunpaid.jinja2"];
+    account_actions [label="/account_actions\naccount_actions.jinja2"];
 
     error1 [label="\N\nnot form.is_valid()"];
     error2 [label="\N\nnot form.is_valid()"];

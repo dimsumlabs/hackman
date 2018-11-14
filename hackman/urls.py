@@ -53,9 +53,10 @@ urlpatterns = [
 
     url(r'^door_open/', views.door_open),
     url(r'^rfid_pair/', views.rfid_pair),
+    url(r'^account_actions/', views.account_actions, name='account_actions'),
     url(r'^account_create/', views.account_create, name='account_create'),
     url(r'^payment_submit/', views.payment_submit),
-    url(r'^$', views.index),
+    url(r'^$', views.index, name='index'),
     url(r'^oauth/', include('oauth2_provider.urls',
                             namespace='oauth2_provider')),
 
