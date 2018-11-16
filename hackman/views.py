@@ -13,6 +13,7 @@ from django import http
 from IPy import IP
 
 from hackman_payments import api as payment_api
+from hackman_payments import enums as payment_enums
 from hackman_rfid import api as rfid_api
 
 
@@ -177,16 +178,21 @@ def door_open(request, _door_api=None):
 @login_required(login_url='/login/')
 def account_actions(request):
     r = get_redis_connection('default')
-    return shortcuts.render(
-        request, 'account_actions.jinja2',
-        context=_ctx_from_request(request, update_ctx={
-            'payment_form': forms.PaymentForm(
-                year_month_choices=_get_month_choices()),
-            'rfid_pair_form': forms.RfidCardPairForm(
-                initial={
-                    'card_id': r.get('rfid_last_unpaired')
-                })
-        }))
+    paid = (
+        payment_api.has_paid(request.user.id) !=
+        payment_enums.PaymentGrade.NOT_PAID
+    )
+
+    return shortcuts.render(request, 'account_actions.jinja2', context={
+        'payment_form': forms.PaymentForm(
+            year_month_choices=_get_month_choices()),
+        'rfid_pair_form': forms.RfidCardPairForm(
+            initial={
+                'card_id': r.get('rfid_last_unpaired')
+            }),
+        'paid': paid,
+        'valid_until': payment_api.get_valid_until(request.user.id),
+    })
 
 
 @login_required(login_url='/login/')

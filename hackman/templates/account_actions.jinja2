@@ -15,6 +15,14 @@
       </p>
     </li>
 
+    <p>The door's database thinks your dues are
+    {% if paid %} paid up {% else %} not paid {% endif %}
+    </p>
+
+    {% if valid_until %}
+    <!-- not ready for people to read yet valid_until={{ valid_until }} -->
+    {% endif %}
+
     <hr />
 
     <li>
