@@ -21,6 +21,13 @@ def tags_not_matching():
     ]
 
 
+def get_valid_until(user_id: int) -> str:
+    # TODO - return a datetime
+    r = get_redis_connection('default')
+    valid_until = r.get('payment_user_id_{}'.format(user_id))
+    return valid_until
+
+
 def has_paid(user_id: int) -> bool:
 
     r = get_redis_connection('default')
@@ -40,7 +47,7 @@ def has_paid(user_id: int) -> bool:
     elif not bool(user_active):
         return PaymentGrade.NOT_PAID
 
-    valid_until = r.get('payment_user_id_{}'.format(user_id))
+    valid_until = get_valid_until(user_id)
     if valid_until is None:
         return PaymentGrade.NOT_PAID
 
