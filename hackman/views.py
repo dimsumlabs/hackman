@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.api import MessageFailure
-from django.contrib.messages import get_messages
 from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
@@ -32,16 +31,6 @@ if ratelimit.__version__ < '1.0.1':
         return decorator
 else:
     from ratelimit.decorators import ratelimit
-
-
-def _ctx_from_request(request, update_ctx=None):
-    ctx = {
-        'messages': get_messages(request),
-        'request': request,
-    }
-    if update_ctx:
-        ctx.update(update_ctx)
-    return ctx
 
 
 def _get_month_choices():
@@ -86,24 +75,19 @@ def login(request):
                     return shortcuts.redirect('/')
 
             else:
-                result = shortcuts.render(
-                    request, 'login_bad.jinja2',
-                    context=_ctx_from_request(request)
-                )
+                result = shortcuts.render(request, 'login_bad.jinja2')
                 result.status_code = 400
                 return result
 
     redir_url = request.GET.get('next')
     if not is_safe_url(redir_url):
         redir_url = '/'
+
     return shortcuts.render(
-        request, 'login.jinja2', context=_ctx_from_request(
-            request, {
-                'login_form': forms.LoginForm(initial={
-                    'redir_url': redir_url}),
-                'signup_form': forms.SignupForm(initial={
-                    'redir_url': redir_url}),
-            }))
+        request, 'login.jinja2', context={
+            'login_form': forms.LoginForm(initial={
+                'redir_url': redir_url}),
+            })
 
 
 def account_create(request):
@@ -116,11 +100,10 @@ def account_create(request):
         if not is_safe_url(redir_url):
             redir_url = '/'
         return shortcuts.render(
-            request, 'account_create.jinja2', context=_ctx_from_request(
-                request, {
-                    'signup_form': forms.SignupForm(initial={
-                        'redir_url': redir_url}),
-                }))
+            request, 'account_create.jinja2', context={
+                'signup_form': forms.SignupForm(initial={
+                    'redir_url': redir_url}),
+                })
 
     form = forms.SignupForm(request.POST)
     if not form.is_valid():
@@ -149,9 +132,7 @@ def logout(request):  # pragma: no cover
 
 @login_required(login_url='/login/')
 def index(request):  # pragma: no cover
-    return shortcuts.render(
-        request, 'index.jinja2',
-        context=_ctx_from_request(request))
+    return shortcuts.render(request, 'index.jinja2')
 
 
 @login_required(login_url='/login/')
@@ -159,10 +140,7 @@ def door_open(request, _door_api=None):
     from hackman import api as hackman_api
 
     if not hackman_api.door_open_if_paid(request.user.id, _door_api):
-        result = shortcuts.render(
-            request, 'unpaid.jinja2',
-            context=_ctx_from_request(request)
-        )
+        result = shortcuts.render(request, 'unpaid.jinja2')
         result.status_code = 403
         return result
 
