@@ -1,4 +1,4 @@
-Django==2.0
+Django==1.11.18
 flake8>=3.2.1
 Jinja2>=2.9.4
 pyserial>=3.2.1
