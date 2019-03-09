@@ -12,4 +12,5 @@ IPy>=0.83
 django-ratelimit>=1.0.1
 django-cors-headers>=2.0.2
 django-oauth-toolkit==1.1.2
-gevent>=1.2.2
+
+redis==2.10.6
