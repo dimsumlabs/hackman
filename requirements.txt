@@ -8,7 +8,7 @@ gunicorn>=19.6.0
 coverage>=4.3.4
 pytest-cov>=2.4.0
 django-redis>=4.7.0
-IPy>=0.83
+IPy==0.83
 django-ratelimit>=1.0.1
 django-cors-headers>=2.0.2
 django-oauth-toolkit==1.1.2
