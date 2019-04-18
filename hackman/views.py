@@ -148,7 +148,8 @@ def door_open(request, _door_api=None):
     if not hackman_api.door_open_if_paid(
                                          request.user.id,
                                          _door_api,
-                                         source="HTTP"):
+                                         source="HTTP",
+                                         user_name=request.user.username):
         result = shortcuts.render(request, 'unpaid.jinja2')
         result.status_code = 403
         return result
