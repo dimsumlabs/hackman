@@ -111,7 +111,10 @@ def account_create(request):
             '<h1>Error</h1>')
 
     form_data = form.cleaned_data
-    if not form_data['username']:
+
+    # The username field has been depricated in the Web UI, but still
+    # exists in the database.  Make sure it is set to something valid
+    if 'username' not in form_data:
         form_data['username'] = form_data['email']
 
     redir_url = form.cleaned_data.pop('redir_url')

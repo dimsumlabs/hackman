@@ -9,8 +9,6 @@ class LoginForm(forms.Form):
 
 
 class SignupForm(forms.Form):
-    username = forms.CharField(label='Username (optional)', max_length=50,
-                               required=False)
     email = forms.EmailField(label='Email', max_length=50)
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
