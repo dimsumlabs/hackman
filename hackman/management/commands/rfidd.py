@@ -27,4 +27,4 @@ class Command(BaseCommand):
                 }))
                 continue
 
-            hackman_api.door_open_if_paid(card.user_id)
+            hackman_api.door_open_if_paid(card.user_id, source="CARD")

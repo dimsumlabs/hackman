@@ -139,7 +139,10 @@ def index(request):  # pragma: no cover
 def door_open(request, _door_api=None):
     from hackman import api as hackman_api
 
-    if not hackman_api.door_open_if_paid(request.user.id, _door_api):
+    if not hackman_api.door_open_if_paid(
+                                         request.user.id,
+                                         _door_api,
+                                         source="HTTP"):
         result = shortcuts.render(request, 'unpaid.jinja2')
         result.status_code = 403
         return result
