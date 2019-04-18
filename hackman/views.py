@@ -11,9 +11,12 @@ from django import shortcuts
 from django import http
 from IPy import IP
 
+import json
+
 from hackman_payments import api as payment_api
 from hackman_payments import enums as payment_enums
 from hackman_rfid import api as rfid_api
+from hackman_notifier import api as notification_api
 
 
 from .lib import get_remote_ip
@@ -215,6 +218,12 @@ def payment_submit(request, r=False):
 
     year, month = form.cleaned_data['year_month']
     payment_api.payment_submit(request.user.id, year, month)
+
+    notification_api.notify_subject(b'door_event', json.dumps({
+        'event': "PAYMENT_CLAIM",
+        'until': "{}-{}".format(year, month),
+        'user_id': request.user.id,
+    }))
 
     try:
         messages.add_message(
