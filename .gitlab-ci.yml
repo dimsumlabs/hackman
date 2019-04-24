@@ -1,0 +1,10 @@
+image: debian:stable
+
+before_script:
+    - apt-get update
+    - apt-get install -y make
+    - make build-depends
+
+test:
+    script:
+        - make
