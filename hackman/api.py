@@ -6,29 +6,34 @@ import json
 
 
 def door_open_if_paid(user_id, _door_api=None,
-                      source="UNKNOWN", user_name="UNKNOWN"):
+                      source="UNKNOWN", user_name=None):
     """Open door if paid and send pubsub notification accordingly"""
     paid = payment_api.has_paid(user_id)
     paid = payment_enums.PaymentGrade(paid).name
 
+    log = {}
+
     if paid == 'PAID':
         (_door_api or door_api).open()
-        notify_event = 'DOOR_OPEN'
+        log['event'] = 'DOOR_OPEN'
         ret = True
 
     elif paid == 'GRACE':
         (_door_api or door_api).open()
+        log['event'] = 'DOOR_OPEN_GRACE'
         ret = True
-        notify_event = 'DOOR_OPEN_GRACE'
 
     else:
+        log['event'] = 'DOOR_OPEN_DENIED'
         ret = False
-        notify_event = 'DOOR_OPEN_DENIED'
 
-    notification_api.notify_subject(b'door_event', json.dumps({
-        'event': notify_event,
-        'source': source,
-        'user_id': user_id,
-        'user_name': user_name,
-    }))
+    if source:
+        log['source'] = source
+
+    log['user_id'] = user_id
+
+    if user_name:
+        log['user_name'] = user_name
+
+    notification_api.notify_subject(b'door_event', json.dumps(log))
     return ret
