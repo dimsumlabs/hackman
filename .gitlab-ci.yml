@@ -4,6 +4,7 @@ before_script:
     - apt-get update
     - apt-get install -y make sudo
     - make build-depends
+    - /usr/sbin/invoke-rc.d redis-server start
 
 test:
     script:
