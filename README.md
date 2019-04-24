@@ -37,3 +37,6 @@ Not yet implemented
 4. `cd /var/www/hackman`
 5. `git pull`
 6. `systemctl restart hackman`
+6. `systemctl restart hackman-doord`
+6. `systemctl restart hackman-rfidd`
+
