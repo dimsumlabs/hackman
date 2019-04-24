@@ -16,6 +16,7 @@ PACKAGES := \
     redis-server \
     gunicorn3 \
     python3-gevent \
+    flake8 \
 
 # TODO
 # - from the requirements.txt
