@@ -23,17 +23,23 @@ from .lib import get_remote_ip
 from . import forms
 
 
-# Hack to avoid using the old python3-django-ratelimit in debian
-import ratelimit
-if ratelimit.__version__ < '1.0.1':
+# Debian stretch does not have the python3-django-ratelimit package and the
+# version of that package in debian buster is older than this code was written
+# to expect.  Work around both these issues by stubbing out feature.
+#
+# TODO: this should emit a warning when the ratelimit function is used
+try:
+    import ratelimit
+    if ratelimit.__version__ < '1.0.1':
+        raise Exception("too old")
+    from ratelimit.decorators import ratelimit
+except Exception:
     def ratelimit(**kwargs):
         def decorator(fn):
             def _wrapped(*args, **kwargs):
                 return fn(*args, **kwargs)
             return _wrapped
         return decorator
-else:
-    from ratelimit.decorators import ratelimit
 
 
 def _get_month_choices():

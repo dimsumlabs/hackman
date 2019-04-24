@@ -11,16 +11,18 @@ PACKAGES := \
     python3-pytest-cov \
     python3-django-redis \
     python3-ipy \
-    python3-django-ratelimit \
     python3-django-cors-headers \
     python3-django-oauth-toolkit \
     redis-server \
     gunicorn3 \
     python3-gevent \
 
-# TODO - from the requirements.txt
-# pyserial>=3.2.1
-# RPi.GPIO>=0.6.3
+# TODO
+# - from the requirements.txt
+#   - pyserial>=3.2.1
+#   - RPi.GPIO>=0.6.3
+# - not available or too old in debian:
+#   - python3-django-ratelimit package
 
 
 build-depends:
