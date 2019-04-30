@@ -7,6 +7,7 @@ before_script:
     - /usr/sbin/invoke-rc.d --force redis-server start
 
 test_debian:
+    coverage: '/Total coverage: \d+\.\d+%/'
     script:
         - make test
 
