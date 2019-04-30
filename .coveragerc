@@ -1,4 +1,5 @@
 [run]
+# TODO - dont ignore files with code in them..
 omit =
     # Dont test management
     manage.py
