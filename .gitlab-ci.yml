@@ -9,3 +9,7 @@ before_script:
 test_debian:
     script:
         - make test
+
+test_raspbian:
+    script:
+        - test-raspbian-chroot
