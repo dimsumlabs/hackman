@@ -6,10 +6,12 @@ before_script:
     - make build-depends
     - /usr/sbin/invoke-rc.d --force redis-server start
 
-test_debian:
+debian:
+    stage: test
     script:
         - make test
 
-test_raspbian:
+raspbian:
+    stage: test
     script:
         - ./test-raspbian-chroot
