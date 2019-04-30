@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Download raspbian and setup an emulated environmnent to test this repository
+#
+
+RASPBIAN_URL=https://downloads.raspberrypi.org/NOOBS_latest
+
+set -e
+
+mkdir -p tests
+cd tests
+
+# TODO
+# - chase the HTTP redirections and learn the filename
+# - then only download the image if we do not have that filename
+#   (or, possibly if that file fails to unzip)
+wget "$RASPBIAN_URL"
+
+unzip NOOBS_latest os/Raspbian_Full/root.tar.xz
+mkdir -p raspbian
+sudo tar -x -C raspbian -f os/Raspbian_Full/root.tar.xz
+
+sudo cp /usr/bin/qemu-arm-static raspbian/usr/bin
+
+sudo mkdir -p raspbian/hackman
+sudo chown $USER raspbian/hackman
+rsync -a --exclude=tests ../ raspbian/hackman/
+
+sudo chroot raspbian apt-get update
+sudo chroot raspbian apt-get install -y make sudo
+sudo chroot raspbian make -C hackman build-depends
+sudo chroot raspbian make -C hackman test.unit

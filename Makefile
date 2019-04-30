@@ -17,6 +17,9 @@ PACKAGES := \
     gunicorn3 \
     python3-gevent \
     flake8 \
+    wget \
+    qemu-user-static \
+    rsync \
 
 # TODO
 # - from the requirements.txt
