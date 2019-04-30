@@ -27,7 +27,7 @@ class Command(BaseCommand):
             elif action == b'CLOSE':
                 door.close()
 
-            else:  # pragma: no cover
+            else:
                 # This should never happen but might happen from some
                 # future coding mistake where subscription is created
                 # but not handled

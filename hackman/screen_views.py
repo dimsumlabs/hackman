@@ -63,12 +63,12 @@ def poll(request, _timeout=60):  # pragma: no cover
 
 
 @screen_ip_check
-def index(request):  # pragma: no cover
+def index(request):
     return shortcuts.render(
         request, 'screen/index.jinja2')
 
 
-def _user_view(request, tpl):  # pragma: no cover
+def _user_view(request, tpl):
     try:
         user = get_user_model().objects.get(id=request.GET.get('user_id'))
     except get_user_model().DoesNotExist:
@@ -80,26 +80,26 @@ def _user_view(request, tpl):  # pragma: no cover
 
 
 @screen_ip_check
-def welcome(request):  # pragma: no cover
+def welcome(request):
     # Get last access and show welcome screen
     return _user_view(request, 'screen/welcome.jinja2')
 
 
 @screen_ip_check
-def remind_payment(request):  # pragma: no cover
+def remind_payment(request):
     """Member is under grace period, say hi and remind to pay"""
     # Get last access and show payment reminder screen
     return _user_view(request, 'screen/remind_payment.jinja2')
 
 
 @screen_ip_check
-def unpaid_membership(request):  # pragma: no cover
+def unpaid_membership(request):
     """Unpaid membership, shame on you"""
     return _user_view(request, 'screen/unpaid_membership.jinja2')
 
 
 @screen_ip_check
-def unpaired_card(request):  # pragma: no cover
+def unpaired_card(request):
     card = rfid_api.card_get(request.GET.get('card_id'))
     if not card:
         return shortcuts.redirect('/screen/')

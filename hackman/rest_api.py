@@ -6,7 +6,7 @@ import json
 
 
 @protected_resource()
-def profile(request):  # pragma: no cover
+def profile(request):
     user = AccessToken.objects.get(token=request.GET.get('access_token')).user
     return HttpResponse(json.dumps({
         # Lets pretend like we are the email provider, dont want to leak info

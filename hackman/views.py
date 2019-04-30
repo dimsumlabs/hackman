@@ -137,13 +137,13 @@ def account_create(request):
         return shortcuts.redirect('/')
 
 
-def logout(request):  # pragma: no cover
+def logout(request):
     auth.logout(request)
     return shortcuts.redirect('/login/')
 
 
 @login_required(login_url='/login/')
-def index(request):  # pragma: no cover
+def index(request):
     return shortcuts.render(request, 'index.jinja2')
 
 
@@ -163,7 +163,7 @@ def door_open(request, _door_api=None):
     try:
         messages.add_message(
             request, messages.SUCCESS, 'Opened door!')
-    except MessageFailure:  # pragma: no cover
+    except MessageFailure:
         pass
 
     return shortcuts.redirect('/')
@@ -206,7 +206,7 @@ def rfid_pair(request):
     try:
         messages.add_message(
             request, messages.SUCCESS, 'Paired card!')
-    except MessageFailure:  # pragma: no cover
+    except MessageFailure:
         pass
 
     return shortcuts.redirect('/account_actions')
@@ -235,7 +235,7 @@ def payment_submit(request, r=False):
     try:
         messages.add_message(
             request, messages.SUCCESS, 'Payment submitted')
-    except MessageFailure:  # pragma: no cover
+    except MessageFailure:
         pass
 
     return shortcuts.redirect('/account_actions')

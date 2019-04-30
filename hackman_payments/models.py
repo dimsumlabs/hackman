@@ -15,7 +15,7 @@ class PaymentTag(models.Model):
                            null=False,
                            blank=True)
 
-    def make_key(self):  # pragma: no cover
+    def make_key(self):
         if self.tag:
             return '{}:{}'.format(self.hashtag, self.tag)
         else:

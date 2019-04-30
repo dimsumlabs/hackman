@@ -73,7 +73,7 @@ def unpaid_users():
             yield uid
 
 
-def payment_reminder_email_format():  # pragma: no cover
+def payment_reminder_email_format():
     now = _get_now()
     cur = date(now.year, now.month,
                calendar.monthrange(now.year, now.month)[1])
