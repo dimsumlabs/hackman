@@ -23,7 +23,7 @@ sudo tar -x -C raspbian -f os/Raspbian_Full/root.tar.xz
 sudo cp /usr/bin/qemu-arm-static raspbian/usr/bin
 
 sudo mkdir -p raspbian/hackman
-sudo chown $USER raspbian/hackman
+sudo chown $(whoami) raspbian/hackman
 rsync -a --exclude=tests ../ raspbian/hackman/
 
 sudo chroot raspbian apt-get update
