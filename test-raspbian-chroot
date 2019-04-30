@@ -14,7 +14,7 @@ cd tests
 # - chase the HTTP redirections and learn the filename
 # - then only download the image if we do not have that filename
 #   (or, possibly if that file fails to unzip)
-wget "$RASPBIAN_URL"
+wget -q "$RASPBIAN_URL"
 
 unzip NOOBS_latest os/Raspbian_Full/root.tar.xz
 mkdir -p raspbian
