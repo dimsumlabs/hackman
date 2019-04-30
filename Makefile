@@ -20,6 +20,7 @@ PACKAGES := \
     wget \
     qemu-user-static \
     rsync \
+    unzip \
 
 # TODO
 # - from the requirements.txt
