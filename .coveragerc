@@ -7,7 +7,7 @@ omit =
     */migrations/*,
 
     # Exclude settings and url files
-    hackman/settings_prod.py
+    #hackman/settings_prod.py
     hackman/settings_dev.py
     hackman/wsgi.py
     hackman/urls.py
