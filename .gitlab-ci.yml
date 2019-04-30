@@ -12,4 +12,4 @@ test_debian:
 
 test_raspbian:
     script:
-        - test-raspbian-chroot
+        - ./test-raspbian-chroot
