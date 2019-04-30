@@ -7,6 +7,10 @@ RASPBIAN_URL=https://downloads.raspberrypi.org/NOOBS_latest
 
 set -e
 
+# Dont install from the makefile as that leads to the emulated environment
+# overwriting the qemu-arm-static binary while it is being used
+sudo apt-get install -y qemu-user-static
+
 mkdir -p tests
 cd tests
 

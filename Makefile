@@ -18,7 +18,6 @@ PACKAGES := \
     python3-gevent \
     flake8 \
     wget \
-    qemu-user-static \
     rsync \
     unzip \
 
