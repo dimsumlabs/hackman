@@ -2,6 +2,8 @@
 #
 # Download raspbian and setup an emulated environmnent to test this repository
 #
+# Note that this will generally end up using a redis server running in the
+# host environment, and not the raspbian version from the chroot.
 
 RASPBIAN_URL=https://downloads.raspberrypi.org/NOOBS_latest
 
