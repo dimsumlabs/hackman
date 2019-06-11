@@ -1,0 +1,51 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+
+  <h2>Payment Claim Recorded</h2>
+
+  {% if valid_until %}
+  <p>The door's database now says your dues are paid until {{ valid_until }}
+  {% endif %}
+
+  <h3>If you have had an issue with the door:</h3>
+
+  <p> We are sorry that the database the door is using was incorrect.  It is
+  important that you let us know what is wrong so that we can investigate
+  and fix any issues.
+
+  <ul>
+    <li> Write your name and today's date on a sheet of paper.
+    <li> Write a quick note of what was wrong (ie: "I paid with paypal on the
+    27th of the month, but the door would not let me in today")
+    <li> Insert this paper into the locked donations tin mounted on the wall.
+  </ul>
+
+  <p> Failure to follow these steps may result in your account being
+  locked out.  Misuse of the payment claim system will result in your
+  account being locked out.
+
+  <h3>If you are paying your Membership now:</h3>
+
+  <p> If you could not enter because your membership is due and you are
+  now entering the space to pay your membership, follow the normal payment
+  process written up on the wall.
+
+  <p> Summarised, this is:
+
+  <ul>
+    <li> Write your name and today's date on an envelope.
+    <li> Place your payment inside the envelope.
+    <li> Insert this envelope into the locked donations tin mounted on the wall.
+  </ul>
+
+  <p> It may take a couple of days for someone to manually collect your
+  envelope and update the master database.
+
+  <hr>
+    <p>
+      &nbsp;&nbsp;<a href="{% url 'index' %}">Back to space actions</a>
+    </p>
+  </li>
+
+{% endblock %}

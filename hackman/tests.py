@@ -227,8 +227,7 @@ def test_payment_submit(rf, not_paid_user):
                                                   month=now.month),
     }), user=not_paid_user)
     response = views.payment_submit(request, r=True)
-    assert response.status_code == 302
-    assert response.url == '/account_actions'
+    assert response.status_code == 200
 
 
 @pytest.mark.django_db

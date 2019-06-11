@@ -236,10 +236,18 @@ def payment_submit(request, r=False):
         'user_id': request.user.id,
     }))
 
-    try:
-        messages.add_message(
-            request, messages.SUCCESS, 'Payment submitted')
-    except MessageFailure:
-        pass
+    paid = (
+        payment_api.has_paid(request.user.id) !=
+        payment_enums.PaymentGrade.NOT_PAID
+    )
 
-    return shortcuts.redirect('/account_actions')
+    # FIXME - we /just/ set the valid until above.  Switch to using
+    # date objects everywhere and then just use the input to this function
+    valid_until = payment_api.get_valid_until(request.user.id)
+    if valid_until is not None:
+        valid_until = valid_until.strftime('%Y-%m')
+
+    return shortcuts.render(request, 'payment_submit.jinja2', context={
+        'paid': paid,
+        'valid_until': valid_until,
+    })
