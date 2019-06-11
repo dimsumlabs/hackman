@@ -6,30 +6,26 @@
   <ul class="action-list">
 
     <li>
-      <p>
+      <p> By clicking the 'Inform' button, you are agreeing that you
+      have already paid or are about to pay right now.
         <form action="/payment_submit/" method="POST">
           {% csrf_token %}
           {{ payment_form }}
-          <input type="submit" value="Submit">
+          <input type="submit" value="Inform">
         </form>
       </p>
     </li>
 
-    <p>The door's database thinks your dues are
-    {% if paid %} paid up {% else %} not paid {% endif %}
-    </p>
-
     {% if valid_until %}
-    <!-- not ready for people to read yet valid_until={{ valid_until }} -->
+    <p>The door's database says your dues are paid until {{ valid_until }}
     {% endif %}
-
     <hr />
 
     <li>
       <form action="/rfid_pair/" method="POST">
         {% csrf_token %}
         {{ rfid_pair_form }}
-        <input type="submit" value="Submit">
+        <input type="submit" value="Pair">
       </form>
     </li>
 
