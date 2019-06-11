@@ -177,6 +177,10 @@ def account_actions(request):
         payment_enums.PaymentGrade.NOT_PAID
     )
 
+    valid_until = payment_api.get_valid_until(request.user.id)
+    if valid_until is not None:
+        valid_until = valid_until.strftime('%Y-%m')
+
     return shortcuts.render(request, 'account_actions.jinja2', context={
         'payment_form': forms.PaymentForm(
             year_month_choices=_get_month_choices()),
@@ -185,7 +189,7 @@ def account_actions(request):
                 'card_id': r.get('rfid_last_unpaired')
             }),
         'paid': paid,
-        'valid_until': payment_api.get_valid_until(request.user.id),
+        'valid_until': valid_until,
     })
 
 

@@ -25,6 +25,13 @@ def get_valid_until(user_id: int) -> str:
     # TODO - return a datetime
     r = get_redis_connection('default')
     valid_until = r.get('payment_user_id_{}'.format(user_id))
+    if valid_until is None:
+        return None
+
+    valid_until = datetime.strptime(
+        valid_until.decode('utf8'), '%Y-%m-%dT%H:%M:%S').date()
+    # FIXME - we only know to month accuracy the payment details, so
+    # returning a full date is wrong
     return valid_until
 
 
@@ -50,9 +57,6 @@ def has_paid(user_id: int) -> bool:
     valid_until = get_valid_until(user_id)
     if valid_until is None:
         return PaymentGrade.NOT_PAID
-
-    valid_until = datetime.strptime(
-        valid_until.decode('utf8'), '%Y-%m-%dT%H:%M:%S').date()
 
     now = _get_now()
     if valid_until < now and valid_until+timedelta(weeks=2) >= now:
@@ -94,3 +98,5 @@ def payment_submit(user_id: int, year: int, month: int,
 
     r = _redis_pipe or get_redis_connection('default')
     r.set('payment_user_id_{}'.format(user_id), valid_until.isoformat())
+    # FIXME - we only know to month accuracy the payment details, so
+    # storing a full datetime is wrong
