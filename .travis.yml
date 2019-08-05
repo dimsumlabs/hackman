@@ -4,9 +4,9 @@ dist: bionic
 language: minimal
 
 install:
-  - sudo apt-get update
-  - sudo apt-get install -y make sudo
-  - sudo make build-depends
+  - apt-get update
+  - apt-get install -y make sudo
+  - make build-depends
   - /usr/sbin/invoke-rc.d --force redis-server start
 
 script:
