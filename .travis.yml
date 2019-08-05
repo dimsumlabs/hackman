@@ -6,7 +6,8 @@ language: minimal
 install:
   - sudo apt-get update
   - sudo apt-get install -y make
-  - sudo apt-get install -y redis-server
+  - sudo apt-get install -y redis-server || true
+  - sudo journalctl -xe -u redis-server
   - sudo make build-depends
   - sudo /usr/sbin/invoke-rc.d --force redis-server start
 
