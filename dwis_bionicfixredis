@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# "Do What I Say" and just install redis !!
+#
+# The default config for redis-server that is shipped with Ubuntu Bionic, when
+# combined with the TravisCI environment, just does not work.
+#
+# Attempt to hack around this..
+
+CONF=/etc/redis/redis.conf
+
+mkdir -p "$(dirname "$CONF")"
+
+cat <<EOF >$CONF
+daemonize yes
+pidfile /var/run/redis/redis-server.pid
+EOF
+
+apt-get -y install redis-server
+/usr/sbin/invoke-rc.d --force redis-server start

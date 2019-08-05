@@ -6,9 +6,8 @@ language: minimal
 install:
   - sudo apt-get update
   - sudo apt-get install -y make
-  - sysctl net.ipv6.conf.all.disable_ipv6=0
+  - sudo dwis_bionicfixredis
   - sudo make build-depends
-  - sudo /usr/sbin/invoke-rc.d --force redis-server start
 
 script:
   - make test
