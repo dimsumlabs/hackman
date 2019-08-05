@@ -1,13 +1,13 @@
-language: python
+sudo: enabled
+dist: xenial
 
-python:
-  - 3.5
-
-services:
-  - redis-server
+language: minimal
 
 install:
-  - pip install -r requirements.txt
+  - sudo apt-get update
+  - sudo apt-get install -y make sudo
+  - sudo make build-depends
+  - /usr/sbin/invoke-rc.d --force redis-server start
 
 script:
-  - make
+  - make test
