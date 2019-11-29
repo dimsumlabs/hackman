@@ -21,9 +21,14 @@ def cards_read():
     hash_salt = settings.RFID_READER['HASH_SALT']
 
     for card in impl.get_cards():
-        yield hashlib.sha256(b''.join((  # Double hash with salt
-            hashlib.sha256(card).hexdigest().encode('ascii'),
-            hash_salt.encode('ascii')))).hexdigest()
+        # Double hash with salt
+        cardhash = hashlib.sha256(
+            b''.join((
+                hashlib.sha256(card).hexdigest().encode('ascii'),
+                hash_salt.encode('ascii')
+            ))
+        ).hexdigest()
+        yield cardhash
 
 
 def card_validate(card_hash: str) -> User:
