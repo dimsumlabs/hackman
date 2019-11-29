@@ -32,7 +32,7 @@ def door_open_if_paid(user_id, _door_api=None,
         log['source'] = source
 
     if rawdata:
-        log['rawdata'] = rawdata
+        log['rawdata'] = rawdata.hex()
 
     log['user_id'] = user_id
 
