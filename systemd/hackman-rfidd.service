@@ -1,5 +1,6 @@
 [Unit]
 Description=Run hackman rfid daemon
+Wants=redis-server.service
 
 [Service]
 EnvironmentFile=/etc/hackman.env

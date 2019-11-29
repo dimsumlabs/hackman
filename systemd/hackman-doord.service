@@ -1,5 +1,6 @@
 [Unit]
 Description=Run hackman door daemon
+Wants=redis-server.service
 
 [Service]
 WorkingDirectory=/var/www/hackman/

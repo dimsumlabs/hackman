@@ -1,5 +1,6 @@
 [Unit]
 Description=Import payments from accounting repo
+Wants=redis-server.service
 
 [Service]
 WorkingDirectory=/var/www/hackman/
