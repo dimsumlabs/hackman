@@ -6,7 +6,8 @@ import json
 
 
 def door_open_if_paid(user_id, _door_api=None,
-                      source="UNKNOWN", user_name=None):
+                      source="UNKNOWN", user_name=None,
+                      rawdata=None):
     """Open door if paid and send pubsub notification accordingly"""
     paid = payment_api.has_paid(user_id)
     paid = payment_enums.PaymentGrade(paid).name
@@ -29,6 +30,9 @@ def door_open_if_paid(user_id, _door_api=None,
 
     if source:
         log['source'] = source
+
+    if rawdata:
+        log['rawdata'] = rawdata
 
     log['user_id'] = user_id
 

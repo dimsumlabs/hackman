@@ -32,7 +32,7 @@ def test_get_cards():
     cards = [next(_cards) for _ in range(3)]
 
     # Assert card is hashed with sha256
-    assert len(cards[0]) == 64
+    assert len(cards[0][0]) == 64
 
 
 @pytest.mark.django_db

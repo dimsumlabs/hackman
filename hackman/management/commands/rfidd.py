@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         r = get_redis_connection('default')
 
-        for card_hash in rfid_api.cards_read():
+        for card_hash, rawdata in rfid_api.cards_read():
 
             card = rfid_api.card_validate(card_hash)
             if not card:
@@ -23,7 +23,8 @@ class Command(BaseCommand):
                 r.set('rfid_last_unpaired', card.id)
                 notification_api.notify_subject(b'door_event', json.dumps({
                     'event': 'CARD_UNPAIRED',
-                    'card_id': card.id
+                    'card_id': card.id,
+                    'rawdata': rawdata.hex(),
                 }))
                 continue
 
@@ -33,4 +34,5 @@ class Command(BaseCommand):
             hackman_api.door_open_if_paid(
                 card.user_id,
                 source="CARD",
+                rawdata=rawdata,
             )

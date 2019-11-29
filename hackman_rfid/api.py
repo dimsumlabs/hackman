@@ -28,7 +28,7 @@ def cards_read():
                 hash_salt.encode('ascii')
             ))
         ).hexdigest()
-        yield cardhash
+        yield (cardhash, card)
 
 
 def card_validate(card_hash: str) -> User:
