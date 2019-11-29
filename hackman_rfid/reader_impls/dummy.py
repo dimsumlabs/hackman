@@ -5,4 +5,5 @@ def get_cards():
     '''Dummy interface that yields random cards'''
 
     while True:
-        yield os.urandom(10)
+        random = os.urandom(10)
+        yield (random, random)

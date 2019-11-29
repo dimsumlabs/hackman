@@ -20,7 +20,7 @@ def cards_read():
     impl = importlib.import_module(settings.RFID_READER['BACKEND'])
     hash_salt = settings.RFID_READER['HASH_SALT']
 
-    for card in impl.get_cards():
+    for card, rawdata in impl.get_cards():
         # Double hash with salt
         cardhash = hashlib.sha256(
             b''.join((
@@ -28,7 +28,7 @@ def cards_read():
                 hash_salt.encode('ascii')
             ))
         ).hexdigest()
-        yield (cardhash, card)
+        yield (cardhash, rawdata)
 
 
 def card_validate(card_hash: str) -> User:
