@@ -1,0 +1,98 @@
+---
+#
+# Steps to install hackman on your raspberry pi
+#
+# First, some manual prep:
+# - install raspbian-lite
+# - touch ssh
+# - boot your pi, find its IP addres, ssh in, change the password for pi
+#
+# Then, get the system ready to use ansible
+# While logged into the pi:
+# - sudo apt update
+# - sudo apt -y upgrade
+# - sudo apt -y install git ansible
+# - git clone https://github.com/dimsumlabs/hackman
+# - cd hackman
+# - ansible-playbook ansible-installer.yml
+
+- name: Install hackman
+  hosts: localhost
+
+  tasks:
+    - name: Install make
+      become: yes
+      apt:
+          name: make
+          state: present
+
+    - name: Use makefile to install required packages
+      become: yes
+      command: make build-depends
+
+    - name: Run internal test suite
+      command: make test
+
+    - name: Make destination directory
+      become: yes
+      file:
+          dest: /var/www/hackman
+          state: directory
+          mode: "u=rwx,a=rx"
+
+    - name: Install app files
+      become: yes
+      copy:
+          src: "{{ item }}"
+          dest: "/var/www/hackman/{{ item }}"
+      loop:
+          - hackman
+          - hackman_door
+          - hackman_payments
+          - hackman_rfid
+          - manage.py
+
+# TODO:
+# - hackman_notifier
+
+# TODO:
+# - only install needed files..
+
+#    - name: nginx config
+#      become: yes
+#      copy:
+#          src: nginx/default
+#          dest: /etc/nginx/sites-available/default
+
+    - name: Install environment
+      become: yes
+      copy:
+          dest: /etc/hackman.env
+          mode: "a=r"
+          content: |
+              DJANGO_SETTINGS_MODULE=hackman.settings_prod
+
+# TODO:
+# - this should contain some other settings
+#   EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, RAVEN_DSN
+#   but some of them are now unused and some should not be in the git repo
+# - at the least, should not overwrite an existing file
+
+    - name: hackman services
+      become: yes
+      copy:
+          src: systemd/{{ item }}.service
+          dest: /etc/systemd/system/{{ item }}.service
+      loop:
+          - hackman
+          - rfidd
+          - doord
+
+# TODO:
+# hackman-backup.service hackman-backup.timer
+# hackman-paymentimport.service hackman-paymentimport.timer
+# hackman-paymentreminder.service hackman-paymentreminder.timer
+
+# TODO:
+# - empty database or restored database
+#
