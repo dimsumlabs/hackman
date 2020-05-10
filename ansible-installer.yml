@@ -20,6 +20,17 @@
   hosts: localhost
 
   tasks:
+    - name: Tweak gpu_mem
+      become: yes
+      lineinfile:
+        path: /boot/config.txt
+        regexp: '^gpu_mem='
+        line: gpu_mem=16
+        insertbefore: BOF
+
+# TODO:
+# - reboot after changing the config.txt ?
+
     - name: Install make
       become: yes
       apt:
