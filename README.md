@@ -26,6 +26,7 @@ Not yet implemented
 
 ## Installation on raspberry pi
 1. Start with a fresh raspian lite buster install image, with ssh enabled
+1. Dont forget to change the passwords and set up any extra users on the pi
 1. `sudo apt-get update && sudo apt-get -y upgrade`
 1. `sudo apt-get -y install git ansible`
 1. `git clone` this repo into a convinient place ( e.g `~/hackman` )
