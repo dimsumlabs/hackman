@@ -31,11 +31,14 @@
 # TODO:
 # - reboot after changing the config.txt ?
 
-    - name: Install make
+    - name: Install packages
       become: yes
       apt:
-          name: make
+          name: "{{ item }}"
           state: present
+      loop:
+          - make
+          - nginx
 
     - name: Use makefile to install required packages
       become: yes
@@ -67,13 +70,29 @@
 # - hackman_notifier
 
 # TODO:
+# - Add hackman_notifier to the installed files? (needs fixing first)
 # - only install needed files..
 
-#    - name: nginx config
-#      become: yes
-#      copy:
-#          src: nginx/default
-#          dest: /etc/nginx/sites-available/default
+    - name: nginx remove default site
+      become: yes
+      file:
+          src: /etc/nginx/sites-enabled/default
+          state: absent
+
+    - name: nginx sites-available
+      become: yes
+      copy:
+          src: nginx/default
+          dest: /etc/nginx/sites-available/hackman
+
+    - name: nginx sites-enabled
+      become: yes
+      file:
+          src: /etc/nginx/sites-available/hackman
+          dest: /etc/nginx/sites-enabled/hackman
+
+# TODO:
+# - notify restart nginx after each nginx change
 
     - name: Install environment
       become: yes
