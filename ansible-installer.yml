@@ -113,17 +113,22 @@
     - name: hackman services
       become: yes
       copy:
-          src: systemd/{{ item }}.service
-          dest: /etc/systemd/system/{{ item }}.service
+          src: systemd/{{ item }}
+          dest: /etc/systemd/system/{{ item }}
       loop:
-          - hackman
-          - rfidd
-          - doord
+          - hackman-doord.service
+          - hackman-paymentimport.service
+          - hackman-paymentimport.timer
+          - hackman-rfidd.service
+          - hackman.service
 
 # TODO:
 # hackman-backup.service hackman-backup.timer
 # hackman-paymentimport.service hackman-paymentimport.timer
 # hackman-paymentreminder.service hackman-paymentreminder.timer
+#
+# TODO:
+# - reload systemd to install these services
 
 # TODO:
 # - empty database or restored database
