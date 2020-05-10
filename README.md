@@ -24,18 +24,21 @@ Not yet implemented
 ## Prerequisites
 * Debian testing or newer (requires Python 3.5)
 
-## Installation
-1. `git clone` into `/var/www/hackman`
-2. collect underpants?  (There used to be an install makefile target, but that
-   has been removed)
+## Installation on raspberry pi
+1. Start with a fresh raspian lite buster install image, with ssh enabled
+1. `sudo apt-get update && sudo apt-get -y upgrade`
+1. `sudo apt-get -y install git ansible`
+1. `git clone` this repo into a convinient place ( e.g `~/hackman` )
+1. cd into the repo
+1. `ansible-playbook ansible-installer.yml`
 3. Never run anything manually again \o/
 
 ## Upgrades
 1. Ensure the CI tests are showing green (See the top of this README)
 2. ssh to door system
-3. `sudo -s`
-4. `cd /var/www/hackman`
-5. `git pull`
+3. cd into the repo
+1. `git pull`
+1. `ansible-playbook ansible-installer.yml`
 6. `systemctl restart hackman`
 6. `systemctl restart hackman-doord`
 6. `systemctl restart hackman-rfidd`
