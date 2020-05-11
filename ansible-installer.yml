@@ -39,6 +39,8 @@
       loop:
           - make
           - nginx
+          - python3-rpi.gpio
+          - python3-serial
 
     - name: Use makefile to install required packages
       become: yes
