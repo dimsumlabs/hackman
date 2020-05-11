@@ -33,6 +33,7 @@ Not yet implemented
 1. cd into the repo
 1. `ansible-playbook ansible-installer.yml`
 1. restore old database if needed
+1. reboot to activate all changes
 3. Never run anything manually again \o/
 
 ## Upgrades
