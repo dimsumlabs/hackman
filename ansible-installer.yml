@@ -65,7 +65,7 @@
       become: yes
       copy:
           src: "{{ item }}"
-          dest: "/var/www/hackman/{{ item }}"
+          dest: "/var/www/hackman/"
       loop:
           - hackman
           - hackman_door
