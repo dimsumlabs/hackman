@@ -69,12 +69,10 @@
       loop:
           - hackman
           - hackman_door
+          - hackman_notifier
           - hackman_payments
           - hackman_rfid
           - manage.py
-
-# TODO:
-# - hackman_notifier
 
 # TODO:
 # - Add hackman_notifier to the installed files? (needs fixing first)
