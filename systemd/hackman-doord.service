@@ -7,7 +7,7 @@ WorkingDirectory=/var/www/hackman/
 EnvironmentFile=/etc/hackman.env
 Restart=always
 User=root
-ExecStart=/var/www/hackman/.venv/bin/python manage.py doord
+ExecStart=python3 manage.py doord
 
 [Install]
 WantedBy=multi-user.target

@@ -11,7 +11,7 @@ EnvironmentFile=/etc/hackman.env
 Restart=always
 User=hackman
 Group=hackman
-ExecStart=/var/www/hackman/.venv/bin/gunicorn \
+ExecStart=gunicorn3 \
           --workers 1                         \
           --bind=unix:/tmp/hackman.sock       \
           --bind=127.0.0.1:8000               \
