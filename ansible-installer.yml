@@ -141,6 +141,23 @@
 # TODO:
 # - reload systemd to install these services
 
+    - name: Load new service files
+      become: yes
+      systemd:
+          daemon_reload: yes
+
+    - name: Enable services
+      become: yes
+      systemd:
+          name: "{{ item }}"
+          enabled: yes
+          state: started
+      loop:
+        - hackman-paymentimport.timer
+        - hackman
+        - hackman-rfidd
+        - hackman-doord
+
 # TODO:
 # - empty database or restored database
 #
