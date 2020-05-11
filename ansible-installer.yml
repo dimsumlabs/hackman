@@ -2,19 +2,8 @@
 #
 # Steps to install hackman on your raspberry pi
 #
-# First, some manual prep:
-# - install raspbian-lite
-# - touch ssh
-# - boot your pi, find its IP addres, ssh in, change the password for pi
+# Follow the steps in the README.md
 #
-# Then, get the system ready to use ansible
-# While logged into the pi:
-# - sudo apt update
-# - sudo apt -y upgrade
-# - sudo apt -y install git ansible
-# - git clone https://github.com/dimsumlabs/hackman
-# - cd hackman
-# - ansible-playbook ansible-installer.yml
 
 - name: Install hackman
   hosts: localhost
