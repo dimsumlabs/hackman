@@ -45,6 +45,22 @@
           state: directory
           mode: "u=rwx,a=rx"
 
+    - name: Create user
+      become: yes
+      user:
+          name: hackman
+          home: /var/www/hackman
+          generate_ssh_key: yes
+          ssh_key_type: ed25519
+
+    - name: Make db directory
+      become: yes
+      file:
+          dest: /var/www/hackman/db
+          state: directory
+          user: hackman
+          mode: "u=rwx,a=rx"
+
     - name: Install app files
       become: yes
       copy:
