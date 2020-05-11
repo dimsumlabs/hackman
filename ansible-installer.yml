@@ -81,6 +81,12 @@
 # - only install needed files..
 # - notify restart for the services on change
 
+# TODO:
+# - create database if not exists
+#   - /var/www/hackman/db/db.sqlite3
+#   - python3 manage.py migrate
+#   - chown hackman /var/www/hackman/db/db.sqlite3*
+
     - name: nginx remove default site
       become: yes
       file:
