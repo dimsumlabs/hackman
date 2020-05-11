@@ -32,6 +32,7 @@ Not yet implemented
 1. `git clone` this repo into a convinient place ( e.g `~/hackman` )
 1. cd into the repo
 1. `ansible-playbook ansible-installer.yml`
+1. restore old database if needed
 3. Never run anything manually again \o/
 
 ## Upgrades
