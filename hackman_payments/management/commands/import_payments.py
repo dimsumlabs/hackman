@@ -18,16 +18,16 @@ class Command(BaseCommand):
         try:
             res = urlopen(URL)
             text = res.read().decode()
-            cache = open('payments.json.tmp', 'w')
+            cache = open('db/payments.json.tmp', 'w')
             cache.write(text)
             cache.close()
-            os.rename('payments.json.tmp', 'payments.json')
+            os.rename('db/payments.json.tmp', 'db/payments.json')
         except Exception as e:  # noqa - go jump in a lake pyflakes
             sys.stderr.write(repr(e)+"\n")
             sys.stderr.write("Attempting to fallback to cached local file\n")
 
             # any error at all, we try to fall back to the cached data
-            cache = open('payments.json', 'r')
+            cache = open('db/payments.json', 'r')
             text = cache.read()
 
         data = json.loads(text)
