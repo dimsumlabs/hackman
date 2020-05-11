@@ -75,7 +75,6 @@
           - manage.py
 
 # TODO:
-# - Add hackman_notifier to the installed files? (needs fixing first)
 # - only install needed files..
 # - notify restart for the services on change
 
