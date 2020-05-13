@@ -1,0 +1,11 @@
+[Unit]
+After=redis.service
+Description=Check the lights (as a proxy for people in the space)
+
+[Service]
+Restart=always
+User=root
+ExecStart=/usr/local/bin/dsl-occupied
+
+[Install]
+WantedBy=multi-user.target

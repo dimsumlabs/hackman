@@ -82,6 +82,7 @@
           mode: "a=rx"
       loop:
           - dsl-log
+          - dsl-occupied
 
 # TODO:
 # - only install needed files..
@@ -141,6 +142,7 @@
           - hackman-rfidd.service
           - hackman.service
           - dsl-log.service
+          - dsl-occupied.service
 
 # TODO:
 # hackman-backup.service hackman-backup.timer
@@ -167,4 +169,5 @@
         - hackman-rfidd
         - hackman-doord
         - dsl-log
+        - dsl-occupied
 
