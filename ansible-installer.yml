@@ -58,7 +58,7 @@
       file:
           dest: /var/www/hackman/db
           state: directory
-          user: hackman
+          owner: hackman
           mode: "u=rwx,a=rx"
 
     - name: Install app files
@@ -73,6 +73,15 @@
           - hackman_payments
           - hackman_rfid
           - manage.py
+
+    - name: Install helper scripts
+      become: yes
+      copy:
+          src: "{{ item }}"
+          dest: "/usr/local/bin"
+          mode: "a=rx"
+      loop:
+          - dsl-log
 
 # TODO:
 # - only install needed files..
@@ -131,6 +140,7 @@
           - hackman-paymentimport.timer
           - hackman-rfidd.service
           - hackman.service
+          - dsl-log.service
 
 # TODO:
 # hackman-backup.service hackman-backup.timer
@@ -156,4 +166,5 @@
         - hackman
         - hackman-rfidd
         - hackman-doord
+        - dsl-log
 
