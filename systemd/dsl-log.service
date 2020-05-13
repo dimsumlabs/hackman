@@ -1,0 +1,11 @@
+[Unit]
+After=redis.service
+Description=Minimal door event logging
+
+[Service]
+Restart=always
+User=root
+ExecStart=/usr/local/bin/dsl-log
+
+[Install]
+WantedBy=multi-user.target
