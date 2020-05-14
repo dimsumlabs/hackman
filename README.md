@@ -6,23 +6,27 @@ These can be used to open the door via either web interface or rfid card.
 
 ### The system's workflow
 
-#### Cash payments
-1. Pay money in envelope, write name on it
-2. (Optionally) Submit that you have paid through going to http://door/ and log in with your credentials
-   Choose which month to submit payment for and which amount you are supposed to pay and submit.
+#### payments
+1. The dsl-accounts repository is updated by the space orga when payments are made.
+1. The hackman-paymentimport service (included here) downloads the dsl-accounts data every hour.
 
-   If this is not done it will be synced from accounting repo at a later date
+#### missing payments
+If there is an issue with the paymentimport or the space orga have missed an update.
+You can submit that you have paid.
+1. Go to http://door/ and log in with your credentials.
+1. Go to Account actions
+1. Select the month you are paying for and inform the door of your payment
 
-#### Paypal
-Not yet implemented
+Note: Informing the door this way is temporary and will only last until the next payment import.
 
 ## To-Do
 * Continuous deployment based on Travis-ci builds
-* Integrate dsl-accounts repository
-* Integrate paypal payments
+* UDEV-based autostart for the components that depend on hardware:
+  * hackman-rfidd expects to find a usb serial adaptor
+  * dsl-lights expects to find a pimoroni Mote Host USB device
 
 ## Prerequisites
-* Debian testing or newer (requires Python 3.5)
+* Debian buster or newer (requires Python 3.5)
 
 ## Installation on raspberry pi
 1. Start with a fresh raspian lite buster install image, with ssh enabled
