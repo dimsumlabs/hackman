@@ -70,7 +70,7 @@
           dest: /var/www/hackman/db
           state: directory
           owner: hackman
-          mode: "u=rwx,a=rx"
+          mode: "u=rwx,go=rx"
 
     - name: Install app files
       become: yes
