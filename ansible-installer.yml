@@ -24,6 +24,7 @@
         insertbefore: BOF
 
 # TODO:
+# - only if running on a raspberry pi
 # - reboot after changing the config.txt ?
 
     - name: Install packages
