@@ -74,7 +74,7 @@
 
     - name: Install app files
       become: yes
-      copy:
+      synchronize:
           src: "{{ item }}"
           dest: "/var/www/hackman/"
       loop:
