@@ -1,0 +1,11 @@
+[Unit]
+After=redis.service
+Description=DSL door blinkenlights
+
+[Service]
+Restart=always
+User=root
+ExecStart=/usr/local/bin/dsl-lights
+
+[Install]
+WantedBy=multi-user.target

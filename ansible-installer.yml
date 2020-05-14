@@ -30,6 +30,10 @@
           - nginx
           - python3-rpi.gpio
           - python3-serial
+          - python3-mote
+
+# TODO:
+# - python3-mote only exists in the raspbian repositories
 
     - name: Use makefile to install required packages
       become: yes
@@ -83,6 +87,7 @@
       loop:
           - dsl-log
           - dsl-occupied
+          - dsl-lights
 
 # TODO:
 # - only install needed files..
@@ -143,6 +148,7 @@
           - hackman.service
           - dsl-log.service
           - dsl-occupied.service
+          - dsl-lights.service
 
 # TODO:
 # hackman-backup.service hackman-backup.timer
@@ -170,4 +176,5 @@
         - hackman-doord
         - dsl-log
         - dsl-occupied
+        - dsl-lights
 
