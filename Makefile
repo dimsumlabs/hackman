@@ -34,6 +34,7 @@ build-depends:
 
 # Create or update the database
 dev.db:
+	mkdir -p db
 	python3 manage.py migrate
 
 # Run the site with a development server
