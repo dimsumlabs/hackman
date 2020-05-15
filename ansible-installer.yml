@@ -154,6 +154,8 @@
           src: systemd/{{ item }}
           dest: /etc/systemd/system/{{ item }}
       loop:
+          - hackman-backup.service
+          - hackman-backup.timer
           - hackman-doord.service
           - hackman-paymentimport.service
           - hackman-paymentimport.timer
@@ -187,6 +189,7 @@
         - hackman
         - hackman-rfidd
         - hackman-doord
+        - hackman-backup.timer
         - dsl-log
         - dsl-occupied
         - dsl-lights
