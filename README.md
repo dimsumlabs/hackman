@@ -29,6 +29,13 @@ Note: Informing the door this way is temporary and will only last until the next
 * Debian buster or newer (requires Python 3.5)
 
 ## Installation on raspberry pi
+These steps can be quite slow to complete - the ansible system uses quite a
+lot of CPU and RAM, which can be in short supply on the Raspberry Pi.
+
+The intent is to have a documented process that depends only on the Raspberry
+Pi hardware and thus can be easily tested or trialed.  That being said, there
+are several ways to speed up or otherwise improve on this in the future.
+
 1. Start with a fresh raspian lite buster install image, with ssh enabled
 1. Dont forget to change the passwords and set up any extra users on the pi
 1. `sudo apt-get update && sudo apt-get -y upgrade`
