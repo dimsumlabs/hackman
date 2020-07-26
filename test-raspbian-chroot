@@ -5,7 +5,8 @@
 # Note that this will generally end up using a redis server running in the
 # host environment, and not the raspbian version from the chroot.
 
-RASPBIAN_URL=https://downloads.raspberrypi.org/NOOBS_latest
+NOOBS_URL=https://downloads.raspberrypi.org/NOOBS_latest
+ROOT_TAR=os/RaspiOS_Full_armhf/root.tar.xz
 
 set -e
 
@@ -20,11 +21,11 @@ cd tests
 # - chase the HTTP redirections and learn the filename
 # - then only download the image if we do not have that filename
 #   (or, possibly if that file fails to unzip)
-wget -q "$RASPBIAN_URL"
+wget -q "$NOOBS_URL"
 
-unzip NOOBS_latest os/Raspbian_Full/root.tar.xz
+unzip NOOBS_latest "$ROOT_TAR"
 mkdir -p raspbian
-sudo tar -x -C raspbian -f os/Raspbian_Full/root.tar.xz
+sudo tar -x -C raspbian -f "$ROOT_TAR"
 
 sudo cp /usr/bin/qemu-arm-static raspbian/usr/bin
 
