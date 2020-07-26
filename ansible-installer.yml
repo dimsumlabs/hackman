@@ -141,6 +141,7 @@
           mode: "a=r"
           content: |
               DJANGO_SETTINGS_MODULE=hackman.settings_prod
+              BACKUP_DEST=root@door-backup.lan
 
 # TODO:
 # - this should contain some other settings
