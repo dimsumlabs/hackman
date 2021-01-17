@@ -43,7 +43,7 @@ are several ways to speed up or otherwise improve on this in the future.
 1. `git clone` this repo into a convinient place ( e.g `~/hackman` )
 1. cd into the repo
 1. `ansible-playbook ansible-installer.yml`
-1. If replacing an old system, restore the old database to `/var/www/hackman/db/db.sqlite3`
+1. If replacing an old system, restore the old database to `/var/www/hackman/db.sqlite3`
 1. Add the `~hackman/.ssh/id_ed25519.pub` to the root@door-backup.dsl authorised keys
 1. Add the door-backup.dsl ssh host key to the `~hackman/.ssh/known_hosts`
 1. reboot to activate all changes
