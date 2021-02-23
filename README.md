@@ -59,3 +59,8 @@ are several ways to speed up or otherwise improve on this in the future.
 6. `systemctl restart hackman-doord`
 6. `systemctl restart hackman-rfidd`
 
+## Day to Day Operations
+
+- Run a payment import right now: `systemctl start hackman-paymentimport.service`
+- Check the last payment import: `ls -al /var/www/hackman/db/payments.json`
+- Dump all the users and their paid-until dates: `cd /var/www/hackman; python3 manage.py paymentlist`
