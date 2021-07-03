@@ -9,7 +9,7 @@ import os
 
 from hackman_payments import models
 
-URL = "https://dimsumlabs.github.io/dsl-accounts-pages/payments.json"
+URL = "https://dimsumlabs.github.io/dsl-accounts/payments.json"
 
 
 class Command(BaseCommand):
