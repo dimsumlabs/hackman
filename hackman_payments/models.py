@@ -5,6 +5,8 @@ from django.db import models
 class PaymentTag(models.Model):
     """Map tags in git payment repo to users"""
 
+    id = models.AutoField(primary_key=True)
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

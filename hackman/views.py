@@ -3,7 +3,7 @@ from django.contrib.messages.api import MessageFailure
 from datetime import datetime, date, timedelta
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.contrib import messages
 from calendar import monthrange
 from django.contrib import auth
@@ -78,7 +78,7 @@ def login(request):
                 auth.login(request, user)
 
                 redir_url = form.cleaned_data['redir_url']
-                if redir_url and is_safe_url(redir_url, allowed_hosts=None):  # pragma: no cover
+                if redir_url and url_has_allowed_host_and_scheme(redir_url, allowed_hosts=None):  # pragma: no cover
                     return shortcuts.redirect(redir_url)
                 else:
                     return shortcuts.redirect('/')
@@ -89,7 +89,7 @@ def login(request):
                 return result
 
     redir_url = request.GET.get('next')
-    if not is_safe_url(redir_url, allowed_hosts=None):
+    if not url_has_allowed_host_and_scheme(redir_url, allowed_hosts=None):
         redir_url = '/'
 
     return shortcuts.render(
@@ -109,7 +109,7 @@ def account_create(request):
 
     if request.method != 'POST':
         redir_url = request.GET.get('next')
-        if not is_safe_url(redir_url, allowed_hosts=None):
+        if not url_has_allowed_host_and_scheme(redir_url, allowed_hosts=None):
             redir_url = '/'
         return shortcuts.render(
             request, 'account_create.jinja2', context={
@@ -134,7 +134,7 @@ def account_create(request):
     auth.login(request, user,
                backend='django.contrib.auth.backends.ModelBackend')
 
-    if redir_url and is_safe_url(redir_url, allowed_hosts=None):  # pragma: no cover
+    if redir_url and url_has_allowed_host_and_scheme(redir_url, allowed_hosts=None):  # pragma: no cover
         return shortcuts.redirect(redir_url)
     else:
         return shortcuts.redirect('/')

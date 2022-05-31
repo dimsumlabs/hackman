@@ -64,7 +64,10 @@ def card_paired(paid_user):
 def inject_session(request, user=None):
     """Helper method for creating associated session to request
     Will modify request but also return it for convenience"""
-    middleware = SessionMiddleware()
+
+    get_response = mock.MagicMock()
+
+    middleware = SessionMiddleware(get_response)
     middleware.process_request(request)
     request.session.save()
 

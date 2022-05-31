@@ -8,6 +8,8 @@ from django.db import models
 
 class RFIDCard(models.Model):
 
+    id = models.AutoField(primary_key=True)
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
                              default=None, on_delete=models.CASCADE)
 
