@@ -21,9 +21,9 @@ def random_card():
 
 
 @pytest.fixture
-def paired_card():
+def paired_card(card_user):
+    user = card_user
     card_hash = hashlib.sha256(os.urandom(10)).hexdigest()
-    user = card_user()
     return models.RFIDCard.objects.create(rfid_hash=card_hash, user=user)
 
 

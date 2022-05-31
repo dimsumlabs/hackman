@@ -78,7 +78,7 @@ def login(request):
                 auth.login(request, user)
 
                 redir_url = form.cleaned_data['redir_url']
-                if redir_url and is_safe_url(redir_url):  # pragma: no cover
+                if redir_url and is_safe_url(redir_url, allowed_hosts=None):  # pragma: no cover
                     return shortcuts.redirect(redir_url)
                 else:
                     return shortcuts.redirect('/')
@@ -89,7 +89,7 @@ def login(request):
                 return result
 
     redir_url = request.GET.get('next')
-    if not is_safe_url(redir_url):
+    if not is_safe_url(redir_url, allowed_hosts=None):
         redir_url = '/'
 
     return shortcuts.render(
@@ -100,13 +100,16 @@ def login(request):
 
 
 def account_create(request):
-    if IP(get_remote_ip(request)).iptype() != 'PRIVATE':
+
+    ip_type = IP(get_remote_ip(request)).iptype()
+
+    if ip_type != 'PRIVATE' and ip_type != "LOOPBACK":
         return http.HttpResponseForbidden(
             'You can only register an account from within DSL')
 
     if request.method != 'POST':
         redir_url = request.GET.get('next')
-        if not is_safe_url(redir_url):
+        if not is_safe_url(redir_url, allowed_hosts=None):
             redir_url = '/'
         return shortcuts.render(
             request, 'account_create.jinja2', context={
@@ -131,7 +134,7 @@ def account_create(request):
     auth.login(request, user,
                backend='django.contrib.auth.backends.ModelBackend')
 
-    if redir_url and is_safe_url(redir_url):  # pragma: no cover
+    if redir_url and is_safe_url(redir_url, allowed_hosts=None):  # pragma: no cover
         return shortcuts.redirect(redir_url)
     else:
         return shortcuts.redirect('/')

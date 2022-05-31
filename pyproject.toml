@@ -4,6 +4,13 @@ version = "0.1.0"
 description = ""
 authors = ["adisbladis <adisbladis@gmail.com>"]
 license = "GPL-2.0-only"
+packages = [
+    { include = "hackman" },
+    { include = "hackman_door" },
+    { include = "hackman_notifier" },
+    { include = "hackman_payments" },
+    { include = "hackman_rfid" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
