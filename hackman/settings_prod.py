@@ -37,7 +37,7 @@ def _gen_key():
 
 SECRET_KEY = _gen_key()
 
-STATIC_ROOT = '/var/www/hackman/hackman/static/'
+STATIC_ROOT = '/opt/hackman/static'
 
 # RFID reader config
 RFID_READER = {

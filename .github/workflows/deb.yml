@@ -45,9 +45,13 @@ jobs:
           pip install --no-deps dist/*.whl
           rm -rf dist *.egg-info
 
+          # Generate Django static files
+          env DJANGO_SETTINGS_MODULE=hackman.settings_prod hackman-manage collectstatic
+
           # Create a temporary rootfs directory
           mkdir -p rootfs/opt
           mv /opt/hackman rootfs/opt/hackman
+
 
           # # Create symlinks to all binaries starting with hackman-* or dsl-* in /usr/local/bin
           # mkdir -p rootfs/usr/local/bin
