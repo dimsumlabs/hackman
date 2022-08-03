@@ -63,4 +63,4 @@ jobs:
           cp -rv systemd rootfs/lib/systemd/system
 
           # Build deb
-          fpm -s dir -t deb -C rootfs --name hackman --version 1.0.0 --iteration 1 --description "DSL Hackman" .
+          fpm -s dir -t deb -C rootfs --name hackman --version 1.0.0 --iteration 1 --description "DSL Hackman" --depends redis-server .
