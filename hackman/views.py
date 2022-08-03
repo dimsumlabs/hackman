@@ -78,7 +78,10 @@ def login(request):
                 auth.login(request, user)
 
                 redir_url = form.cleaned_data['redir_url']
-                if redir_url and url_has_allowed_host_and_scheme(redir_url, allowed_hosts=None):  # pragma: no cover
+                if redir_url and url_has_allowed_host_and_scheme(
+                        redir_url,
+                        allowed_hosts=None,
+                ):  # pragma: no cover
                     return shortcuts.redirect(redir_url)
                 else:
                     return shortcuts.redirect('/')
@@ -134,7 +137,10 @@ def account_create(request):
     auth.login(request, user,
                backend='django.contrib.auth.backends.ModelBackend')
 
-    if redir_url and url_has_allowed_host_and_scheme(redir_url, allowed_hosts=None):  # pragma: no cover
+    if redir_url and url_has_allowed_host_and_scheme(
+            redir_url,
+            allowed_hosts=None,
+    ):  # pragma: no cover
         return shortcuts.redirect(redir_url)
     else:
         return shortcuts.redirect('/')

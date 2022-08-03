@@ -38,18 +38,33 @@ urlpatterns = [
     path(r'login/', views.login, name='login'),
     path(r'logout/', views.logout),
 
-    path('password_change/', auth_views.PasswordChangeView.as_view(),
-        name='password_change'),
-    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(),
-        name='password_change_done'),
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(),
-        name='password_reset_done'),
-    re_path('reset/(?P<uidb64>[0-9A-Za-z_-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',  # noqa
+    path('password_change/',
+         auth_views.PasswordChangeView.as_view(),
+         name='password_change'
+         ),
+    path('password_change/done/',
+         auth_views.PasswordChangeDoneView.as_view(),
+         name='password_change_done'
+         ),
+    path('password_reset/',
+         auth_views.PasswordResetView.as_view(),
+         name='password_reset'
+         ),
+    path(
+        'password_reset/done/',
+        auth_views.PasswordResetDoneView.as_view(),
+        name='password_reset_done'
+    ),
+    re_path(
+        'reset/(?P<uidb64>[0-9A-Za-z_-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',  # noqa
         auth_views.PasswordResetConfirmView.as_view(),
-        name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(),
-        name='password_reset_complete'),
+        name='password_reset_confirm'
+    ),
+    path(
+        'reset/done/',
+        auth_views.PasswordResetCompleteView.as_view(),
+        name='password_reset_complete'
+    ),
 
     path(r'door_open/', views.door_open),
     path(r'rfid_pair/', views.rfid_pair),

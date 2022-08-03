@@ -25,11 +25,11 @@ def main():
 
             sys.stdout.flush()
 
-            #if not m or m['type'] != 'message':
+            # if not m or m['type'] != 'message':
             #    print("ignored message")
             #
-            #m = json.loads(m['data'])
-            #print("time={} event={} user_id={}".format(time.time(), m['event'], m['user_id']))
+            # m = json.loads(m['data'])
+            # print("time={} event={} user_id={}".format(time.time(), m['event'], m['user_id']))  # noqa
 
     finally:
         ps.unsubscribe()
