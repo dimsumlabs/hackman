@@ -8,7 +8,7 @@ from django.db import models
 
 class RFIDCard(models.Model):
 
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)  # type: ignore
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -16,10 +16,10 @@ class RFIDCard(models.Model):
         blank=True,
         default=None,
         on_delete=models.CASCADE,
-    )
+    )  # type: ignore
 
-    rfid_hash = models.CharField(max_length=64, db_index=True)
-    revoked = models.BooleanField(default=False, db_index=True)
+    rfid_hash = models.CharField(max_length=64, db_index=True)  # type: ignore
+    revoked = models.BooleanField(default=False, db_index=True)  # type: ignore
 
     def __str__(self):
         return " - ".join(

@@ -4,6 +4,9 @@ from django.core.cache import cache
 from django.conf import settings
 import importlib
 import hashlib
+from typing import (
+    Optional,
+)
 
 from . import models
 
@@ -47,6 +50,8 @@ def card_validate(card_hash: str) -> User:
     if not c.revoked:
         return c
 
+    raise ValueError("No valid user with card hash: {}".format(card_hash))
+
 
 def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     card = models.RFIDCard.objects.get(id=card_id)
@@ -59,7 +64,7 @@ def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     return card
 
 
-def card_get(card_id: int) -> models.RFIDCard:
+def card_get(card_id: int) -> Optional[models.RFIDCard]:
     try:
         return models.RFIDCard.objects.get(id=card_id)
     except models.RFIDCard.DoesNotExist:

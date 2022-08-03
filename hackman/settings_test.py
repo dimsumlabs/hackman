@@ -1,7 +1,7 @@
 from .settings_dev import *  # noqa
 
 
-AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)  # type: ignore
 
 DOOR_LOCK = {
     "BACKEND": "hackman_door.door.impls.dummy",

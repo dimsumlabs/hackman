@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
 from .models import PaymentTag
 import calendar
+from typing import (
+    Optional,
+)
 
 from .enums import PaymentGrade
 
@@ -21,7 +24,7 @@ def tags_not_matching():
     ]
 
 
-def get_valid_until(user_id: int) -> str:
+def get_valid_until(user_id: int) -> Optional[date]:
     # TODO - return a datetime
     r = get_redis_connection("default")
     valid_until = r.get("payment_user_id_{}".format(user_id))
@@ -36,7 +39,7 @@ def get_valid_until(user_id: int) -> str:
     return valid_until
 
 
-def has_paid(user_id: int) -> bool:
+def has_paid(user_id: int) -> PaymentGrade:
 
     r = get_redis_connection("default")
     user_model = get_user_model()
@@ -85,7 +88,7 @@ def payment_reminder_email_format():
     return render_to_string("payment_reminder.jinja2", context={"month": month_name})
 
 
-def payment_submit(user_id: int, year: int, month: int, _redis_pipe=None) -> int:
+def payment_submit(user_id: int, year: int, month: int, _redis_pipe=None) -> None:
 
     valid_until = datetime(year, month, calendar.monthrange(year, month)[1], 23, 59)
 
