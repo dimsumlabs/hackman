@@ -1,0 +1,54 @@
+name: deb
+
+on: pull_request
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FPM
+        run: sudo gem install fpm
+
+      - name: Install FPM dependencies
+        run: sudo apt-get -y install squashfs-tools
+
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Set up python
+        id: setup-python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: false
+          virtualenvs-in-project: false
+
+      - name: Build deb
+        run: |
+          # We want to write to _actual_ /opt as some installation processes
+          # are creating hard coded shebangs pointing to the venv location.
+          mkdir -p /opt
+
+          # Create virtualenv
+          python3 -m venv /opt/hackman
+          . /opt/hackman/bin/activate
+
+          # Install dependencies
+          poetry install --no-interaction --no-root --no-dev
+
+          # Install self into env
+          poetry build -f wheel -n
+          pip install --no-deps dist/*.whl
+          rm -rf dist *.egg-info
+
+          # Create a temporary rootfs directory
+          mkdir -p rootfs/opt
+          mv /opt/hackman rootfs/opt/hackman
+
+          # # Create symlinks to all binaries starting with hackman-* or dsl-* in /usr/local/bin
+          # mkdir -p rootfs/usr/local/bin
+          fpm -s dir -t deb -C rootfs --name hackman --version 1.0.0 --iteration 1 --description "DSL Hackman" .

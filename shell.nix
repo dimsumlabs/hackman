@@ -13,5 +13,6 @@ pkgs.mkShell {
 
     pkgs.redis
 
+    pkgs.fpm
   ];
 }
