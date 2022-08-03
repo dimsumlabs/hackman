@@ -5,23 +5,23 @@ import sys
 
 
 def main():
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r = redis.StrictRedis(host="localhost", port=6379, db=0)
     ps = r.pubsub()
 
     print("dsl_log: door_event log started")
     sys.stdout.flush()
 
     try:
-        ps.subscribe('door_event')
+        ps.subscribe("door_event")
         for m in ps.listen():
             if not m:
                 print("event None received")
-            elif m['type'] == 'subscribe':
-                print("subscribe channel={}".format(m['channel']))
-            elif m['type'] != 'message':
+            elif m["type"] == "subscribe":
+                print("subscribe channel={}".format(m["channel"]))
+            elif m["type"] != "message":
                 print("event {}".format(m))
             else:
-                print("message {} {}".format(time.time(), m['data']))
+                print("message {} {}".format(time.time(), m["data"]))
 
             sys.stdout.flush()
 
@@ -35,5 +35,5 @@ def main():
         ps.unsubscribe()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

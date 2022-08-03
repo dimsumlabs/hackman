@@ -15,6 +15,6 @@ def hackman():
             "--bind=127.0.0.1:8000",
             "--timeout",
             "120",
-            "hackman.wsgi"
+            "hackman.wsgi",
         ],
     )

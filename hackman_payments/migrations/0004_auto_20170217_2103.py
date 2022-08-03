@@ -8,22 +8,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hackman_payments', '0003_auto_20170209_1944'),
+        ("hackman_payments", "0003_auto_20170209_1944"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='payment',
-            name='user',
+            model_name="payment",
+            name="user",
         ),
         migrations.RemoveField(
-            model_name='paymentinvalid',
-            name='payment',
+            model_name="paymentinvalid",
+            name="payment",
         ),
         migrations.DeleteModel(
-            name='Payment',
+            name="Payment",
         ),
         migrations.DeleteModel(
-            name='PaymentInvalid',
+            name="PaymentInvalid",
         ),
     ]

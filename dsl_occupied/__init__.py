@@ -5,8 +5,8 @@ import os
 import time
 
 # Just output to the same channel that the existing dsl-log is watching
-channel = 'door_event'
-hosts = ['helios.dsl', 'helios2.dsl']
+channel = "door_event"
+hosts = ["helios.dsl", "helios2.dsl"]
 interval = 30
 
 
@@ -26,7 +26,7 @@ def check_hosts(hosts):
 
 
 def main():
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r = redis.StrictRedis(host="localhost", port=6379, db=0)
 
     lights = 0
 
@@ -35,8 +35,8 @@ def main():
 
         if lights != lights_now:
             data = dict()
-            data['event'] = 'LIGHTS'
-            data['hostcount'] = lights_now
+            data["event"] = "LIGHTS"
+            data["hostcount"] = lights_now
             lights = lights_now
 
             message = json.dumps(data, sort_keys=True)
@@ -49,5 +49,5 @@ def main():
         time.sleep(interval - (time.time() % interval))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

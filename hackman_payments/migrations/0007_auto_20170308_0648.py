@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hackman_payments', '0006_auto_20170308_0625'),
+        ("hackman_payments", "0006_auto_20170308_0625"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='paymenttag',
-            name='hashtag',
-            field=models.CharField(db_index=True, default='dues', max_length=20),
+            model_name="paymenttag",
+            name="hashtag",
+            field=models.CharField(db_index=True, default="dues", max_length=20),
         ),
     ]

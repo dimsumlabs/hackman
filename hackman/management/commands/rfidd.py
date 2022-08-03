@@ -9,9 +9,8 @@ import json
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **kwargs):
-        r = get_redis_connection('default')
+        r = get_redis_connection("default")
 
         for card_hash, rawdata in rfid_api.cards_read():
 
@@ -20,12 +19,17 @@ class Command(BaseCommand):
                 continue
 
             if not card.user_id:
-                r.set('rfid_last_unpaired', card.id)
-                notification_api.notify_subject(b'door_event', json.dumps({
-                    'event': 'CARD_UNPAIRED',
-                    'card_id': card.id,
-                    'rawdata': rawdata.hex(),
-                }))
+                r.set("rfid_last_unpaired", card.id)
+                notification_api.notify_subject(
+                    b"door_event",
+                    json.dumps(
+                        {
+                            "event": "CARD_UNPAIRED",
+                            "card_id": card.id,
+                            "rawdata": rawdata.hex(),
+                        }
+                    ),
+                )
                 continue
 
             # TODO:

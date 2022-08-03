@@ -7,26 +7,28 @@ import hashlib
 
 from . import models
 
-__all__ = ['cards_read', 'card_validate', 'card_pair']
+__all__ = ["cards_read", "card_validate", "card_pair"]
 
 
 def _make_cache_key(card_hash: str) -> str:
-    return 'rfid_card_{}'.format(card_hash)
+    return "rfid_card_{}".format(card_hash)
 
 
 def cards_read():
     """Yield hashed cards from configured backend"""
 
-    impl = importlib.import_module(settings.RFID_READER['BACKEND'])
-    hash_salt = settings.RFID_READER['HASH_SALT']
+    impl = importlib.import_module(settings.RFID_READER["BACKEND"])
+    hash_salt = settings.RFID_READER["HASH_SALT"]
 
     for card, rawdata in impl.get_cards():
         # Double hash with salt
         cardhash = hashlib.sha256(
-            b''.join((
-                hashlib.sha256(card).hexdigest().encode('ascii'),
-                hash_salt.encode('ascii')
-            ))
+            b"".join(
+                (
+                    hashlib.sha256(card).hexdigest().encode("ascii"),
+                    hash_salt.encode("ascii"),
+                )
+            )
         ).hexdigest()
         yield (cardhash, rawdata)
 

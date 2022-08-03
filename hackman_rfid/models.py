@@ -10,20 +10,25 @@ class RFIDCard(models.Model):
 
     id = models.AutoField(primary_key=True)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True,
-                             default=None, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        default=None,
+        on_delete=models.CASCADE,
+    )
 
     rfid_hash = models.CharField(max_length=64, db_index=True)
     revoked = models.BooleanField(default=False, db_index=True)
 
     def __str__(self):
-        return ' - '.join((
-            self.user.username if self.user else 'unpaired',
-            self.rfid_hash
-        ))
+        return " - ".join(
+            (self.user.username if self.user else "unpaired", self.rfid_hash)
+        )
 
 
 @receiver(post_save, sender=RFIDCard)
 def invalidate_card(sender, instance, **kwargs):
     from .api import _make_cache_key
+
     cache.set(_make_cache_key(instance.rfid_hash), instance)

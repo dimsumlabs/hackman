@@ -1,5 +1,4 @@
 class Door:
-
     def __init__(self):
         self.opened = None
 

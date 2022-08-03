@@ -11,68 +11,67 @@ from .enums import PaymentGrade
 
 @pytest.fixture
 def paymenttag_no_user():
-    yield PaymentTag.objects.create(
-        user=None,
-        hashtag='dues',
-        tag='somedude')
+    yield PaymentTag.objects.create(user=None, hashtag="dues", tag="somedude")
 
 
 @pytest.fixture
 def user_paid():
-    user = get_user_model().objects.create(username='testhesten-paid',
-                                           email='p@test.se')
+    user = get_user_model().objects.create(
+        username="testhesten-paid", email="p@test.se"
+    )
     payment_api.payment_submit(user.id, 2017, 2)
     yield user
-    get_redis_connection('default').flushall()
+    get_redis_connection("default").flushall()
 
 
 @pytest.fixture
 def user_paid_grace():
-    user = get_user_model().objects.create(username='testhesten-grace',
-                                           email='g@test.se')
+    user = get_user_model().objects.create(
+        username="testhesten-grace", email="g@test.se"
+    )
     payment_api.payment_submit(user.id, 2017, 1)
     yield user
-    get_redis_connection('default').flushall()
+    get_redis_connection("default").flushall()
 
 
 @pytest.fixture
 def user_not_paid():
-    user = get_user_model().objects.create(username='testhesten-notpaid',
-                                           email='np@test.se')
+    user = get_user_model().objects.create(
+        username="testhesten-notpaid", email="np@test.se"
+    )
     payment_api.payment_submit(user.id, 2016, 12)
     yield user
-    get_redis_connection('default').flushall()
+    get_redis_connection("default").flushall()
 
 
 @pytest.fixture
 def user_not_active():
-    user = get_user_model().objects.create(username='testhesten-notactive',
-                                           email='na@test.se')
+    user = get_user_model().objects.create(
+        username="testhesten-notactive", email="na@test.se"
+    )
     user.is_active = False
     user.save()
     payment_api.payment_submit(user.id, 2016, 12)
     yield user
-    get_redis_connection('default').flushall()
+    get_redis_connection("default").flushall()
 
 
 @pytest.mark.django_db
 def test_non_matching_user(paymenttag_no_user):
     tags = payment_api.tags_not_matching()
-    assert tags == ['dues:somedude']
+    assert tags == ["dues:somedude"]
 
 
 @pytest.mark.django_db
 def test_has_paid_has_paid(user_paid):
-    with mock.patch('hackman_payments.api._get_now',
-                    return_value=date(2017, 2, 20)):
+    with mock.patch("hackman_payments.api._get_now", return_value=date(2017, 2, 20)):
         paid = payment_api.has_paid(user_paid.id)
         assert paid == PaymentGrade.PAID
 
 
 @pytest.mark.django_db
 def test_has_paid_has_paid_grace(user_paid_grace):
-    with mock.patch('hackman_payments.api._get_now',
-                    return_value=date(2017, 2, 12)):
+    with mock.patch("hackman_payments.api._get_now", return_value=date(2017, 2, 12)):
         paid = payment_api.has_paid(user_paid_grace.id)
         assert paid == PaymentGrade.GRACE
 
@@ -95,8 +94,7 @@ def test_has_paid_not_active(user_not_active):
 
 @pytest.mark.django_db
 def test_unpaid_users(user_paid, user_paid_grace, user_not_paid):
-    with mock.patch('hackman_payments.api._get_now',
-                    return_value=date(2017, 2, 1)):
+    with mock.patch("hackman_payments.api._get_now", return_value=date(2017, 2, 1)):
 
         unpaid_users = list(payment_api.unpaid_users())
         assert len(unpaid_users) == 2

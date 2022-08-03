@@ -9,8 +9,7 @@ from hackman_rfid import api
 
 @pytest.fixture
 def card_user():
-    user, _ = get_user_model().objects.get_or_create(
-        username='testhesten')
+    user, _ = get_user_model().objects.get_or_create(username="testhesten")
     return user
 
 

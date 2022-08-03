@@ -5,10 +5,9 @@ import RPi.GPIO as GPIO
 
 
 class Door:
-
     def __init__(self):
-        GPIO.setmode(getattr(GPIO, settings.DOOR_LOCK['CONFIG']['gpio_mode']))
-        GPIO.setup(settings.DOOR_LOCK['CONFIG']['output_pin'], GPIO.OUT)
+        GPIO.setmode(getattr(GPIO, settings.DOOR_LOCK["CONFIG"]["gpio_mode"]))
+        GPIO.setup(settings.DOOR_LOCK["CONFIG"]["output_pin"], GPIO.OUT)
 
         # Hack to run cancel without conditionals
         self.timer = Timer(0, lambda: None)
@@ -18,7 +17,7 @@ class Door:
         if buzz:
             self.buzz(0.5, 0.003)
 
-        GPIO.output(settings.DOOR_LOCK['CONFIG']['output_pin'], True)
+        GPIO.output(settings.DOOR_LOCK["CONFIG"]["output_pin"], True)
         self.timer.cancel()
         self.timer = Timer(open_time, self.close)
         self.timer.start()
@@ -36,14 +35,14 @@ class Door:
         """
         # FIXME - the close() method should stop any buzz in progress
 
-        output_pin = settings.DOOR_LOCK['CONFIG']['output_pin']
+        output_pin = settings.DOOR_LOCK["CONFIG"]["output_pin"]
 
         time_end = time.time() + timeout
-        while (time.time() < time_end):
+        while time.time() < time_end:
             GPIO.output(output_pin, True)
             time.sleep(rate)
             GPIO.output(output_pin, False)
             time.sleep(rate)
 
     def close(self):
-        GPIO.output(settings.DOOR_LOCK['CONFIG']['output_pin'], False)
+        GPIO.output(settings.DOOR_LOCK["CONFIG"]["output_pin"], False)
