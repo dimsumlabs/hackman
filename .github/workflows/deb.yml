@@ -52,7 +52,11 @@ jobs:
           mkdir -p rootfs/opt
           mv /opt/hackman rootfs/opt/hackman
 
+          # Create symlinks to all binaries starting with hackman* or dsl* in /usr/local/bin
+          mkdir -p rootfs/usr/local/bin
+          for bin in rootfs/opt/hackman/bin/dsl* rootfs/opt/hackman/bin/hackman*; do
+            ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/local/bin/$(basename $bin)
+          done
 
-          # # Create symlinks to all binaries starting with hackman-* or dsl-* in /usr/local/bin
-          # mkdir -p rootfs/usr/local/bin
+          # Build deb
           fpm -s dir -t deb -C rootfs --name hackman --version 1.0.0 --iteration 1 --description "DSL Hackman" .
