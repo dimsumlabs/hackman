@@ -3,62 +3,100 @@ name: deb
 on: pull_request
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Install FPM
-        run: sudo gem install fpm
-
-      - name: Install FPM dependencies
-        run: sudo apt-get -y install squashfs-tools
-
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: Set up python
-        id: setup-python
-        uses: actions/setup-python@v2
+      - uses: uraimo/run-on-arch-action@v2
+        name: Build deb
         with:
-          python-version: 3.9
+          arch: armv6
+          distro: bullseye  # Equivalent to Raspbian 8
+          githubToken: ${{ github.token }}
 
-      - name: Build deb
-        run: |
-          # Install Poetry
-          curl -sSL https://install.python-poetry.org | python3 -
+          # Create an artifacts directory
+          setup: |
+            mkdir -p "${PWD}/artifacts"
 
-          # We want to write to _actual_ /opt as some installation processes
-          # are creating hard coded shebangs pointing to the venv location.
-          mkdir -p /opt
+          # Mount the artifacts directory as /artifacts in the container
+          dockerRunArgs: |
+            --volume "${PWD}/artifacts:/artifacts"
 
-          # Create virtualenv
-          python3 -m venv /opt/hackman
-          . /opt/hackman/bin/activate
+          install: |
+            set -x
 
-          # Install dependencies
-          poetry install --no-interaction --no-root --no-dev
+            apt-get update -q -y
 
-          # Install self into env
-          poetry build -f wheel -n
-          pip install --no-deps dist/*.whl
-          rm -rf dist *.egg-info
+            # Install Python, fpm deps (ruby) and the kitchen sink required to build everything...
+            apt-get install -q -y git python3 python3-venv python3-dev build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev rustc cargo squashfs-tools ruby-full jq
 
-          # Generate Django static files
-          env DJANGO_SETTINGS_MODULE=hackman.settings_prod hackman-manage collectstatic
+            # Install FPM
+            gem install fpm
 
-          # Create a temporary rootfs directory
-          mkdir -p rootfs/opt
-          mv /opt/hackman rootfs/opt/hackman
+            # Install Poetry
+            curl -sSL https://install.python-poetry.org | python3 - --yes || true
+            export PATH=$PATH:/root/.local/bin
 
-          # Create symlinks to all binaries starting with hackman* or dsl* in /usr/local/bin
-          mkdir -p rootfs/usr/local/bin
-          for bin in rootfs/opt/hackman/bin/dsl* rootfs/opt/hackman/bin/hackman*; do
-            ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/local/bin/$(basename $bin)
-          done
+          run: |
+            set -x
 
-          # Copy systemd units
-          mkdir -p rootfs/lib/systemd
-          cp -rv systemd rootfs/lib/systemd/system
+            # Add Poetry to $PATH
+            export PATH=$PATH:/root/.local/bin
 
-          # Build deb
-          version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
-          fpm -s dir -t deb -C rootfs --name hackman --version $version --iteration 1 --description "DSL Hackman" --depends redis-server .
+            # We want to write to _actual_ /opt as some installation processes
+            # are creating hard coded shebangs pointing to the venv location.
+            mkdir -p /opt
+
+            # Create virtualenv
+            python3 -m venv /opt/hackman
+            . /opt/hackman/bin/activate
+
+            # Install dependencies
+            poetry install --no-interaction --no-root --no-dev
+
+            # Install self into env
+            poetry build -f wheel -n
+            pip install --no-deps dist/*.whl
+            rm -rf dist *.egg-info
+
+            # Generate Django static files
+            env DJANGO_SETTINGS_MODULE=hackman.settings_prod hackman-manage collectstatic
+
+            # Create a temporary rootfs directory
+            mkdir -p rootfs/opt
+            mv /opt/hackman rootfs/opt/hackman
+
+            # Create symlinks to all binaries starting with hackman* or dsl* in /usr/local/bin
+            mkdir -p rootfs/usr/local/bin
+            for bin in rootfs/opt/hackman/bin/dsl* rootfs/opt/hackman/bin/hackman*; do
+              ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/local/bin/$(basename $bin)
+            done
+
+            # Copy systemd units
+            mkdir -p rootfs/lib/systemd
+            cp -rv systemd rootfs/lib/systemd/system
+
+            # Build deb
+            version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
+            fpm \
+              -s dir \
+              -t deb \
+              -C rootfs \
+              --name hackman \
+              --version $version \
+              --iteration 1 \
+              --description "DSL Hackman" \
+              --depends redis-server \
+              --depends python3 \
+              --depends libffi \
+              --depends
+              .
+
+            mv *.deb /artifacts/
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: artifacts
