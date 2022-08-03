@@ -63,4 +63,5 @@ jobs:
           cp -rv systemd rootfs/lib/systemd/system
 
           # Build deb
-          fpm -s dir -t deb -C rootfs --name hackman --version 1.0.0 --iteration 1 --description "DSL Hackman" --depends redis-server .
+          version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
+          fpm -s dir -t deb -C rootfs --name hackman --version $version --iteration 1 --description "DSL Hackman" --depends redis-server .
