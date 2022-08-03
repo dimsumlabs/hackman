@@ -58,5 +58,9 @@ jobs:
             ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/local/bin/$(basename $bin)
           done
 
+          # Copy systemd units
+          mkdir -p rootfs/lib/systemd
+          cp -rv systemd rootfs/lib/systemd/system
+
           # Build deb
           fpm -s dir -t deb -C rootfs --name hackman --version 1.0.0 --iteration 1 --description "DSL Hackman" .
