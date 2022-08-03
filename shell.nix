@@ -1,15 +1,11 @@
 { pkgs ? import <nixpkgs> { } }:
-
 let
-  pythonEnv = pkgs.poetry2nix.mkPoetryEnv {
-    projectDir = ./.;
-  };
-
+  pythonEnv = pkgs.python3.withPackages(_: []);
 in
 pkgs.mkShell {
   packages = [
-    pythonEnv
     pkgs.poetry
+    pythonEnv
 
     pkgs.redis
 

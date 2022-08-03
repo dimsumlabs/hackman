@@ -22,6 +22,7 @@ dsl-log = 'dsl_log:main'
 dsl-occupied = 'dsl_occupied:main'
 
 hackman = 'hackman.cmd:hackman'
+hackman-manage = 'hackman.manage:main'
 
 [tool.poetry.dependencies]
 python = "^3.9"
