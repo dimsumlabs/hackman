@@ -37,7 +37,7 @@ def blink_lights(rgb):
     mote.show()
 
 
-if __name__ == '__main__':
+def main():
     r = redis.StrictRedis(host='localhost', port=6379, db=0)
     ps = r.pubsub()
 
@@ -67,3 +67,7 @@ if __name__ == '__main__':
 
     finally:
         ps.unsubscribe()
+
+
+if __name__ == '__main__':
+    main()
