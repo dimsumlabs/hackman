@@ -1,6 +1,9 @@
 name: deb
 
-on: pull_request
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -91,7 +94,6 @@ jobs:
               --depends redis-server \
               --depends python3 \
               --depends libffi \
-              --depends
               .
 
             mv *.deb /artifacts/
