@@ -17,20 +17,51 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='RFIDCard',
+            name="RFIDCard",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('rfid_hash', models.CharField(db_index=True, max_length=512)),
-                ('revoked', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(blank=True, default=None, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("rfid_hash", models.CharField(db_index=True, max_length=512)),
+                ("revoked", models.BooleanField(default=False)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        default=None,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='RFIDLog',
+            name="RFIDLog",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('time', models.DateTimeField(auto_now_add=True)),
-                ('card', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='hackman_rfid.RFIDCard')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("time", models.DateTimeField(auto_now_add=True)),
+                (
+                    "card",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="hackman_rfid.RFIDCard",
+                    ),
+                ),
             ],
         ),
     ]

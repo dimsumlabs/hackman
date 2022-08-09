@@ -3,4 +3,4 @@ import importlib
 
 
 # Hide implementation behind some clever import magic
-Door = importlib.import_module(settings.DOOR_LOCK['BACKEND']).Door
+Door = importlib.import_module(settings.DOOR_LOCK["BACKEND"]).Door

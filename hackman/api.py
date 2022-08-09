@@ -5,39 +5,39 @@ from hackman_door import api as door_api
 import json
 
 
-def door_open_if_paid(user_id, _door_api=None,
-                      source="UNKNOWN", user_name=None,
-                      rawdata=None):
+def door_open_if_paid(
+    user_id, _door_api=None, source="UNKNOWN", user_name=None, rawdata=None
+):
     """Open door if paid and send pubsub notification accordingly"""
     paid = payment_api.has_paid(user_id)
     paid = payment_enums.PaymentGrade(paid).name
 
     log = {}
 
-    if paid == 'PAID':
+    if paid == "PAID":
         (_door_api or door_api).open()
-        log['event'] = 'DOOR_OPEN'
+        log["event"] = "DOOR_OPEN"
         ret = True
 
-    elif paid == 'GRACE':
+    elif paid == "GRACE":
         (_door_api or door_api).open()
-        log['event'] = 'DOOR_OPEN_GRACE'
+        log["event"] = "DOOR_OPEN_GRACE"
         ret = True
 
     else:
-        log['event'] = 'DOOR_OPEN_DENIED'
+        log["event"] = "DOOR_OPEN_DENIED"
         ret = False
 
     if source:
-        log['source'] = source
+        log["source"] = source
 
     if rawdata:
-        log['rawdata'] = rawdata.hex()
+        log["rawdata"] = rawdata.hex()
 
-    log['user_id'] = user_id
+    log["user_id"] = user_id
 
     if user_name:
-        log['user_name'] = user_name
+        log["user_name"] = user_name
 
-    notification_api.notify_subject(b'door_event', json.dumps(log))
+    notification_api.notify_subject(b"door_event", json.dumps(log))
     return ret

@@ -10,13 +10,15 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hackman_payments', '0005_auto_20170308_0621'),
+        ("hackman_payments", "0005_auto_20170308_0621"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='paymenttag',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            model_name="paymenttag",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+            ),
         ),
     ]

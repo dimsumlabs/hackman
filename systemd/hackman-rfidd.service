@@ -3,11 +3,10 @@ Description=Run hackman rfid daemon
 Wants=redis-server.service
 
 [Service]
-WorkingDirectory=/var/www/hackman/
 EnvironmentFile=/etc/hackman.env
 Restart=always
 User=root
-ExecStart=python3 manage.py rfidd
+ExecStart=/usr/local/bin/hackman-manage rfidd
 
 [Install]
 WantedBy=multi-user.target

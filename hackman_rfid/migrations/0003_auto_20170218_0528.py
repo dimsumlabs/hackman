@@ -8,15 +8,15 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hackman_rfid', '0002_auto_20170208_1127'),
+        ("hackman_rfid", "0002_auto_20170208_1127"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='rfidlog',
-            name='card',
+            model_name="rfidlog",
+            name="card",
         ),
         migrations.DeleteModel(
-            name='RFIDLog',
+            name="RFIDLog",
         ),
     ]

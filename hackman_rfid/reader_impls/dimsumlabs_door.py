@@ -3,11 +3,13 @@ import serial
 
 
 def get_cards():
-    '''Yields raw card ids from usb reader at DSL door'''
+    """Yields raw card ids from usb reader at DSL door"""
 
-    conn = serial.Serial(settings.RFID_READER['CONFIG']['serial_port'],
-                         settings.RFID_READER['CONFIG']['baud_rate'],
-                         timeout=settings.RFID_READER['CONFIG']['timeout'])
+    conn = serial.Serial(
+        settings.RFID_READER["CONFIG"]["serial_port"],
+        settings.RFID_READER["CONFIG"]["baud_rate"],
+        timeout=settings.RFID_READER["CONFIG"]["timeout"],
+    )
     while True:
         rawdata = conn.read(10)
         if not rawdata:

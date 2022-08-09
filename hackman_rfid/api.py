@@ -4,29 +4,34 @@ from django.core.cache import cache
 from django.conf import settings
 import importlib
 import hashlib
+from typing import (
+    Optional,
+)
 
 from . import models
 
-__all__ = ['cards_read', 'card_validate', 'card_pair']
+__all__ = ["cards_read", "card_validate", "card_pair"]
 
 
 def _make_cache_key(card_hash: str) -> str:
-    return 'rfid_card_{}'.format(card_hash)
+    return "rfid_card_{}".format(card_hash)
 
 
 def cards_read():
     """Yield hashed cards from configured backend"""
 
-    impl = importlib.import_module(settings.RFID_READER['BACKEND'])
-    hash_salt = settings.RFID_READER['HASH_SALT']
+    impl = importlib.import_module(settings.RFID_READER["BACKEND"])
+    hash_salt = settings.RFID_READER["HASH_SALT"]
 
     for card, rawdata in impl.get_cards():
         # Double hash with salt
         cardhash = hashlib.sha256(
-            b''.join((
-                hashlib.sha256(card).hexdigest().encode('ascii'),
-                hash_salt.encode('ascii')
-            ))
+            b"".join(
+                (
+                    hashlib.sha256(card).hexdigest().encode("ascii"),
+                    hash_salt.encode("ascii"),
+                )
+            )
         ).hexdigest()
         yield (cardhash, rawdata)
 
@@ -45,6 +50,8 @@ def card_validate(card_hash: str) -> User:
     if not c.revoked:
         return c
 
+    raise ValueError("No valid user with card hash: {}".format(card_hash))
+
 
 def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     card = models.RFIDCard.objects.get(id=card_id)
@@ -57,7 +64,7 @@ def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     return card
 
 
-def card_get(card_id: int) -> models.RFIDCard:
+def card_get(card_id: int) -> Optional[models.RFIDCard]:
     try:
         return models.RFIDCard.objects.get(id=card_id)
     except models.RFIDCard.DoesNotExist:

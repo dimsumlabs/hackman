@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "hackman"
+version = "0.1.0"
+description = ""
+authors = ["adisbladis <adisbladis@gmail.com>"]
+license = "GPL-2.0-only"
+packages = [
+    { include = "dsl_lights" },
+    { include = "dsl_log" },
+    { include = "dsl_occupied" },
+
+    { include = "hackman" },
+    { include = "hackman_door" },
+    { include = "hackman_notifier" },
+    { include = "hackman_payments" },
+    { include = "hackman_rfid" },
+]
+
+[tool.poetry.scripts]
+dsl-lights = 'dsl_lights:main'
+dsl-log = 'dsl_log:main'
+dsl-occupied = 'dsl_occupied:main'
+
+hackman = 'hackman.cmd:hackman'
+hackman-manage = 'hackman.manage:main'
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^4.0.4"
+Jinja2 = "^3.1.2"
+gunicorn = "^20.1.0"
+django-redis = "^5.2.0"
+IPy = "^1.01"
+django-cors-headers = "^3.12.0"
+django-oauth-toolkit = "^2.0.0"
+gevent = "^21.12.0"
+pyserial = "^3.5"
+"RPi.GPIO" = "^0.7.1"
+mote = "^0.0.4"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-django = "^4.5.2"
+coverage = "^6.4"
+pytest-cov = "^3.0.0"
+flake8 = "^5.0.3"
+black = "^22.6.0"
+mypy = "^0.971"
+django-stubs = "^1.12.0"
+types-redis = "^4.3.13"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+ignore_missing_imports = true

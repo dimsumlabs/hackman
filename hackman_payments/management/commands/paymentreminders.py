@@ -7,17 +7,20 @@ from hackman_payments import api as payment_api
 
 
 class Command(BaseCommand):
-
     def handle(self, *args, **kwargs):
-        emails = list(get_user_model().objects.filter(
-            id__in=payment_api.unpaid_users()).values_list('email', flat=True))
+        emails = list(
+            get_user_model()
+            .objects.filter(id__in=payment_api.unpaid_users())
+            .values_list("email", flat=True)
+        )
 
         email_body = payment_api.payment_reminder_email_format()
 
         msg = EmailMultiAlternatives(
-            'Dimsumlabs payment reminder',  # Subject
+            "Dimsumlabs payment reminder",  # Subject
             email_body,
             settings.EMAILS_FROM,
             [],  # Empty to
-            bcc=emails)
+            bcc=emails,
+        )
         msg.send()

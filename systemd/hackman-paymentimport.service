@@ -3,9 +3,8 @@ Description=Import payments from accounting repo
 Wants=redis-server.service
 
 [Service]
-WorkingDirectory=/var/www/hackman/
 EnvironmentFile=/etc/hackman.env
 Type=oneshot
 User=hackman
 Group=hackman
-ExecStart=/bin/sh -c 'python3 manage.py import_payments'
+ExecStart=/usr/local/bin/hackman-manage import_payments

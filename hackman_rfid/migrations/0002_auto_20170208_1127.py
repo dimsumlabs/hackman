@@ -8,23 +8,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('hackman_rfid', '0001_initial'),
+        ("hackman_rfid", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='rfidcard',
-            name='revoked',
+            model_name="rfidcard",
+            name="revoked",
             field=models.BooleanField(db_index=True, default=False),
         ),
         migrations.AlterField(
-            model_name='rfidcard',
-            name='rfid_hash',
+            model_name="rfidcard",
+            name="rfid_hash",
             field=models.CharField(db_index=True, max_length=64),
         ),
         migrations.AlterField(
-            model_name='rfidlog',
-            name='time',
+            model_name="rfidlog",
+            name="time",
             field=models.DateTimeField(auto_now_add=True, db_index=True),
         ),
     ]

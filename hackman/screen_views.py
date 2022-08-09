@@ -16,9 +16,11 @@ def screen_ip_check(f):
 
     @functools.wraps(f)
     def auth(request, *args, **kwargs):
-        if IP(get_remote_ip(request)).iptype() != 'PRIVATE':
+        ip_type = IP(get_remote_ip(request)).iptype()
+        if ip_type != "PRIVATE" and ip_type != "LOOPBACK":
             return http.HttpResponseForbidden(
-                'Screen views can only be accessed on lan')
+                "Screen views can only be accessed on lan"
+            )
 
         return f(request, *args, **kwargs)
 
@@ -30,32 +32,31 @@ def poll(request, _timeout=60):  # pragma: no cover
     """Long polling view that redirects screen to correct view"""
 
     redirects = {
-        'DOOR_OPEN': '/screen/welcome/',
-        'DOOR_OPEN_GRACE': '/screen/remind_payment/',
-        'DOOR_OPEN_DENIED': '/screen/unpaid_membership/',
-        'CARD_UNPAIRED': '/screen/unpaired_card/',
+        "DOOR_OPEN": "/screen/welcome/",
+        "DOOR_OPEN_GRACE": "/screen/remind_payment/",
+        "DOOR_OPEN_DENIED": "/screen/unpaid_membership/",
+        "CARD_UNPAIRED": "/screen/unpaired_card/",
     }
 
     r = get_redis_connection("default")
     ps = r.pubsub()
     try:
-        ps.subscribe('door_event')
+        ps.subscribe("door_event")
 
         msg = None
         while not msg:
-            m = ps.get_message(
-                timeout=_timeout)
+            m = ps.get_message(timeout=_timeout)
 
             if not m:
                 return http.HttpResponse()
 
-            if m['type'] == 'message':
+            if m["type"] == "message":
                 msg = m
 
-        msg = json.loads(msg['data'])
+        msg = json.loads(msg["data"])
 
-        url = redirects[msg.pop('event')]
-        url = '?'.join((url, urllib.parse.urlencode(msg)))
+        url = redirects[msg.pop("event")]
+        url = "?".join((url, urllib.parse.urlencode(msg)))
         return http.HttpResponse(url)
 
     finally:
@@ -64,46 +65,41 @@ def poll(request, _timeout=60):  # pragma: no cover
 
 @screen_ip_check
 def index(request):
-    return shortcuts.render(
-        request, 'screen/index.jinja2')
+    return shortcuts.render(request, "screen/index.jinja2")
 
 
 def _user_view(request, tpl):
     try:
-        user = get_user_model().objects.get(id=request.GET.get('user_id'))
+        user = get_user_model().objects.get(id=request.GET.get("user_id"))
     except get_user_model().DoesNotExist:
-        return shortcuts.redirect('/screen/')
-    return shortcuts.render(
-        request, tpl, context={
-            'user': user
-        })
+        return shortcuts.redirect("/screen/")
+    return shortcuts.render(request, tpl, context={"user": user})
 
 
 @screen_ip_check
 def welcome(request):
     # Get last access and show welcome screen
-    return _user_view(request, 'screen/welcome.jinja2')
+    return _user_view(request, "screen/welcome.jinja2")
 
 
 @screen_ip_check
 def remind_payment(request):
     """Member is under grace period, say hi and remind to pay"""
     # Get last access and show payment reminder screen
-    return _user_view(request, 'screen/remind_payment.jinja2')
+    return _user_view(request, "screen/remind_payment.jinja2")
 
 
 @screen_ip_check
 def unpaid_membership(request):
     """Unpaid membership, shame on you"""
-    return _user_view(request, 'screen/unpaid_membership.jinja2')
+    return _user_view(request, "screen/unpaid_membership.jinja2")
 
 
 @screen_ip_check
 def unpaired_card(request):
-    card = rfid_api.card_get(request.GET.get('card_id'))
+    card = rfid_api.card_get(request.GET.get("card_id"))
     if not card:
-        return shortcuts.redirect('/screen/')
+        return shortcuts.redirect("/screen/")
     return shortcuts.render(
-        request, 'screen/unpaired_card.jinja2', context={
-            'card': card
-        })
+        request, "screen/unpaired_card.jinja2", context={"card": card}
+    )

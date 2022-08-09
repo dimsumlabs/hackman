@@ -1,13 +1,17 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import screen_views as views
 
 
-urls = ([
-    url(r'^welcome/', views.welcome),
-    url(r'^remind_payment/', views.remind_payment),
-    url(r'^unpaid_membership/', views.unpaid_membership),
-    url(r'^unpaired_card/', views.unpaired_card),
-    url(r'^poll/', views.poll),
-    url(r'^$', views.index),
-], 'screen', 'screen')
+urls = (
+    [
+        path(r"welcome/", views.welcome),
+        path(r"remind_payment/", views.remind_payment),
+        path(r"unpaid_membership/", views.unpaid_membership),
+        path(r"unpaired_card/", views.unpaired_card),
+        path(r"poll/", views.poll),
+        path(r"", views.index),
+    ],
+    "screen",
+    "screen",
+)
