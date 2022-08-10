@@ -1,22 +1,19 @@
 [Unit]
 Description=Run hackman
-Requires=nginx.service hackman-migrate.service hackman-paymentimport.service
+Requires=nginx.service hackman-migrate.service hackman-paymentimport.service hackman.socket
 Before=nginx.service
 After=hackman-migrate.service hackman-paymentimport.service
 Wants=redis-server.service
 
 [Service]
-WorkingDirectory=/var/www/hackman/
+Type=notify
 EnvironmentFile=/etc/hackman.env
 Restart=always
-User=hackman
-Group=hackman
-ExecStart=gunicorn3 \
-          --workers 1                         \
-          --bind=unix:/tmp/hackman.sock       \
-          --bind=127.0.0.1:8000               \
-          --timeout 120                       \
-          hackman.wsgi
+DynamicUser=yes
+ExecStart=/usr/local/bin/hackman
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
 
 [Install]
 WantedBy=multi-user.target

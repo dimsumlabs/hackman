@@ -11,10 +11,8 @@ def hackman():
         gunicorn,
         [
             "gunicorn",
-            "--bind=unix:/tmp/hackman.sock",
-            "--bind=127.0.0.1:8000",
-            "--timeout",
-            "120",
+            "--workers",
+            "1",
             "hackman.wsgi",
         ],
     )
