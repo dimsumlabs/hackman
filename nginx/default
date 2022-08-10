@@ -14,9 +14,9 @@ server {
     client_max_body_size 4G;
 
     location /static/ {
-        alias   /var/www/hackman/hackman/static/;
+        alias   /opt/hackman/static/;
     }
-    
+
     location / {
         # an HTTP header important enough to have its own Wikipedia entry:
         #   http://en.wikipedia.org/wiki/X-Forwarded-For
@@ -52,6 +52,6 @@ server {
     # Error pages
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root /var/www/hackman/static/;
+        root /opt/hackman/static/;
     }
 }
