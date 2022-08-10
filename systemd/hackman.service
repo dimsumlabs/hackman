@@ -1,8 +1,8 @@
 [Unit]
 Description=Run hackman
-Requires=nginx.service hackman-paymentimport.service
+Requires=nginx.service hackman-migrate.service hackman-paymentimport.service
 Before=nginx.service
-After=hackman-paymentimport.service
+After=hackman-migrate.service hackman-paymentimport.service
 Wants=redis-server.service
 
 [Service]

@@ -1,6 +1,7 @@
 [Unit]
 Description=Import payments from accounting repo
 Wants=redis-server.service
+After=hackman-migrate.service
 
 [Service]
 EnvironmentFile=/etc/hackman.env
