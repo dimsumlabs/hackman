@@ -81,6 +81,14 @@ jobs:
             mkdir -p rootfs/lib/systemd
             cp -rv systemd rootfs/lib/systemd/system
 
+            # Create a postinstall script that enables all the shipped units
+            echo "#/bin/sh" > postinstall.sh
+            for f in ./systemd/*; do
+              echo "systemctl enable $(basename $f)" >> postinstall.sh
+            done
+            echo "systemctl start hackman" >> postinstall.sh
+            chmod +x postinstall.sh
+
             # Build deb
             version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
             fpm \
@@ -95,6 +103,7 @@ jobs:
               --depends python3 \
               --depends nginx \
               --depends libffi-dev \
+              --after-install ./postinstall.sh \
               .
 
             mv *.deb /artifacts/
