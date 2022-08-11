@@ -10,6 +10,7 @@ Type=notify
 EnvironmentFile=/etc/hackman.env
 Restart=always
 DynamicUser=yes
+StateDirectory=hackman
 ExecStart=/usr/bin/hackman
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed

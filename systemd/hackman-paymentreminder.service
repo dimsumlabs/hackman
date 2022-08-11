@@ -4,6 +4,6 @@ Description=Run hackman payment reminder
 [Service]
 EnvironmentFile=/etc/hackman.env
 Type=oneshot
-User=hackman
-Group=hackman
+DynamicUser=yes
+StateDirectory=hackman
 ExecStart=/usr/bin/hackman-manage paymentreminders
