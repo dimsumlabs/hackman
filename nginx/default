@@ -3,13 +3,13 @@ upstream hackman_app {
   # to return a good HTTP response (in case the Unicorn master nukes a
   # single worker for timing out).
 
-  server unix:/tmp/hackman.sock fail_timeout=0;
+  server unix:/run/hackman.sock fail_timeout=0;
 }
 
 server {
 
     listen 80;
-    server_name door2;
+    server_name door door.dimsumlabs.com;
 
     client_max_body_size 4G;
 

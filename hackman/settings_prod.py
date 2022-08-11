@@ -54,6 +54,8 @@ DATABASES = {
     }
 }
 
+DB_DIR = "/var/lib/hackman/db"  # Temporary files such as payment json
+
 # Door lock config
 DOOR_LOCK = {
     "BACKEND": "hackman_door.door.impls.dimsumlabs_door",

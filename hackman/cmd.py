@@ -1,14 +1,11 @@
-import shutil
+import os.path
+import sys
 import os
 
 
 def hackman():
-    gunicorn = shutil.which("gunicorn")
-    if not gunicorn:
-        raise ValueError("Missing gunicorn")
-
     os.execv(
-        gunicorn,
+        os.path.join(os.path.dirname(sys.executable), "gunicorn"),
         [
             "gunicorn",
             "--workers",

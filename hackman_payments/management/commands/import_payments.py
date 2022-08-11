@@ -3,6 +3,7 @@ from hackman_payments import api as payment_api
 from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
 from urllib.request import urlopen
+from django.conf import settings
 import json
 import sys
 import os
@@ -14,20 +15,34 @@ URL = "https://dimsumlabs.github.io/dsl-accounts/payments.json"
 
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
+        db_dir = settings.DB_DIR
+
+        try:
+            os.mkdir(db_dir)
+        except FileExistsError:
+            pass
+
         try:
             res = urlopen(URL)
             text = res.read().decode()
-            cache = open("db/payments.json.tmp", "w")
+            cache = open(os.path.join(db_dir, "payments.json.tmp"), "w")
             cache.write(text)
             cache.close()
-            os.rename("db/payments.json.tmp", "db/payments.json")
+            os.rename(
+                os.path.join(db_dir, "payments.json.tmp"),
+                os.path.join(db_dir, "payments.json"),
+            )
+
         except Exception as e:  # noqa - go jump in a lake pyflakes
             sys.stderr.write(repr(e) + "\n")
             sys.stderr.write("Attempting to fallback to cached local file\n")
 
             # any error at all, we try to fall back to the cached data
-            cache = open("db/payments.json", "r")
-            text = cache.read()
+            try:
+                cache = open("db/payments.json", "r")
+                text = cache.read()
+            except FileNotFoundError:
+                text = "{}"
 
         data = json.loads(text)
 

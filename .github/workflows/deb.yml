@@ -93,6 +93,7 @@ jobs:
               --description "DSL Hackman" \
               --depends redis-server \
               --depends python3 \
+              --depends nginx \
               --depends libffi-dev \
               .
 
