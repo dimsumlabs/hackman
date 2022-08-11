@@ -93,7 +93,7 @@ jobs:
               --description "DSL Hackman" \
               --depends redis-server \
               --depends python3 \
-              --depends libffi \
+              --depends libffi-dev \
               .
 
             mv *.deb /artifacts/
