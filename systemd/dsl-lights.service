@@ -5,7 +5,7 @@ Description=DSL door blinkenlights
 [Service]
 Restart=always
 User=root
-ExecStart=/usr/local/bin/dsl-lights
+ExecStart=/usr/bin/dsl-lights
 
 [Install]
 WantedBy=multi-user.target

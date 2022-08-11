@@ -71,10 +71,10 @@ jobs:
             mkdir -p rootfs/opt
             mv /opt/hackman rootfs/opt/hackman
 
-            # Create symlinks to all binaries starting with hackman* or dsl* in /usr/local/bin
-            mkdir -p rootfs/usr/local/bin
+            # Create symlinks to all binaries starting with hackman* or dsl* in /usr/bin
+            mkdir -p rootfs/usr/bin
             for bin in rootfs/opt/hackman/bin/dsl* rootfs/opt/hackman/bin/hackman*; do
-              ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/local/bin/$(basename $bin)
+              ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/bin/$(basename $bin)
             done
 
             # Copy systemd units

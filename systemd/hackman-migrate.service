@@ -7,4 +7,4 @@ EnvironmentFile=/etc/hackman.env
 Type=oneshot
 User=hackman
 Group=hackman
-ExecStart=/usr/local/bin/hackman-manage migrate
+ExecStart=/usr/bin/hackman-manage migrate

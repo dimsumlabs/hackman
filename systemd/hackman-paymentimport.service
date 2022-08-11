@@ -8,4 +8,4 @@ EnvironmentFile=/etc/hackman.env
 Type=oneshot
 User=hackman
 Group=hackman
-ExecStart=/usr/local/bin/hackman-manage import_payments
+ExecStart=/usr/bin/hackman-manage import_payments

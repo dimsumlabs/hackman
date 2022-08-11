@@ -6,7 +6,7 @@ Wants=redis-server.service
 EnvironmentFile=/etc/hackman.env
 Restart=always
 User=root
-ExecStart=/usr/local/bin/hackman-manage doord
+ExecStart=/usr/bin/hackman-manage doord
 
 [Install]
 WantedBy=multi-user.target
