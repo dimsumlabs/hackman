@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
+import os.path
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -161,3 +162,6 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 
 
 MQTT_CONNECT = ("localhost", 1883)
+
+
+DB_DIR = os.path.abspath(".")

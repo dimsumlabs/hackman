@@ -3,20 +3,20 @@ upstream hackman_app {
   # to return a good HTTP response (in case the Unicorn master nukes a
   # single worker for timing out).
 
-  server unix:/tmp/hackman.sock fail_timeout=0;
+  server unix:/run/hackman.sock fail_timeout=0;
 }
 
 server {
 
     listen 80;
-    server_name door2;
+    server_name door door.dimsumlabs.com;
 
     client_max_body_size 4G;
 
     location /static/ {
-        alias   /var/www/hackman/hackman/static/;
+        alias   /opt/hackman/static/;
     }
-    
+
     location / {
         # an HTTP header important enough to have its own Wikipedia entry:
         #   http://en.wikipedia.org/wiki/X-Forwarded-For
@@ -52,6 +52,6 @@ server {
     # Error pages
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-        root /var/www/hackman/static/;
+        root /opt/hackman/static/;
     }
 }

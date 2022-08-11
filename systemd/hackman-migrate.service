@@ -1,11 +1,10 @@
 [Unit]
-Description=Import payments from accounting repo
+Description=Runs database migrations
 Wants=redis-server.service
-After=hackman-migrate.service
 
 [Service]
 EnvironmentFile=/etc/hackman.env
 Type=oneshot
 DynamicUser=yes
 StateDirectory=hackman
-ExecStart=/usr/bin/hackman-manage import_payments
+ExecStart=/usr/bin/hackman-manage migrate

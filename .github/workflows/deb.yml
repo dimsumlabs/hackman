@@ -71,15 +71,23 @@ jobs:
             mkdir -p rootfs/opt
             mv /opt/hackman rootfs/opt/hackman
 
-            # Create symlinks to all binaries starting with hackman* or dsl* in /usr/local/bin
-            mkdir -p rootfs/usr/local/bin
+            # Create symlinks to all binaries starting with hackman* or dsl* in /usr/bin
+            mkdir -p rootfs/usr/bin
             for bin in rootfs/opt/hackman/bin/dsl* rootfs/opt/hackman/bin/hackman*; do
-              ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/local/bin/$(basename $bin)
+              ln -s /opt/hackman/bin/$(basename $bin) rootfs/usr/bin/$(basename $bin)
             done
 
             # Copy systemd units
             mkdir -p rootfs/lib/systemd
             cp -rv systemd rootfs/lib/systemd/system
+
+            # Create a postinstall script that enables all the shipped units
+            echo "#/bin/sh" > postinstall.sh
+            for f in ./systemd/*; do
+              echo "systemctl enable $(basename $f)" >> postinstall.sh
+            done
+            echo "systemctl start hackman" >> postinstall.sh
+            chmod +x postinstall.sh
 
             # Build deb
             version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
@@ -93,7 +101,9 @@ jobs:
               --description "DSL Hackman" \
               --depends redis-server \
               --depends python3 \
-              --depends libffi \
+              --depends nginx \
+              --depends libffi-dev \
+              --after-install ./postinstall.sh \
               .
 
             mv *.deb /artifacts/

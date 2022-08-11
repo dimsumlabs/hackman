@@ -47,6 +47,14 @@ RFID_READER = {
     },
 }
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "/var/lib/hackman/db.sqlite3",
+    }
+}
+
+DB_DIR = "/var/lib/hackman/db"  # Temporary files such as payment json
 
 # Door lock config
 DOOR_LOCK = {
