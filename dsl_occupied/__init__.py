@@ -6,7 +6,7 @@ import time
 
 # Just output to the same channel that the existing dsl-log is watching
 channel = "door_event"
-hosts = ["helios.dsl", "helios2.dsl"]
+hosts = ["helios", "helios2"]
 interval = 30
 
 
