@@ -1,0 +1,10 @@
+[Unit]
+Description=Run hackman deb updater hourly
+
+[Timer]
+OnBootSec=10min
+OnUnitActiveSec=1h
+Unit=hackman-deb-update.service
+
+[Install]
+WantedBy=timers.target
