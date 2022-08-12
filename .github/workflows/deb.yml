@@ -12,6 +12,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
+      - name: Generate release tag
+        id: tag
+        run: echo "::set-output name=tag::$(date -u +'%s')"
+
       - uses: uraimo/run-on-arch-action@v2
         name: Build deb
         with:
@@ -103,7 +107,7 @@ jobs:
               -C rootfs \
               --name hackman \
               --version $version \
-              --iteration 1 \
+              --iteration ${{ steps.tag.outputs.tag }} \
               --description "DSL Hackman" \
               --depends redis-server \
               --depends python3 \
@@ -113,10 +117,6 @@ jobs:
               .
 
             mv *.deb /artifacts/
-
-      - name: Generate release tag
-        id: tag
-        run: echo "::set-output name=tag::$(date -u +'%s')"
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
