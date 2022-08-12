@@ -164,4 +164,4 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 MQTT_CONNECT = ("localhost", 1883)
 
 
-DB_DIR = os.path.abspath(".")
+DB_DIR = os.path.join(BASE_DIR, "db")
