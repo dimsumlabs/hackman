@@ -114,7 +114,11 @@ jobs:
 
             mv *.deb /artifacts/
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: artifacts
-          path: artifacts
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./artifacts/*
+          file_glob: true
+          tag: ${{ github.ref }}
+          overwrite: true
