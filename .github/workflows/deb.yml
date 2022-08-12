@@ -81,12 +81,18 @@ jobs:
             mkdir -p rootfs/lib/systemd
             cp -rv systemd rootfs/lib/systemd/system
 
+            # Copy nginx configuration
+            cp -rv nginx rootfs/opt/hackman/nginx
+
             # Create a postinstall script that enables all the shipped units
+            # and symlinks our nginx configuration in place of the default one.
             echo "#/bin/sh" > postinstall.sh
             for f in ./systemd/*; do
               echo "systemctl enable $(basename $f)" >> postinstall.sh
             done
+            echo "ln -sf /opt/hackman/nginx/default /etc/nginx/sites-enabled/default" >> postinstall.sh
             echo "systemctl start hackman" >> postinstall.sh
+            echo "systemctl reload nginx" >> postinstall.sh
             chmod +x postinstall.sh
 
             # Build deb
