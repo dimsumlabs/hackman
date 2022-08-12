@@ -5,10 +5,8 @@ from django_redis import get_redis_connection
 from unittest import mock
 import hashlib
 import pytest
-import json
 
 from . import views
-from . import rest_api
 from . import api as hackman_api
 
 
@@ -249,18 +247,6 @@ def test_payment_submit(rf, not_paid_user):
     )
     response = views.payment_submit(request, r=True)
     assert response.status_code == 200
-
-
-@pytest.mark.django_db
-def test_tags_not_matching(rf):
-    with mock.patch(
-        "hackman_payments.api.tags_not_matching", return_value=["dues:somedude"]
-    ):
-
-        request = rf.get("/api/v1/tags_not_matching/")
-        response = rest_api.tags_not_matching(request)
-        assert response.status_code == 200
-        assert json.loads(response.content.decode()) == ["dues:somedude"]
 
 
 # END VIEW TESTS

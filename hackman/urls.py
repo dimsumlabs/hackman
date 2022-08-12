@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path(r'blog/', include('blog.urls'))
 """
 from django.contrib.auth import views as auth_views
-from django.urls import path, include, re_path
+from django.urls import path, re_path
 from django.http import HttpResponse
 from django.contrib import admin
 
@@ -22,7 +22,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from . import views
-from . import rest_api
 from . import screen_urls
 
 
@@ -70,7 +69,4 @@ urlpatterns = [
     path(r"account_create/", views.account_create, name="account_create"),
     path(r"payment_submit/", views.payment_submit),
     path(r"", views.index, name="index"),
-    path(r"oauth/", include("oauth2_provider.urls", namespace="oauth2_provider")),
-    path(r"api/v1/profile/", rest_api.profile),
-    path(r"api/v1/tags_not_matching/", rest_api.tags_not_matching),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
