@@ -1,31 +1,24 @@
-function make_req() {
-    var http = new XMLHttpRequest();
-    http.onreadystatechange = function() {
+(() => {
+  const timeoutSeconds = 50;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutSeconds * 1000);
 
-        // Timeout
-        if (this.readyState == 4 && this.status == 200) {
-            var url = http.responseText;
-
-            // Timeout
-            if(url === '') {
-                return this.ontimeout()
-            } else {
-                window.location.href = url;
-            }
-        }
-
-    };
-    http.timeout = 240*1000;
-    http.ontimeout = function () {
-        if(window.location.pathname !== '/screen/'){
-            window.location.href = '/screen';
-            return;
-        }
-        http.abort();
-        make_req();
-    };
-    http.open("GET", "/screen/poll/", true);
-    http.send();
-}
-
-make_req();
+  fetch("/screen/poll/")
+    .then(resp => {
+      if(!resp.ok) {
+        window.location.href = '/screen/';
+        return Promise.reject("Response not OK: " + resp.status);
+      }
+      return resp.text();
+    })
+    .then((url) => {
+      window.location.href = url;
+    })
+    .catch(err => {
+        window.location.href = '/screen/';
+    })
+    .then(() => {
+      clearTimeout(timeoutId);
+    })
+  ;
+})();
