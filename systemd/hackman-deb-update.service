@@ -6,4 +6,3 @@ EnvironmentFile=-/etc/hackman.env
 Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Type=oneshot
 ExecStart=/usr/bin/hackman-manage update_deb
-StateDirectory=hackman
