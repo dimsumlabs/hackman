@@ -5,6 +5,4 @@ Description=Automatically update deb package
 EnvironmentFile=-/etc/hackman.env
 Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Type=oneshot
-DynamicUser=yes
-StateDirectory=hackman
 ExecStart=/usr/bin/hackman-manage update_deb
