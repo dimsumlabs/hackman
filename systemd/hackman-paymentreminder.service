@@ -2,7 +2,8 @@
 Description=Run hackman payment reminder
 
 [Service]
-EnvironmentFile=/etc/hackman.env
+EnvironmentFile=-/etc/hackman.env
+Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Type=oneshot
 DynamicUser=yes
 StateDirectory=hackman

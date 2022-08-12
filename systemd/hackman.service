@@ -7,7 +7,8 @@ Wants=redis-server.service
 
 [Service]
 Type=notify
-EnvironmentFile=/etc/hackman.env
+EnvironmentFile=-/etc/hackman.env
+Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Restart=always
 DynamicUser=yes
 StateDirectory=hackman

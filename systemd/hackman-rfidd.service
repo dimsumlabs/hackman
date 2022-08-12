@@ -3,7 +3,8 @@ Description=Run hackman rfid daemon
 Wants=redis-server.service
 
 [Service]
-EnvironmentFile=/etc/hackman.env
+Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
+EnvironmentFile=-/etc/hackman.env
 Restart=always
 User=root
 ExecStart=/usr/bin/hackman-manage rfidd

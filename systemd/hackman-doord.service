@@ -3,7 +3,8 @@ Description=Run hackman door daemon
 Wants=redis-server.service
 
 [Service]
-EnvironmentFile=/etc/hackman.env
+EnvironmentFile=-/etc/hackman.env
+Environment="DJANGO_SETTINGS_MODULE=hackman.settings_prod"
 Restart=always
 User=root
 ExecStart=/usr/bin/hackman-manage doord
