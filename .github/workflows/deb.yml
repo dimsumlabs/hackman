@@ -116,7 +116,7 @@ jobs:
 
       - name: Generate release tag
         id: tag
-        run: echo "::set-output name=tag::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+        run: echo "::set-output name=tag::$(date -u +'%s')"
 
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
