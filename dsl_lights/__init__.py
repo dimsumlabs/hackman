@@ -3,6 +3,7 @@ from mote import Mote
 import redis
 import json
 import time
+import typing
 
 
 mote = Mote()
@@ -23,7 +24,7 @@ rgb_vals = {
 USER_RGB = {2: (255, 0, 120), 63: (255, 0, 120)}  # Adam  # Aurelio
 
 
-def blink_lights(rgb):
+def blink_lights(rgb: typing.Tuple[int, int, int]) -> None:
     for i in range(16):
         for channel in range(4):
             mote.set_pixel(channel + 1, i, *rgb)
@@ -34,13 +35,13 @@ def blink_lights(rgb):
     mote.show()
 
 
-def main():
+def main() -> None:
     r = redis.StrictRedis(host="localhost", port=6379, db=0)
     ps = r.pubsub()
 
     try:
         ps.subscribe("door_event")
-        for m in ps.listen():
+        for m in ps.listen():  # type: ignore
             if not m or m["type"] != "message":
                 continue
 

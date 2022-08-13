@@ -4,6 +4,7 @@ from hackman_payments.models import PaymentTag
 from django_redis import get_redis_connection
 from urllib.request import urlopen
 from django.conf import settings
+import typing
 import json
 import sys
 import os
@@ -14,7 +15,7 @@ URL = "https://dimsumlabs.github.io/dsl-accounts/payments.json"
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **kwargs):
+    def handle(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         db_dir = settings.DB_DIR
 
         try:

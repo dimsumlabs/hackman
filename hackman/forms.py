@@ -1,4 +1,5 @@
 from django import forms
+import typing
 
 
 class LoginForm(forms.Form):
@@ -22,7 +23,7 @@ class RfidCardPairForm(forms.Form):
 
 
 class PaymentForm(forms.Form):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         year_month_choices = kwargs.pop("year_month_choices")
         super().__init__(*args, **kwargs)
         self.fields["year_month"] = forms.ChoiceField(
@@ -30,6 +31,6 @@ class PaymentForm(forms.Form):
             choices=[(i, i) for i in year_month_choices],
         )
 
-    def clean_year_month(self):
+    def clean_year_month(self) -> typing.List[int]:
         yrm = self.cleaned_data["year_month"].split("-")
         return [int(i) for i in yrm]

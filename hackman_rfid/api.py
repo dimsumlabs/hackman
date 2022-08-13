@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.conf import settings
 import importlib
 import hashlib
+import typing
 from typing import (
     Optional,
+    Generator,
+    Tuple,
 )
 
 from . import models
@@ -17,7 +19,7 @@ def _make_cache_key(card_hash: str) -> str:
     return "rfid_card_{}".format(card_hash)
 
 
-def cards_read():
+def cards_read() -> Generator[Tuple[str, bytes], None, None]:
     """Yield hashed cards from configured backend"""
 
     impl = importlib.import_module(settings.RFID_READER["BACKEND"])
@@ -36,7 +38,7 @@ def cards_read():
         yield (cardhash, rawdata)
 
 
-def card_validate(card_hash: str) -> User:
+def card_validate(card_hash: str) -> models.RFIDCard:
     """Validate card hash and return associated user
     Will create RFIDCard if it doesnt already exist"""
 
@@ -48,7 +50,7 @@ def card_validate(card_hash: str) -> User:
         cache.set(cache_key, c)
 
     if not c.revoked:
-        return c
+        return typing.cast(models.RFIDCard, c)
 
     raise ValueError("No valid user with card hash: {}".format(card_hash))
 
@@ -61,11 +63,11 @@ def card_pair(user_id: int, card_id: int) -> models.RFIDCard:
     card.user = get_user_model().objects.get(id=user_id)
     card.save()
 
-    return card
+    return typing.cast(models.RFIDCard, card)
 
 
 def card_get(card_id: int) -> Optional[models.RFIDCard]:
     try:
-        return models.RFIDCard.objects.get(id=card_id)
+        return typing.cast(models.RFIDCard, models.RFIDCard.objects.get(id=card_id))
     except models.RFIDCard.DoesNotExist:
         return None

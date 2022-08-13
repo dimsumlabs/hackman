@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def main():
+def main() -> None:
     gevent.monkey.patch_all()
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hackman.settings_dev")

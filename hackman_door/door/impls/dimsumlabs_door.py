@@ -5,14 +5,14 @@ import RPi.GPIO as GPIO
 
 
 class Door:
-    def __init__(self):
+    def __init__(self) -> None:
         GPIO.setmode(getattr(GPIO, settings.DOOR_LOCK["CONFIG"]["gpio_mode"]))
         GPIO.setup(settings.DOOR_LOCK["CONFIG"]["output_pin"], GPIO.OUT)
 
         # Hack to run cancel without conditionals
         self.timer = Timer(0, lambda: None)
 
-    def open(self, open_time=5, buzz=False):
+    def open(self, open_time: float = 5, buzz: bool = False) -> None:
         # FIXME - the open time is extended by any buzz time
         if buzz:
             self.buzz(0.5, 0.003)
@@ -22,7 +22,7 @@ class Door:
         self.timer = Timer(open_time, self.close)
         self.timer.start()
 
-    def buzz(self, timeout, rate):
+    def buzz(self, timeout: float, rate: float) -> None:
         """
         Use the 'industry standard' method to turn the electric strike into
         a noise maker.  Providing clear evidence to allcomers that the door
@@ -44,5 +44,5 @@ class Door:
             GPIO.output(output_pin, False)
             time.sleep(rate)
 
-    def close(self):
+    def close(self) -> None:
         GPIO.output(settings.DOOR_LOCK["CONFIG"]["output_pin"], False)

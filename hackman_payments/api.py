@@ -1,22 +1,26 @@
 from django.template.loader import render_to_string
 from datetime import datetime, timedelta, date
+from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
 from .models import PaymentTag
 import calendar
+import typing
 from typing import (
+    Generator,
     Optional,
+    List,
 )
 
 from .enums import PaymentGrade
 
 
-def _get_now():
+def _get_now() -> date:
     """Simple functionality but have to wrap up in function to test"""
     return datetime.utcnow().date()
 
 
-def tags_not_matching():
+def tags_not_matching() -> List[str]:
     """Return all tags not matching any user"""
     return [
         ":".join(t)
@@ -31,12 +35,7 @@ def get_valid_until(user_id: int) -> Optional[date]:
     if valid_until is None:
         return None
 
-    valid_until = datetime.strptime(
-        valid_until.decode("utf8"), "%Y-%m-%dT%H:%M:%S"
-    ).date()
-    # FIXME - we only know to month accuracy the payment details, so
-    # returning a full date is wrong
-    return valid_until
+    return datetime.strptime(valid_until.decode("utf8"), "%Y-%m-%dT%H:%M:%S").date()
 
 
 def has_paid(user_id: int) -> PaymentGrade:
@@ -71,7 +70,7 @@ def has_paid(user_id: int) -> PaymentGrade:
         return PaymentGrade.NOT_PAID
 
 
-def unpaid_users():
+def unpaid_users() -> Generator[User, None, None]:
     """Yield all user ids that have not paid in advance"""
 
     for uid in get_user_model().objects.all().values_list("id", flat=True):
@@ -79,7 +78,7 @@ def unpaid_users():
             yield uid
 
 
-def payment_reminder_email_format():
+def payment_reminder_email_format() -> str:
     now = _get_now()
     cur = date(now.year, now.month, calendar.monthrange(now.year, now.month)[1])
     next_month_date = cur + timedelta(days=1)
@@ -88,7 +87,9 @@ def payment_reminder_email_format():
     return render_to_string("payment_reminder.jinja2", context={"month": month_name})
 
 
-def payment_submit(user_id: int, year: int, month: int, _redis_pipe=None) -> None:
+def payment_submit(
+    user_id: int, year: int, month: int, _redis_pipe: typing.Any = None
+) -> None:
 
     valid_until = datetime(year, month, calendar.monthrange(year, month)[1], 23, 59)
 

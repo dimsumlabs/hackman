@@ -1,8 +1,9 @@
 from django.conf import settings
 import serial
+import typing
 
 
-def get_cards():
+def get_cards() -> typing.Generator[typing.Tuple[bytes, bytes], None, None]:
     """Yields raw card ids from usb reader at DSL door"""
 
     conn = serial.Serial(

@@ -3,7 +3,7 @@ import sys
 import os
 
 
-def hackman():
+def hackman() -> None:
     os.execv(
         os.path.join(os.path.dirname(sys.executable), "gunicorn"),
         [

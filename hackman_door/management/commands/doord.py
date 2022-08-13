@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from django_redis import get_redis_connection
+import typing
 
 from hackman_door.door import Door
 
@@ -8,7 +9,7 @@ class Command(BaseCommand):
 
     help = "Run door opening daemon"
 
-    def handle(self, *args, **options):
+    def handle(self, *args: typing.Any, **options: typing.Any) -> None:
         r = get_redis_connection()
         ps = r.pubsub()
         ps.subscribe("door_action")

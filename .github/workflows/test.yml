@@ -48,7 +48,7 @@ jobs:
       - name: Check mypy
         run: |
           source .venv/bin/activate
-          mypy .
+          mypy --strict .
 
       - name: Run tests
         run: |
