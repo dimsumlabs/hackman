@@ -78,3 +78,12 @@ class Command(BaseCommand):
         # Write current rev file
         with open(os.path.join(DB_DIR, "deb-tag-name"), "w") as f:
             f.write(resp["tag_name"])
+
+        subprocess.run(
+            [
+                "systemctl",
+                "restart",
+                "hackman",
+            ],
+            check=True,
+        )
