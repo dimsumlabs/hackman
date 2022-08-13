@@ -23,6 +23,17 @@ Note: Informing the door this way is temporary and will only last until the next
   * hackman-rfidd expects to find a usb serial adaptor
   * dsl-lights expects to find a pimoroni Mote Host USB device
 
+## Hacking
+
+Hackman uses [Poetry](https://python-poetry.org/docs/pyproject/) as it's Python dependency manager.
+
+### Using direnv
+To use direnv to manage the development environment simply run `direnv allow`.
+This will call out to Nix and Poetry internally.
+
+### Manual hacking
+Install Poetry and manage the development manually, it's left as an exercise reader how that is done.
+
 ## Prerequisites
 * Debian bullseye or newer (requires Python 3.6+)
 * The latest `.deb` from the [Github Releases page](https://github.com/dimsumlabs/hackman/releases)
@@ -34,7 +45,6 @@ are several ways to speed up or otherwise improve on this in the future.
 
 1. Start with a fresh raspian lite bullseye install image, with ssh enabled
 1. Dont forget to change the passwords and set up any extra users on the pi
-1. Get the la
 1. `sudo apt-get update && sudo apt-get -y upgrade`
 1. `sudo apt install -y -f hackman_0.1.0-1_armhf.deb`
 1. reboot to activate all changes
