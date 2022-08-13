@@ -10,6 +10,8 @@ def hackman():
             "gunicorn",
             "--workers",
             "1",
+            "-k",
+            "gevent",
             "hackman.wsgi",
         ],
     )
