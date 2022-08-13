@@ -1,21 +1,25 @@
 from django.contrib.auth import get_user_model
 from django_redis import get_redis_connection
 from django import shortcuts
+from django.http import HttpRequest, HttpResponse
 from django import http
 import urllib.parse
 from IPy import IP
 import functools
+import typing
 import json
 
 from hackman_rfid import api as rfid_api
 from .lib import get_remote_ip
 
 
-def screen_ip_check(f):
+def screen_ip_check(f) -> typing.Callable:  # type: ignore
     """Check if device accessing screen endpoints are in IP whitelist"""
 
     @functools.wraps(f)
-    def auth(request, *args, **kwargs):
+    def auth(
+        request: HttpRequest, *args: typing.Any, **kwargs: typing.Any
+    ) -> typing.Any:
         ip_type = IP(get_remote_ip(request)).iptype()
         if ip_type != "PRIVATE" and ip_type != "LOOPBACK":
             return http.HttpResponseForbidden(
@@ -28,7 +32,9 @@ def screen_ip_check(f):
 
 
 @screen_ip_check
-def poll(request, _timeout=60):  # pragma: no cover
+def poll(
+    request: HttpRequest, _timeout: float = 60
+) -> HttpResponse:  # pragma: no cover
     """Long polling view that redirects screen to correct view"""
 
     redirects = {
@@ -64,11 +70,11 @@ def poll(request, _timeout=60):  # pragma: no cover
 
 
 @screen_ip_check
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     return shortcuts.render(request, "screen/index.jinja2")
 
 
-def _user_view(request, tpl):
+def _user_view(request: HttpRequest, tpl: typing.Any) -> HttpResponse:
     try:
         user = get_user_model().objects.get(id=request.GET.get("user_id"))
     except get_user_model().DoesNotExist:
@@ -77,27 +83,27 @@ def _user_view(request, tpl):
 
 
 @screen_ip_check
-def welcome(request):
+def welcome(request: HttpRequest) -> HttpResponse:
     # Get last access and show welcome screen
     return _user_view(request, "screen/welcome.jinja2")
 
 
 @screen_ip_check
-def remind_payment(request):
+def remind_payment(request: HttpRequest) -> HttpResponse:
     """Member is under grace period, say hi and remind to pay"""
     # Get last access and show payment reminder screen
     return _user_view(request, "screen/remind_payment.jinja2")
 
 
 @screen_ip_check
-def unpaid_membership(request):
+def unpaid_membership(request: HttpRequest) -> HttpResponse:
     """Unpaid membership, shame on you"""
     return _user_view(request, "screen/unpaid_membership.jinja2")
 
 
 @screen_ip_check
-def unpaired_card(request):
-    card = rfid_api.card_get(request.GET.get("card_id"))
+def unpaired_card(request: HttpRequest) -> HttpResponse:
+    card = rfid_api.card_get(int(request.GET["card_id"]))
     if not card:
         return shortcuts.redirect("/screen/")
     return shortcuts.render(

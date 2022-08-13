@@ -5,7 +5,7 @@ import os
 DEBUG = False
 
 
-def _gen_key():
+def _gen_key() -> str:
     """Generate deterministic key per bootup,
     this makes sure not to invalidate sessions and similar things
     between restarts of app while not having to check in anything to git"""

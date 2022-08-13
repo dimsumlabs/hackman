@@ -5,6 +5,7 @@ import tempfile
 import os.path
 import os
 import re
+import typing
 
 from hackman.settings import DB_DIR
 
@@ -16,7 +17,7 @@ GITHUB_URL = "https://api.github.com/repos/dimsumlabs/hackman/releases/latest"
 ARCH = "armhf"
 
 
-def download_file(url, dst):
+def download_file(url: str, dst: str) -> None:
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
         with open(dst, "wb") as f:
@@ -25,7 +26,7 @@ def download_file(url, dst):
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **kwargs):
+    def handle(self, *args: typing.Any, **kwargs: typing.Any) -> None:
         r = requests.get(GITHUB_URL)
 
         if not r.ok:

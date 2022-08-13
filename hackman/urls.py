@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path
-from django.http import HttpResponse
+from django.http import (
+    HttpResponse,
+    HttpRequest,
+)
 from django.contrib import admin
 
 from django.conf import settings
@@ -25,7 +28,7 @@ from . import views
 from . import screen_urls
 
 
-def robots(request):
+def robots(request: HttpRequest) -> HttpResponse:
     return HttpResponse("User-agent: *\nDisallow: /", content_type="text/plain")
 
 

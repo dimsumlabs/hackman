@@ -3,6 +3,7 @@ import redis
 import json
 import os
 import time
+import typing
 
 # Just output to the same channel that the existing dsl-log is watching
 channel = "door_event"
@@ -10,12 +11,12 @@ hosts = ["helios", "helios2"]
 interval = 30
 
 
-def ping(host):
+def ping(host: str) -> bool:
     error = os.system("ping -w 5 -c 2 -q " + host + ">/dev/null")
     return not error
 
 
-def check_hosts(hosts):
+def check_hosts(hosts: typing.List[str]) -> int:
     """Check all the hosts and return the number currently responding"""
 
     count = 0
@@ -25,7 +26,7 @@ def check_hosts(hosts):
     return count
 
 
-def main():
+def main() -> None:
     r = redis.StrictRedis(host="localhost", port=6379, db=0)
 
     lights = 0
@@ -34,9 +35,10 @@ def main():
         lights_now = check_hosts(hosts)
 
         if lights != lights_now:
-            data = dict()
-            data["event"] = "LIGHTS"
-            data["hostcount"] = lights_now
+            data = {
+                "event": "LIGHTS",
+                "hostcount": lights_now,
+            }
             lights = lights_now
 
             message = json.dumps(data, sort_keys=True)

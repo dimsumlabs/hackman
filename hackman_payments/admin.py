@@ -3,7 +3,7 @@ from django.contrib import admin
 from . import models
 
 
-class PaymentTagAdmin(admin.ModelAdmin):
+class PaymentTagAdmin(admin.ModelAdmin):  # type: ignore
     list_display = ("user", "hashtag", "tag")
 
 

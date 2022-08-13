@@ -4,7 +4,7 @@ import time
 import sys
 
 
-def main():
+def main() -> None:
     r = redis.StrictRedis(host="localhost", port=6379, db=0)
     ps = r.pubsub()
 
@@ -13,7 +13,7 @@ def main():
 
     try:
         ps.subscribe("door_event")
-        for m in ps.listen():
+        for m in ps.listen():  # type: ignore
             if not m:
                 print("event None received")
             elif m["type"] == "subscribe":
