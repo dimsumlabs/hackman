@@ -11,3 +11,6 @@ hackman/static/admin
 # directory created during test runs
 .pytest_cache/
 /db
+
+# nix-direnv
+.direnv
