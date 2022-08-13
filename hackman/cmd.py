@@ -13,5 +13,6 @@ def hackman():
             "-k",
             "gevent",
             "hackman.wsgi",
-        ],
+        ]
+        + sys.argv[1:],
     )
