@@ -49,8 +49,12 @@ RFID_READER = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "/var/lib/hackman/db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "hackman",
+        "USER": "hackman",
+        "PASSWORD": "hackman",
+        "HOST": "localhost",
+        "PORT": "",
     }
 }
 

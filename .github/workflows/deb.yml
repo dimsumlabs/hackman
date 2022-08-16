@@ -90,13 +90,25 @@ jobs:
 
             # Create a postinstall script that enables all the shipped units
             # and symlinks our nginx configuration in place of the default one.
+            # We also set up the database user in this block
             echo "#/bin/sh" > postinstall.sh
             for f in ./systemd/*; do
               echo "systemctl enable $(basename $f)" >> postinstall.sh
             done
             echo "ln -sf /opt/hackman/nginx/default /etc/nginx/sites-enabled/default" >> postinstall.sh
+
+            # Ugly auto-generated escape sequences galore! \o/
+            echo 'echo '"'"'CREATE DATABASE hackman;'"'"' | sudo -u postgres psql' >> postinstall.sh
+            echo 'echo '"'"'CREATE USER hackman WITH PASSWORD '"'"'"'"'"'"'"'"'hackman'"'"'"'"'"'"'"'"';'"'"' | sudo -u postgres psql' >> postinstall.sh
+            echo 'echo '"'"'ALTER ROLE hackman SET client_encoding TO '"'"'"'"'"'"'"'"'utf8'"'"'"'"'"'"'"'"';'"'"' | sudo -u postgres psql' >> postinstall.sh
+            echo 'echo '"'"'ALTER ROLE hackman SET default_transaction_isolation TO '"'"'"'"'"'"'"'"'read committed'"'"'"'"'"'"'"'"';'"'"' | sudo -u postgres psql' >> postinstall.sh
+            echo 'echo '"'"'ALTER ROLE hackman SET timezone TO '"'"'"'"'"'"'"'"'UTC'"'"'"'"'"'"'"'"';'"'"' | sudo -u postgres psql' >> postinstall.sh
+            echo 'echo '"'"'GRANT ALL PRIVILEGES ON DATABASE hackman TO hackman;'"'"' | sudo -u postgres psql' >> postinstall.sh
+
+            # Reload main systemd units
             echo "systemctl start hackman" >> postinstall.sh
             echo "systemctl reload nginx" >> postinstall.sh
+
             chmod +x postinstall.sh
 
             # Build deb
