@@ -195,13 +195,17 @@ def account_actions(request: HttpRequest) -> HttpResponse:
 
     valid_until = payment_api.get_valid_until(user_id)
 
+    last_unpaired_card: bytes = r.get("rfid_last_unpaired")
+    if last_unpaired_card is None:
+        last_unpaired_card = b""
+
     return shortcuts.render(
         request,
         "account_actions.jinja2",
         context={
             "payment_form": forms.PaymentForm(year_month_choices=_get_month_choices()),
             "rfid_pair_form": forms.RfidCardPairForm(
-                initial={"card_id": r.get("rfid_last_unpaired")}
+                initial={"card_id": last_unpaired_card.decode()}
             ),
             "paid": paid,
             "valid_until": valid_until.strftime("%Y-%m") if valid_until else None,

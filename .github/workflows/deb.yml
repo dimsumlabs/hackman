@@ -37,7 +37,7 @@ jobs:
             apt-get update -q -y
 
             # Install Python, fpm deps (ruby) and the kitchen sink required to build everything...
-            apt-get install -q -y git python3 python3-venv python3-dev build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev rustc cargo squashfs-tools ruby-full jq
+            apt-get install -q -y git python3 python3-venv python3-dev build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev rustc cargo squashfs-tools ruby-full jq libpq-dev postgresql postgresql-contrib
 
             # Install FPM
             gem install fpm
@@ -113,6 +113,9 @@ jobs:
               --depends python3 \
               --depends nginx \
               --depends libffi-dev \
+              --depends libpq-dev \
+              --depends postgresql \
+              --depends postgresql-contrib \
               --after-install ./postinstall.sh \
               .
 

@@ -56,6 +56,8 @@ INSTALLED_APPS = (
 
 SITE_ID = 1
 
+FORM_RENDERER = "django.forms.renderers.DjangoDivFormRenderer"
+
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 MIDDLEWARE = [

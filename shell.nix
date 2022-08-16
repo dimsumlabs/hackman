@@ -1,6 +1,6 @@
 { pkgs ? import <nixpkgs> { } }:
 let
-  pythonEnv = pkgs.python3.withPackages(_: []);
+  pythonEnv = pkgs.python39.withPackages(_: []);
 in
 pkgs.mkShell {
   packages = [
@@ -8,6 +8,7 @@ pkgs.mkShell {
     pythonEnv
 
     pkgs.redis
+    pkgs.postgresql
 
     pkgs.fpm
   ];
