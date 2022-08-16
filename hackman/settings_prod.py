@@ -2,7 +2,7 @@ from .settings import *  # noqa
 import os
 
 
-DEBUG = False
+DEBUG = True
 
 
 def _gen_key() -> str:
