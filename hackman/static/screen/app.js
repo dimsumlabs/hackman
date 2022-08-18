@@ -1,24 +1,26 @@
-(() => {
+(function() {
   const timeoutSeconds = 50;
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutSeconds * 1000);
+  const timeoutId = setTimeout(function() {
+    controller.abort();
+  }, timeoutSeconds * 1000);
 
   fetch("/screen/poll/")
-    .then(resp => {
+    .then(function(resp) {
       if(!resp.ok) {
         window.location.href = '/screen/';
         return Promise.reject("Response not OK: " + resp.status);
       }
       return resp.text();
     })
-    .then((url) => {
+    .then(function(url) {
       window.location.href = url;
     })
-    .catch(err => {
-        window.location.href = '/screen/';
+    .catch(function(err) {
+      window.location.href = '/screen/';
     })
-    .then(() => {
+    .then(function() {
       clearTimeout(timeoutId);
     })
   ;
-})();
+}))();
