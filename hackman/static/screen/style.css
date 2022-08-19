@@ -1,3 +1,4 @@
 main {
   font-size: 45px;
+  overflow-wrap: break-word;
 }
