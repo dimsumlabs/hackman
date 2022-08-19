@@ -10,6 +10,8 @@ pkgs.mkShell {
     pkgs.redis
     pkgs.postgresql
 
+    pkgs.hivemind  # Run Procfile
+
     pkgs.fpm
   ];
 }
