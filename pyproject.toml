@@ -38,6 +38,7 @@ pyserial = "^3.5"
 "RPi.GPIO" = "^0.7.1"
 mote = "^0.0.4"
 psycopg2 = "^2.9.3"
+setuptools = "^65.5.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.3"
