@@ -42,7 +42,7 @@ jobs:
             # Install FPM
             gem install fpm
 
-            # Install Poetry
+            # Install Poetry (requires 1.2.0+)
             curl -sSL https://install.python-poetry.org | python3 - --yes || true
             export PATH=$PATH:/root/.local/bin
 
