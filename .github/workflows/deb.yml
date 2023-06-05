@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - ci
 
 jobs:
   build:
@@ -14,9 +15,9 @@ jobs:
 
       - name: Generate release tag
         id: tag
-        run: echo "::set-output name=tag::$(date -u +'%s')"
+        run: echo "::set-output name=tag::$(date -u +'%s')-testbuild"
 
-      - uses: uraimo/run-on-arch-action@v2
+      - uses: uraimo/run-on-arch-action@v2.5.0
         name: Build deb
         with:
           arch: armv6
@@ -43,7 +44,7 @@ jobs:
             gem install fpm
 
             # Install Poetry (requires 1.2.0+)
-            curl -sSL https://install.python-poetry.org | python3 - --yes || true
+            curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.5.0 python3 - --yes || true
             export PATH=$PATH:/root/.local/bin
 
           run: |
