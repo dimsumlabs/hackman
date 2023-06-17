@@ -43,17 +43,20 @@ jobs:
             # Install FPM
             gem install fpm
 
-            # install cryptography to older version, to get rid of rust compiler issue
-            # maybe QEMU and/or docker environment refuse to compile cryptography
-            # error related to 'Value too large for defined data type'
-            pip3 install cryptography==3.4.8
-
             # Install Poetry (requires 1.2.0+)
             # curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.5.0 python3 - --yes || true
             # export PATH=$PATH:/root/.local/bin
 
             # using pip to install poetry, instead of shell script in Adam's work
             pip3 install poetry==1.5.1
+
+            # install cryptography to older version, to get rid of rust compiler issue
+            # maybe QEMU and/or docker environment refuse to compile cryptography
+            # error related to 'Value too large for defined data type'
+            source $(poetry env info --path)/bin/activate
+            pip install cryptography==3.4.8
+            deactivate
+            poetry add cryptography==3.4.8
 
 
           run: |
@@ -67,11 +70,13 @@ jobs:
             mkdir -p /opt
 
             # Create virtualenv
-            python3 -m venv /opt/hackman
-            . /opt/hackman/bin/activate
+            # gabriel: disabling virtual environment.  poetry doesn't like it.  I don't know why.
+            # python3 -m venv /opt/hackman
+            # . /opt/hackman/bin/activate
 
             # Install dependencies
-            poetry install --no-interaction --no-root --only main
+            # poetry install --no-interaction --no-root --only main
+            poetry install --no-interaction
 
             # Install self into env
             poetry build -f wheel -n
