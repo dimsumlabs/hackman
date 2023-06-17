@@ -71,7 +71,7 @@ jobs:
             . /opt/hackman/bin/activate
 
             # Install dependencies
-            poetry install --no-interaction --no-root --no-dev
+            poetry install --no-interaction --no-root --only main
 
             # Install self into env
             poetry build -f wheel -n
