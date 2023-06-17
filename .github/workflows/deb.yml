@@ -43,16 +43,18 @@ jobs:
             # Install FPM
             gem install fpm
 
-            # hot fixxxxxxxx
-            apt-get remove -y rustc cargo
-            curl https://sh.rustup.rs -sSf | sh -s -- -y
-            source /root/.bashrc
-            rustup install 1.56.0
-            rustup default 1.56.0
+            # install cryptography to older version, to get rid of rust compiler issue
+            # maybe QEMU and/or docker environment refuse to compile cryptography
+            # error related to 'Value too large for defined data type'
+            pip3 install cryptography==3.4.8
 
             # Install Poetry (requires 1.2.0+)
-            curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.5.0 python3 - --yes || true
-            export PATH=$PATH:/root/.local/bin
+            # curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.5.0 python3 - --yes || true
+            # export PATH=$PATH:/root/.local/bin
+
+            # using pip to install poetry, instead of shell script in Adam's work
+            pip3 install poetry==1.5.1
+
 
           run: |
             set -x
