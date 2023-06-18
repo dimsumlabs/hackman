@@ -48,16 +48,8 @@ jobs:
             # export PATH=$PATH:/root/.local/bin
 
             # using pip to install poetry, instead of shell script in Adam's work
-            pip3 install poetry==1.5.1
-
-            # install cryptography to older version, to get rid of rust compiler issue
-            # maybe QEMU and/or docker environment refuse to compile cryptography
-            # error related to 'Value too large for defined data type'
-            source $(poetry env info --path)/bin/activate
             pip install cryptography==3.4.8
-            deactivate
-            poetry add cryptography==3.4.8
-
+            pip install poetry==1.5.1
 
           run: |
             set -x
@@ -74,9 +66,19 @@ jobs:
             # python3 -m venv /opt/hackman
             # . /opt/hackman/bin/activate
 
+            poetry install --dry-run
+            source $(poetry env info --path)/bin/activate
+            pip install cryptography==3.4.8
+            pip install gevent==22.10.1
+
+            # https://github.com/python-poetry/poetry/issues/7148#issuecomment-1398322105
+            poetry export -f requirements.txt --output requirements.txt
+            pip install -r requirements.txt
+            deactivate
+            pip install -r requirements.txt
+
             # Install dependencies
-            # poetry install --no-interaction --no-root --only main
-            poetry install --no-interaction
+            poetry install --no-interaction --no-root --only main
 
             # Install self into env
             poetry build -f wheel -n
