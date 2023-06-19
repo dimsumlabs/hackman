@@ -57,15 +57,6 @@ jobs:
             # Add Poetry to $PATH
             export PATH=$PATH:/root/.local/bin
 
-            # We want to write to _actual_ /opt as some installation processes
-            # are creating hard coded shebangs pointing to the venv location.
-            mkdir -p /opt
-
-            # Create virtualenv
-            # gabriel: disabling virtual environment.  poetry doesn't like it.  I don't know why.
-            # python3 -m venv /opt/hackman
-            # . /opt/hackman/bin/activate
-
             poetry install --dry-run
             source $(poetry env info --path)/bin/activate
             pip install cryptography==3.4.8
@@ -75,6 +66,16 @@ jobs:
             poetry export -f requirements.txt --output requirements.txt
             pip install -r requirements.txt
             deactivate
+
+            # We want to write to _actual_ /opt as some installation processes
+            # are creating hard coded shebangs pointing to the venv location.
+            mkdir -p /opt
+
+            # Create virtualenv
+            # gabriel: disabling virtual environment.  poetry doesn't like it.  I don't know why.
+            python3 -m venv /opt/hackman
+            . /opt/hackman/bin/activate
+
             pip install -r requirements.txt
 
             # Install dependencies
