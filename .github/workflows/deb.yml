@@ -4,19 +4,25 @@ on:
   push:
     branches:
       - master
+      - ci
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
 
+      - name: Extract branch name
+        id: extract_branch
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
       - name: Generate release tag
         id: tag
-        run: echo "::set-output name=tag::$(date -u +'%s')"
+        run: echo "tag=$(date -u '+%y%m%d%H%M')-${{steps.extract_branch.outputs.branch}}" >> $GITHUB_OUTPUT
 
-      - uses: uraimo/run-on-arch-action@v2
+      - uses: uraimo/run-on-arch-action@v2.5.0
         name: Build deb
         with:
           arch: armv6
@@ -37,14 +43,21 @@ jobs:
             apt-get update -q -y
 
             # Install Python, fpm deps (ruby) and the kitchen sink required to build everything...
-            apt-get install -q -y git python3 python3-venv python3-dev build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev rustc cargo squashfs-tools ruby-full jq libpq-dev postgresql postgresql-contrib
+            apt-get install -q -y git python3 python3-venv python3-dev python3-pip build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev rustc cargo squashfs-tools ruby-full jq libpq-dev postgresql postgresql-contrib
 
             # Install FPM
             gem install fpm
 
             # Install Poetry (requires 1.2.0+)
-            curl -sSL https://install.python-poetry.org | python3 - --yes || true
-            export PATH=$PATH:/root/.local/bin
+            # curl -sSL https://install.python-poetry.org | POETRY_VERSION=1.5.0 python3 - --yes || true
+            # export PATH=$PATH:/root/.local/bin
+
+            # poetry requires cryptography, but the latest version wants to be compiled by Rust, and this environment doesn't like Rust.
+            # the easy way out is to install an older version of cryptography.
+            # the same logic applies to the cryptography installation in the run section.
+            pip install cryptography==3.4.8
+            # using pip to install poetry, instead of shell script in Adam's work
+            pip install poetry==1.5.1
 
           run: |
             set -x
@@ -60,8 +73,19 @@ jobs:
             python3 -m venv /opt/hackman
             . /opt/hackman/bin/activate
 
+            # workaround for poetry installation stalling.  what's happening here: use pip to install the packages specified in poetry.
+            # source: https://github.com/python-poetry/poetry/issues/7148#issuecomment-1398322105
+            # 2 things are happening here that makes poetry stall.
+            # the first is poetry wants to compile cryptography and gevent from source, which stalls
+            # the second is if pip install from requirements.txt, cryptography and gevent stall as well.  To get around this is to install both of them specifically using pip.
+            poetry export -f requirements.txt --output requirements.txt
+            pip install cryptography==3.4.8
+            pip install gevent==22.10.1
+            pip install -r requirements.txt
+
             # Install dependencies
-            poetry install --no-interaction --no-root --no-dev
+            poetry install --no-interaction --no-root --only main
+            # ^^^ this should practically do nothing, becasue the work is already done by pip. ^^^
 
             # Install self into env
             poetry build -f wheel -n
@@ -134,10 +158,182 @@ jobs:
             mv *.deb /artifacts/
 
       - name: Upload binaries to release
+        id: upload_deb
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ./artifacts/*
+          file_glob: true
+          tag: ${{ steps.tag.outputs.tag }}
+          overwrite: true
+
+      - name: Print artifacts url
+        run: echo "${{ steps.upload_deb.outputs.browser_download_url }}"
+      # ^^^ end of building debian package ^^^ #
+
+      # vvv start of pi-gen image vvv #
+      - name: Create files for stage2a
+        run: |
+          # the name stage2a came from developing on the pi-gen repository
+
+          mkdir -p stage2a/01-install-hackman/
+
+          cat > stage2a/01-install-hackman/00-packages <<-EOF
+          redis-server
+          nginx
+          libffi-dev
+          libpq-dev
+          postgresql
+          postgresql-contrib
+          EOF
+
+          cat stage2a/01-install-hackman/00-packages
+
+          RRRR=stage2a/01-install-hackman/01-run.sh
+          echo "#!/bin/bash -e" >> $RRRR
+          echo "on_chroot << EOF" >> $RRRR
+          echo "curl -sLO ${{ steps.upload_deb.outputs.browser_download_url }}" >> $RRRR
+          echo "dpkg -i hackman*.deb" >> $RRRR
+          echo "EOF" >> $RRRR
+
+          cat stage2a/01-install-hackman/01-run.sh
+
+          cat > stage2a/prerun.sh <<-EOF
+          #!/bin/bash -e
+          if [ ! -d "\${ROOTFS_DIR}" ]; then
+            copy_previous
+          fi
+          EOF
+
+          cat stage2a/prerun.sh
+
+          chmod +x stage2a/01-install-hackman/01-run.sh
+          chmod +x stage2a/prerun.sh
+
+      - name: PiGen image
+        uses: usimd/pi-gen-action@v1
+        id: pigen
+        with:
+          # Compression to apply on final image (either "none", "zip", "xz" or "gz").
+          compression: zip
+
+          # Compression level to be used. From 0 to 9 (refer to the tool man page for more 
+          # information on this. Usually 0 is no compression but very fast, up to 9 with the 
+          # best compression but very slow).
+          compression-level: 6
+
+          # Disable the renaming of the first user during the first boot. This make it so 
+          # 'username' stays activated. 'username' must be set for this to work. Please be 
+          # aware of the implied security risk of defining a default username and password 
+          # for your devices.
+          disable-first-boot-user-rename: 1
+
+          # Additional options to include in PIGEN_DOCKER_OPTS
+          docker-opts: ''
+
+          # Set whether a NOOBS image should be built as well. If enabled, the output 
+          # directory containing the NOOBS files will be saved as output variable 
+          # 'image-noobs-path'.
+          enable-noobs: false
+
+          # Enable SSH access to Pi.
+          enable-ssh: 1
+
+          # If this feature is enabled, the action will configure pi-gen to not export any 
+          # stage as image but the last one defined in property 'stage-list'. This is 
+          # helpful when building a single image flavor (in contrast to building a 
+          # lite/server and full-blown desktop image), since it speeds up the build process 
+          # significantly.
+          export-last-stage-only: true
+
+          # Comma or whitespace separated list of additional packages to install on host 
+          # before running pi-gen. Use this list to add any packages your custom stages may 
+          # require. Note that this is not affecting the final image. In order to add 
+          # additional packages, you need to add a respective 'XX-packages' file in your 
+          # custom stage.
+          extra-host-dependencies: ''
+
+          # Comma or whitespace separated list of additional modules to load on host before 
+          # running pi-gen. If your custom stage requires additional software or kernel 
+          # modules to be loaded, add them here. Note that this is not meant to configure 
+          # modules to be loaded in the target image.
+          extra-host-modules: ''
+
+          # Token to use for checking out pi-gen repo.
+          github-token: ${{ github.token }}
+
+          # Host name of the image.
+          hostname: door
+
+          # Final image name.
+          image-name: "door-${{steps.tag.outputs.tag}}"
+
+          # Default keyboard keymap.
+          keyboard-keymap: us
+
+          # Default keyboard layout.
+          keyboard-layout: English (US)
+
+          # Default locale of the system image.
+          locale: en_US.UTF-8
+
+          # Password of the intial user account, locked if empty.
+          password: 'door'  # fixme
+
+          # Path where selected pi-gen ref will be checked out to. If the path does not yet 
+          # exist, it will be created (including its parents).
+          pi-gen-dir: pi-gen
+
+          # GitHub repository to fetch pi-gen from, must be a fork from RPi-Distro/pi-gen.
+          pi-gen-repository: RPi-Distro/pi-gen
+
+          # Release version of pi-gen to use. This can both be a branch or tag name known in 
+          # the pi-gen repository.
+          pi-gen-version: 2023-05-03-raspios-bullseye
+
+          # The release version to build images against. Valid values are jessie, stretch, 
+          # buster, bullseye, and testing.
+          release: bullseye
+
+          # Setting to `1` will prevent pi-gen from dropping the "capabilities" feature. 
+          # Generating the root filesystem with capabilities enabled and running it from a 
+          # filesystem that does not support capabilities (like NFS) can cause issues. Only 
+          # enable this if you understand what it is.
+          setfcap: ''
+
+          # List of stage name to execute in given order. Relative and absolute paths to 
+          # custom stage directories are allowed here. Note that by default pi-gen exports 
+          # images in stage2 (lite), stage4 and stage5. You probably want to hook in custom 
+          # stages before one of the exported stages. Otherwise, the action will make sure 
+          # any custom stage will include an image export directive.
+          stage-list: stage0 stage1 stage2 ./stage2a
+
+          # System timezone.
+          timezone: Asia/Hong_Kong
+
+          # Use qcow2 images to reduce space and runtime requirements.
+          use-qcow2: 1
+
+          # Name of the initial user account.
+          username: pi
+
+          # Print all output from pi-gen.
+          verbose-output: true
+
+          # Wifi country code of default network to connect to.
+          wpa-country: ''
+
+          # SSID of a default wifi network to connect to.
+          wpa-essid: ''
+
+          # Password of default wifi network to connect to.
+          wpa-password: ''
+
+      - name: Upload pi-gen image to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ steps.pigen.outputs.image-path }}
           file_glob: true
           tag: ${{ steps.tag.outputs.tag }}
           overwrite: true
