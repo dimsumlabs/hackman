@@ -39,6 +39,10 @@ def get_valid_until(user_id: int) -> Optional[date]:
 
 
 def has_paid(user_id: int) -> PaymentGrade:
+
+    if is_within_grace_period(user_id):
+        return PaymentGrade.GRACE
+
     r = get_redis_connection("default")
     user_model = get_user_model()
 
@@ -59,8 +63,7 @@ def has_paid(user_id: int) -> PaymentGrade:
         return PaymentGrade.NOT_PAID
 
     now = _get_now()
-
-    if is_within_grace_period(user_id):
+    if valid_until < now and valid_until + timedelta(weeks=2) >= now:
         return PaymentGrade.GRACE
 
     elif valid_until >= now:
@@ -72,8 +75,12 @@ def has_paid(user_id: int) -> PaymentGrade:
 
 def is_within_grace_period(user_id: int) -> bool:
     r = get_redis_connection("default")
-    user_claim_grace_at = r.get(f"user_claim_grace_{user_id}").decode("utf-8")
-    print(user_claim_grace_at)
+    user_claim_grace_at = r.get(f"user_claim_grace_{user_id}")
+
+    if not user_claim_grace_at:
+        return False
+
+    user_claim_grace_at = user_claim_grace_at.decode("utf-8")
     try:
         claim_at = datetime.strptime(user_claim_grace_at, "%Y-%m-%dT%H:%M:%S.%fZ")
         print(claim_at, datetime.utcnow())
@@ -106,6 +113,17 @@ def payment_reminder_email_format() -> str:
 
 
 def payment_submit(
+    user_id: int, year: int, month: int, _redis_pipe: typing.Any = None
+) -> None:
+
+    valid_until = datetime(year, month, calendar.monthrange(year, month)[1], 23, 59)
+
+    r = _redis_pipe or get_redis_connection("default")
+    r.set("payment_user_id_{}".format(user_id), valid_until.isoformat())
+    # FIXME - we only know to month accuracy the payment details, so
+    # storing a full datetime is wrong
+
+def payment_claim(
     user_id: int, year: int, month: int, _redis_pipe: typing.Any = None
 ) -> None:
     if year == datetime.now().year and month == datetime.now().month:
