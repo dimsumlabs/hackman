@@ -123,6 +123,7 @@ def payment_submit(
     # FIXME - we only know to month accuracy the payment details, so
     # storing a full datetime is wrong
 
+
 def payment_claim(
     user_id: int, year: int, month: int, _redis_pipe: typing.Any = None
 ) -> None:
