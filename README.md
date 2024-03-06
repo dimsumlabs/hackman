@@ -59,3 +59,25 @@ are several ways to speed up or otherwise improve on this in the future.
 - Run a payment import right now: `systemctl start hackman-paymentimport.service`
 - Check the last payment import: `ls -al /var/lib/hackman/db/payments.json`
 - Dump all the users and their paid-until dates: `hackman-manage paymentlist`
+
+## Deployment
+After CI builds a new image, perform these steps to prepare a new SD card:
+1. burn the image to SD card (e.g. balenaEtcher)
+1. pg_dump the old database `pg_dump -Ft postgresql://hackman:hackman@localhost/hackman > /tmp/hackman_dump_<date>.tar`
+1. transfer tar ball to new card
+1. prepare database and user:
+    - `sudo -u postgres psql`
+    - `create database hackman;`
+    - `create user hackman with encrypted password ``hackman`` `
+    - `grant all privileges on database hackman to hackman;`
+1. load tar ball to postgresql `pg_restore -v -d postgresql://hackman:hackman@localhost/hackman /tmp/hackman_dump_<date>.tar`
+1. copy `~/.ssh/authorized_keys`
+1. edit SMTP credentials `sudo EDITOR=vim systemctl edit hackman`
+    ```
+    [Service]
+    Environment="EMAIL_HOST=<value>"
+    Environment="EMAIL_PORT=<value>"
+    Environment="EMAIL_HOST_USER=<value>"
+    Environment="EMAIL_HOST_PASSWORD=<value>"
+    Environment="DEFAULT_FROM_EMAIL=<value>"
+    ```
