@@ -45,6 +45,13 @@ jobs:
             # Install Python, fpm deps (ruby) and the kitchen sink required to build everything...
             apt-get install -q -y git python3 python3-venv python3-dev python3-pip build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev rustc cargo squashfs-tools ruby-full jq libpq-dev postgresql postgresql-contrib
 
+            # these dependencies are installed for compiling cryptography
+            apt-get install -q -y curl libssl-dev pkg-config
+
+            # install rustc using rustup script
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
+            source "$HOME/.cargo/env"
+
             # Install FPM
             gem install fpm
 
@@ -54,8 +61,6 @@ jobs:
 
             # poetry requires cryptography, but the latest version wants to be compiled by Rust, and this environment doesn't like Rust.
             # the same logic applies to the cryptography installation in the run section.
-            export CRYPTOGRAPHY_DONT_BUILD_RUST=1
-            pip install cryptography
             # using pip to install poetry, instead of shell script in Adam's work
             pip install poetry==1.5.1
 
@@ -73,17 +78,12 @@ jobs:
             python3 -m venv /opt/hackman
             . /opt/hackman/bin/activate
 
-            # Poetry depends on Rust but our environment is hostile to Rust.
-            export CRYPTOGRAPHY_DONT_BUILD_RUST=1
-
             # workaround for poetry installation stalling.  what's happening here: use pip to install the packages specified in poetry.
             # source: https://github.com/python-poetry/poetry/issues/7148#issuecomment-1398322105
             # 2 things are happening here that makes poetry stall.
             # the first is poetry wants to compile cryptography and gevent from source, which stalls
             # the second is if pip install from requirements.txt, cryptography and gevent stall as well.  To get around this is to install both of them specifically using pip.
             poetry export -f requirements.txt --output requirements.txt
-            pip install cryptography
-            pip install gevent
             pip install -r requirements.txt
 
             # Install dependencies
