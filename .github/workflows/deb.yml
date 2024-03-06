@@ -53,9 +53,9 @@ jobs:
             # export PATH=$PATH:/root/.local/bin
 
             # poetry requires cryptography, but the latest version wants to be compiled by Rust, and this environment doesn't like Rust.
-            # the easy way out is to install an older version of cryptography.
             # the same logic applies to the cryptography installation in the run section.
-            pip install cryptography==3.4.8
+            env CRYPTOGRAPHY_DONT_BUILD_RUST=1
+            pip install cryptography
             # using pip to install poetry, instead of shell script in Adam's work
             pip install poetry==1.5.1
 
@@ -73,14 +73,17 @@ jobs:
             python3 -m venv /opt/hackman
             . /opt/hackman/bin/activate
 
+            # Poetry depends on Rust but our environment is hostile to Rust.
+            env CRYPTOGRAPHY_DONT_BUILD_RUST=1
+
             # workaround for poetry installation stalling.  what's happening here: use pip to install the packages specified in poetry.
             # source: https://github.com/python-poetry/poetry/issues/7148#issuecomment-1398322105
             # 2 things are happening here that makes poetry stall.
             # the first is poetry wants to compile cryptography and gevent from source, which stalls
             # the second is if pip install from requirements.txt, cryptography and gevent stall as well.  To get around this is to install both of them specifically using pip.
             poetry export -f requirements.txt --output requirements.txt
-            pip install cryptography==3.4.8
-            pip install gevent==22.10.1
+            pip install cryptography
+            pip install gevent
             pip install -r requirements.txt
 
             # Install dependencies
