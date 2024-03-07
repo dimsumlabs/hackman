@@ -78,6 +78,8 @@ jobs:
             python3 -m venv /opt/hackman
             . /opt/hackman/bin/activate
 
+            source "$HOME/.cargo/env"
+
             # workaround for poetry installation stalling.  what's happening here: use pip to install the packages specified in poetry.
             # source: https://github.com/python-poetry/poetry/issues/7148#issuecomment-1398322105
             # 2 things are happening here that makes poetry stall.
