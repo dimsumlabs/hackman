@@ -43,12 +43,25 @@ The intent is to have a documented process that depends only on the Raspberry
 Pi hardware and thus can be easily tested or trialed.  That being said, there
 are several ways to speed up or otherwise improve on this in the future.
 
+### The manual way (before pi-gen building image)
 1. Start with a fresh raspian lite bullseye install image, with ssh enabled
 1. Dont forget to change the passwords and set up any extra users on the pi
 1. `sudo apt-get update && sudo apt-get -y upgrade`
 1. `sudo apt install -y -f hackman_0.1.0-1_armhf.deb`
 1. reboot to activate all changes
 3. Never run anything manually again \o/
+
+### The (more) Continuous Integration way
+1. GitHub Actions should build a new .zip RaspberryPi Image on every new commit on master branch.
+1. dump database: `pg_dump -Ft postgresql://hackman:hackman@localhost/hackman > /tmp/hackman_dump_<date>.tar`
+1. dump `~/.ssh/authorized_keys`
+1. create new database, user, and grant privileges:
+  * `sudo -u postgres psql`
+  * `create database hackman;`
+  * `create user hackman with encrypted password ‘hackman’;`
+  * `grant all privileges on database hackman to hackman;`
+1. load database: `pg_restore -v -d postgresql://hackman:hackman@localhost/hackman /tmp/hackman_dump_<date>.tar`
+1. load `~/.ssh/authorized_keys`
 
 ## Upgrades
 1. This auto-updates from the latest Github release automatically.
