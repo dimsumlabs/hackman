@@ -404,36 +404,36 @@ hiredis = ["redis[hiredis] (>=3,!=4.0.0,!=4.0.1)"]
 
 [[package]]
 name = "django-stubs"
-version = "1.12.0"
+version = "5.0.0"
 description = "Mypy stubs for Django"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "django-stubs-1.12.0.tar.gz", hash = "sha256:ea8b35d0da49f7b2ee99a79125f1943e033431dd114726d6643cc35de619230e"},
-    {file = "django_stubs-1.12.0-py3-none-any.whl", hash = "sha256:0dff8ec0ba3abe046450b3d8a29ce9e72629893d2c1ef679189cc2bfdb6d2f64"},
+    {file = "django_stubs-5.0.0-py3-none-any.whl", hash = "sha256:084484cbe16a6d388e80ec687e46f529d67a232f3befaf55c936b3b476be289d"},
+    {file = "django_stubs-5.0.0.tar.gz", hash = "sha256:b8a792bee526d6cab31e197cb414ee7fa218abd931a50948c66a80b3a2548621"},
 ]
 
 [package.dependencies]
+asgiref = "*"
 django = "*"
-django-stubs-ext = ">=0.4.0"
-mypy = ">=0.930"
-tomli = "*"
-types-pytz = "*"
+django-stubs-ext = ">=5.0.0"
+tomli = {version = "*", markers = "python_version < \"3.11\""}
 types-PyYAML = "*"
 typing-extensions = "*"
 
 [package.extras]
-compatible-mypy = ["mypy (>=0.930,<0.970)"]
+compatible-mypy = ["mypy (>=1.10.0,<1.11.0)"]
+redis = ["redis"]
 
 [[package]]
 name = "django-stubs-ext"
-version = "0.5.0"
+version = "5.0.0"
 description = "Monkey-patching and extensions for django-stubs"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "django-stubs-ext-0.5.0.tar.gz", hash = "sha256:9bd7418376ab00b7f88d6d56be9fece85bfa0c7c348ac621155fa4d7a91146f2"},
-    {file = "django_stubs_ext-0.5.0-py3-none-any.whl", hash = "sha256:c5d8db53d29c756e7e3d0820a5a079a43bc38d8fab0e1b8bd5df2f3366c54b5a"},
+    {file = "django_stubs_ext-5.0.0-py3-none-any.whl", hash = "sha256:8e1334fdf0c8bff87e25d593b33d4247487338aaed943037826244ff788b56a8"},
+    {file = "django_stubs_ext-5.0.0.tar.gz", hash = "sha256:5bacfbb498a206d5938454222b843d81da79ea8b6fcd1a59003f529e775bc115"},
 ]
 
 [package.dependencies]
@@ -1114,17 +1114,6 @@ files = [
 ]
 
 [[package]]
-name = "types-pytz"
-version = "2022.5.0.0"
-description = "Typing stubs for pytz"
-optional = false
-python-versions = "*"
-files = [
-    {file = "types-pytz-2022.5.0.0.tar.gz", hash = "sha256:0c163b15d3e598e6cc7074a99ca9ec72b25dc1b446acc133b827667af0b7b09a"},
-    {file = "types_pytz-2022.5.0.0-py3-none-any.whl", hash = "sha256:a8e1fe6a1b270fbfaf2553b20ad0f1316707cc320e596da903bb17d7373fed2d"},
-]
-
-[[package]]
 name = "types-pyyaml"
 version = "6.0.12.1"
 description = "Typing stubs for PyYAML"
@@ -1284,4 +1273,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "42c17cfbca7681599c36ad177d2db44cfdd46c8306be8297e508c667e7307d05"
+content-hash = "8a7e57b31a29f017582c650c5c99af92c77dd7ff4ca144a96c7c9200d2442456"
