@@ -46,7 +46,7 @@ cryptography = "42.0.4"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
-coverage = "^6.5.0"
+coverage = "^7.5.3"
 django-stubs = "^1.12.0"
 flake8 = "^7.0.0"
 mypy = "^0.982"
