@@ -62,7 +62,7 @@ jobs:
             # poetry requires cryptography, but the latest version wants to be compiled by Rust, and this environment doesn't like Rust.
             # the same logic applies to the cryptography installation in the run section.
             # using pip to install poetry, instead of shell script in Adam's work
-            pip install poetry==1.5.1 --progress-bar off
+            pip install poetry==1.5.1 wheel=0.36.0 --no-color --progress-bar off
 
           run: |
             set -x
@@ -86,7 +86,7 @@ jobs:
             # the first is poetry wants to compile cryptography and gevent from source, which stalls
             # the second is if pip install from requirements.txt, cryptography and gevent stall as well.  To get around this is to install both of them specifically using pip.
             poetry export -f requirements.txt --output requirements.txt
-            pip install -r requirements.txt --progress-bar off
+            pip install -r requirements.txt -q --no-color --progress-bar off
 
             # Install dependencies
             poetry install --no-interaction --no-root --only main
@@ -94,7 +94,7 @@ jobs:
 
             # Install self into env
             poetry build -f wheel -n
-            pip install --no-deps dist/*.whl
+            pip install --no-color --no-deps dist/*.whl
             rm -rf dist *.egg-info
 
             # Generate Django static files
