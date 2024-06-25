@@ -87,7 +87,7 @@ jobs:
             # the first is poetry wants to compile cryptography and gevent from source, which stalls
             # the second is if pip install from requirements.txt, cryptography and gevent stall as well.  To get around this is to install both of them specifically using pip.
             poetry export -f requirements.txt --output requirements.txt
-            pip install -r requirements.txt -q --no-color --progress-bar off
+            pip install -r requirements.txt --no-color --progress-bar off
 
             # Install dependencies
             poetry install --no-interaction --no-root --only main
