@@ -20,6 +20,7 @@ packages = [
 dsl-lights = 'dsl_lights:main'
 dsl-log = 'dsl_log:main'
 dsl-occupied = 'dsl_occupied:main'
+dsl-buttons = 'dsl_buttons:main'
 
 hackman = 'hackman.cmd:hackman'
 hackman-manage = 'hackman.manage:main'
@@ -43,6 +44,7 @@ django = "^4.1.2"
 ipy = "^1.1"
 jinja2 = "^3.1.2"
 cryptography = "42.0.4"
+hidapi = "^0.14.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
