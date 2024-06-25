@@ -62,7 +62,7 @@ jobs:
             # poetry requires cryptography, but the latest version wants to be compiled by Rust, and this environment doesn't like Rust.
             # the same logic applies to the cryptography installation in the run section.
             # using pip to install poetry, instead of shell script in Adam's work
-            pip install poetry==1.5.1 wheel=0.36.0 --no-color --progress-bar off
+            pip install poetry==1.5.1 wheel==0.36.0 --no-color --progress-bar off
 
           run: |
             set -x
