@@ -1,0 +1,3 @@
+SUBSYSTEM=="usb", ATTR{idVendor}=="1b4f", ATTR{idProduct}=="9206", MODE="0660", GROUP="plugdev", TAG+="uaccess", TAG+="udev-acl", SYMLINK+="usbProMicro%n"
+KERNEL=="hidraw*", ATTRS{idVendor}=="1b4f", ATTRS{idProduct}=="9206", MODE="0660", GROUP="plugdev", TAG+="uaccess", TAG+="udev-acl"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1b4f", ATTRS{idProduct}=="9206", MODE="0660", GROUP="plugdev", SYMLINK+="ttyProMicro"
