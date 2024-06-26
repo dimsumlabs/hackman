@@ -47,7 +47,7 @@ are several ways to speed up or otherwise improve on this in the future.
 1. Start with a fresh raspian lite bullseye install image, with ssh enabled
 1. Dont forget to change the passwords and set up any extra users on the pi
 1. `sudo apt-get update && sudo apt-get -y upgrade`
-1. `sudo apt install -y -f hackman_0.1.0-1_armhf.deb`
+1. `sudo apt install -y ./hackman_0.1.0-1_armhf.deb`
 1. reboot to activate all changes
 3. Never run anything manually again \o/
 
