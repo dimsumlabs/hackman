@@ -116,6 +116,10 @@ jobs:
             mkdir -p rootfs/lib/systemd
             cp -rv systemd rootfs/lib/systemd/system
 
+            # Copy udev units
+            mkdir -p rootfs/lib/udev
+            cp -rv udev rootfs/lib/udev/rules.d
+
             # Copy nginx configuration
             cp -rv nginx rootfs/opt/hackman/nginx
 
@@ -126,6 +130,10 @@ jobs:
             for f in ./systemd/*; do
               echo "systemctl enable $(basename $f)" >> postinstall.sh
             done
+            for f in ./udev/*; do
+              echo "ln -s /lib/udev/rules.d/$(basename $f) /etc/udev/rules.d/" >> postinstall.sh
+            done
+            echo 'udevadm control --reload-rules && udevadm trigger' >> postinstall.sh
             echo "ln -sf /opt/hackman/nginx/default /etc/nginx/sites-enabled/default" >> postinstall.sh
 
             # Ugly auto-generated escape sequences galore! \o/

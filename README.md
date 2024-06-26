@@ -22,6 +22,7 @@ Note: Informing the door this way is temporary and will only last until the next
 * UDEV-based autostart for the components that depend on hardware:
   * hackman-rfidd expects to find a usb serial adaptor
   * dsl-lights expects to find a pimoroni Mote Host USB device
+  * dsl-buttons expects to find a Pro Micro device with programs in `mcus/promicro` (and other MCU devices in `mcus/`)
 
 ## Hacking
 
