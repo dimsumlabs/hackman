@@ -18,12 +18,16 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
+      - name: Get short sha
+        id: shortsha
+        run: echo "sha=$(echo $GITHUB_SHA | tail -c 4)" >> $GITHUB_OUTPUT
+
       - name: Generate release tag
         id: tag
-        run: echo "tag=$(date -u '+%y%m%d%H%M')-${{steps.extract_branch.outputs.branch}}" >> $GITHUB_OUTPUT
+        run: echo "tag=$(date -u '+%y%m%d%H%M')-${{steps.extract_branch.outputs.branch}}-${{steps.shortsha.sha}}" >> $GITHUB_OUTPUT
 
-      - uses: uraimo/run-on-arch-action@v2.5.0
-        name: Build deb
+      - name: Build deb
+        uses: uraimo/run-on-arch-action@v2.7.2
         with:
           arch: armv6
           distro: bullseye  # Equivalent to Raspbian 8
@@ -43,7 +47,7 @@ jobs:
             apt-get update -q -y
 
             # Install Python, fpm deps (ruby) and the kitchen sink required to build everything...
-            apt-get install -q -y git python3 python3-venv python3-dev python3-pip build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev squashfs-tools ruby-full jq libpq-dev postgresql postgresql-contrib
+            apt-get install -q -y git python3 python3-venv python3-dev python3-pip build-essential libffi-dev libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev libgdbm-dev libc6-dev libbz2-dev squashfs-tools ruby-full jq libpq-dev postgresql postgresql-contrib systemd
 
             # these dependencies are installed for compiling cryptography
             apt-get install -q -y curl libssl-dev pkg-config
@@ -127,14 +131,22 @@ jobs:
             # and symlinks our nginx configuration in place of the default one.
             # We also set up the database user in this block
             echo "#/bin/sh" > postinstall.sh
+            echo "#/bin/sh" > preremove.sh
+            echo "set -x" >> postinstall.sh
+            echo "set -x" >> preremove.sh
             for f in ./systemd/*; do
               echo "systemctl enable $(basename $f)" >> postinstall.sh
+              echo "systemctl stop $(basename $f)" >> preremove.sh
+              echo "systemctl disable $(basename $f)" >> preremove.sh
             done
             for f in ./udev/*; do
+              echo "rm -f /etc/udev/rules.d/$(basename $f)" >> postinstall.sh
+              echo "rm -f /etc/udev/rules.d/$(basename $f)" >> preremove.sh
               echo "ln -s /lib/udev/rules.d/$(basename $f) /etc/udev/rules.d/" >> postinstall.sh
+              echo "rm -f /lib/udev/rules.d/$(basename $f)" >> preremove.sh
             done
-            echo 'udevadm control --reload-rules && udevadm trigger' >> postinstall.sh
             echo "ln -sf /opt/hackman/nginx/default /etc/nginx/sites-enabled/default" >> postinstall.sh
+            echo "rm /etc/nginx/sites-enabled/default" >> preremove.sh
 
             # Ugly auto-generated escape sequences galore! \o/
             echo 'echo '"'"'CREATE DATABASE hackman;'"'"' | sudo -u postgres psql' >> postinstall.sh
@@ -146,12 +158,21 @@ jobs:
 
             # Reload main systemd units
             echo "systemctl start hackman" >> postinstall.sh
+            echo "systemctl restart multi-user.target" >> postinstall.sh
+            echo "systemctl restart timers.target" >> postinstall.sh
+            echo "systemctl restart sockets.target" >> postinstall.sh
             echo "systemctl reload nginx" >> postinstall.sh
+            echo "systemctl reload nginx" >> preremove.sh
+
+            # Reload udev rules
+            echo 'udevadm control --reload-rules && udevadm trigger' >> postinstall.sh
+            echo 'udevadm control --reload-rules && udevadm trigger' >> preremove.sh
 
             chmod +x postinstall.sh
+            chmod +x preremove.sh
 
             # Build deb
-            version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
+            version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)-${{ steps.shortsha.outputs.sha }}
             fpm \
               -s dir \
               -t deb \
@@ -168,6 +189,7 @@ jobs:
               --depends postgresql \
               --depends postgresql-contrib \
               --after-install ./postinstall.sh \
+              --before-remove ./preremove.sh \
               .
 
             mv *.deb /artifacts/
