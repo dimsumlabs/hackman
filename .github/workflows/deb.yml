@@ -141,9 +141,8 @@ jobs:
             done
             for f in ./udev/*; do
               echo "rm -f /etc/udev/rules.d/$(basename $f)" >> postinstall.sh
-              echo "rm -f /etc/udev/rules.d/$(basename $f)" >> preremove.sh
               echo "ln -s /lib/udev/rules.d/$(basename $f) /etc/udev/rules.d/" >> postinstall.sh
-              echo "rm -f /lib/udev/rules.d/$(basename $f)" >> preremove.sh
+              echo "rm -f /etc/udev/rules.d/$(basename $f)" >> preremove.sh
             done
             echo "ln -sf /opt/hackman/nginx/default /etc/nginx/sites-enabled/default" >> postinstall.sh
             echo "rm /etc/nginx/sites-enabled/default" >> preremove.sh
