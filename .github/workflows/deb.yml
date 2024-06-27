@@ -20,11 +20,11 @@ jobs:
 
       - name: Get short sha
         id: shortsha
-        run: echo "sha=$(echo $GITHUB_SHA | tail -c 4)" >> $GITHUB_OUTPUT
+        run: echo "sha=$(echo $GITHUB_SHA | tail -c 7)" >> $GITHUB_OUTPUT
 
       - name: Generate release tag
         id: tag
-        run: echo "tag=$(date -u '+%y%m%d%H%M')-${{steps.extract_branch.outputs.branch}}-${{steps.shortsha.sha}}" >> $GITHUB_OUTPUT
+        run: echo "tag=$(date -u '+%y%m%d%H%M')-${{steps.extract_branch.outputs.branch}}-${{steps.shortsha.outputs.sha}}" >> $GITHUB_OUTPUT
 
       - name: Build deb
         uses: uraimo/run-on-arch-action@v2.7.2
@@ -172,7 +172,7 @@ jobs:
             chmod +x preremove.sh
 
             # Build deb
-            version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)-${{ steps.shortsha.outputs.sha }}
+            version=$(grep '^version' pyproject.toml | cut -d = -f 2 | jq -r)
             fpm \
               -s dir \
               -t deb \
