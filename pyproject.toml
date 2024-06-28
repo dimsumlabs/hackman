@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hackman"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["adisbladis <adisbladis@gmail.com>"]
 license = "GPL-2.0-only"
@@ -8,6 +8,7 @@ packages = [
     { include = "dsl_lights" },
     { include = "dsl_log" },
     { include = "dsl_occupied" },
+    { include = "dsl_buttons" },
 
     { include = "hackman" },
     { include = "hackman_door" },
