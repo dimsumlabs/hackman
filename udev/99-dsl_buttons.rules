@@ -1,0 +1,5 @@
+SUBSYSTEM=="usb", ATTR{idVendor}=="feed", ATTR{idProduct}=="0001", MODE="0660", GROUP="plugdev", TAG+="uaccess", TAG+="udev-acl", SYMLINK+="usbProMicro%n"
+KERNEL=="hidraw*", ATTRS{idVendor}=="feed", ATTRS{idProduct}=="0001", MODE="0660", GROUP="plugdev", TAG+="uaccess", TAG+="udev-acl"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="feed", ATTRS{idProduct}=="0001", MODE="0660", GROUP="plugdev", SYMLINK+="ttyProMicro" TAG+="systemd", ENV{SYSTEMD_WANTS}+="dsl-buttons.service"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="feed", ATTRS{idProduct}=="0001", ACTION=="add", RUN+="/home/pi/udev-add.sh"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="feed", ATTRS{idProduct}=="0001", ACTION=="remove", RUN+="/home/pi/udev-remove.sh"
