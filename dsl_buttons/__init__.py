@@ -16,7 +16,7 @@ h.open(0x1B4F, 0x9206)
 unlock_max_time = 3600  # max unlock is 1 hour
 
 
-def button():
+def button() -> None:
     keepopen = False
     lastopen = 0
     while True:
@@ -54,7 +54,7 @@ def button():
                     r.publish("door_action", "OPEN")
 
 
-async def doorlight():
+async def doorlight() -> None:
     lighton = p.value == 1
     try:
         while True:
@@ -70,16 +70,17 @@ async def doorlight():
         print("doorlight done", flush=True)
 
 
-async def runall():
+async def runall() -> None:
     t_button = asyncio.create_task(asyncio.to_thread(button))
     t_doorlight = asyncio.create_task(doorlight())
     await t_button
     await t_doorlight
 
 
-def main():
+def main() -> int:
     print("dsl_buttons running", flush=True)
     asyncio.run(runall())
+    return 0
 
 
 if __name__ == "__main__":
