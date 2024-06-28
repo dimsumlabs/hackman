@@ -5,7 +5,6 @@ import gpiozero
 import hid
 import redis
 import serial
-import signal
 import sys
 import time
 
@@ -59,11 +58,11 @@ async def doorlight():
     lighton = p.value == 1
     try:
         while True:
-            if p.value == 0 and lighton == True:
+            if p.value == 0 and lighton is True:
                 s.write(b"X")  # turn off all lights
                 lighton = False
                 print("door closed", flush=True)
-            if p.value == 1 and lighton == False:
+            if p.value == 1 and lighton is False:
                 s.write(b"G")  # set lights to green
                 lighton = True
             await asyncio.sleep(0.3)
