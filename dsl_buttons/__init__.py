@@ -9,7 +9,12 @@ import sys
 import time
 
 r = redis.StrictRedis(host="localhost", port=6379, db=0)
-s = serial.Serial("/dev/ttyProMicro")
+try:
+    s = serial.Serial("/dev/ttyProMicro")
+except serial.SerialException as e:
+    print(e)
+    exit(0)
+
 p = gpiozero.DigitalOutputDevice(17)  # the locking output pin
 h = hid.device()
 h.open(0x1B4F, 0x9206)
@@ -20,38 +25,42 @@ def button() -> None:
     keepopen = False
     lastopen = 0
     while True:
-        # read low level HID report
-        d = h.read(30, 200)
-        if d and d[0] == 2 and d[1] == 3 and d[2] == 0:
-            # SHIFT + CTRL
-            if d[3] == 0x33:  # KEY_SEMICOLON
-                # open
-                r.publish("door_action", "OPEN")
-                print("door open pressed", flush=True)
-            elif d[3] == 0x31:  # KEY_BACKSLASH
-                # toggle keep open (i.e. unlock)
-                keepopen = not keepopen
+        try: 
+            # read low level HID report
+            d = h.read(30, 200)
+            if d and d[0] == 2 and d[1] == 3 and d[2] == 0:
+                # SHIFT + CTRL
+                if d[3] == 0x33:  # KEY_SEMICOLON
+                    # open
+                    r.publish("door_action", "OPEN")
+                    print("door open pressed", flush=True)
+                elif d[3] == 0x31:  # KEY_BACKSLASH
+                    # toggle keep open (i.e. unlock)
+                    keepopen = not keepopen
+                    if keepopen:
+                        print(
+                                "unlock pressed, will open for %d seconds" % unlock_max_time,
+                                flush=True,
+                                )
+                        r.publish("door_action", "OPEN")
+                    else:
+                        print("unlock pressed while unlocked, locking", flush=True)
+                        r.publish("door_action", "CLOSE")
+                elif d[3] == 0x36:  # KEY_COMMA
+                    # bell, TODO
+                    print("bell", flush=True)
+            else:
                 if keepopen:
-                    print(
-                        "unlock pressed, will open for %d seconds" % unlock_max_time,
-                        flush=True,
-                    )
-                    r.publish("door_action", "OPEN")
-                else:
-                    print("unlock pressed while unlocked, locking", flush=True)
-                    r.publish("door_action", "CLOSE")
-            elif d[3] == 0x36:  # KEY_COMMA
-                # bell, TODO
-                print("bell", flush=True)
-        else:
-            if keepopen:
-                sincelastopen = time.time() - lastopen
-                if sincelastopen > unlock_max_time:
-                    print("unlock exceed max time, locking", flush=True)
-                    keepopen = False
-                    r.publish("door_action", "CLOSE")
-                elif sincelastopen > 2.0:
-                    r.publish("door_action", "OPEN")
+                    sincelastopen = time.time() - lastopen
+                    if sincelastopen > unlock_max_time:
+                        print("unlock exceed max time, locking", flush=True)
+                        keepopen = False
+                        r.publish("door_action", "CLOSE")
+                    elif sincelastopen > 2.0:
+                        r.publish("door_action", "OPEN")
+        except OSError as e:
+            print(e)
+            break;
 
 
 async def doorlight() -> None:

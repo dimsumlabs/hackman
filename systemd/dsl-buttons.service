@@ -1,11 +1,9 @@
 [Unit]
-After=redis.service
 Description=DSL door buttons
+After=redis.service
+StopWhenUnneeded=true
 
 [Service]
 Restart=always
 User=root
 ExecStart=/usr/bin/dsl-buttons
-
-[Install]
-WantedBy=multi-user.target
