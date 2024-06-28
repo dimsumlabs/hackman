@@ -25,7 +25,7 @@ def button() -> None:
     keepopen = False
     lastopen = 0
     while True:
-        try: 
+        try:
             # read low level HID report
             d = h.read(30, 200)
             if d and d[0] == 2 and d[1] == 3 and d[2] == 0:
@@ -39,9 +39,10 @@ def button() -> None:
                     keepopen = not keepopen
                     if keepopen:
                         print(
-                                "unlock pressed, will open for %d seconds" % unlock_max_time,
-                                flush=True,
-                                )
+                            "unlock pressed, will open for %d seconds"
+                            % unlock_max_time,
+                            flush=True,
+                        )
                         r.publish("door_action", "OPEN")
                     else:
                         print("unlock pressed while unlocked, locking", flush=True)
@@ -60,7 +61,7 @@ def button() -> None:
                         r.publish("door_action", "OPEN")
         except OSError as e:
             print(e)
-            break;
+            break
 
 
 async def doorlight() -> None:
