@@ -1878,6 +1878,35 @@ files = [
 ]
 
 [[package]]
+name = "types-cffi"
+version = "1.16.0.20240331"
+description = "Typing stubs for cffi"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types-cffi-1.16.0.20240331.tar.gz", hash = "sha256:b8b20d23a2b89cfed5f8c5bc53b0cb8677c3aac6d970dbc771e28b9c698f5dee"},
+    {file = "types_cffi-1.16.0.20240331-py3-none-any.whl", hash = "sha256:a363e5ea54a4eb6a4a105d800685fde596bc318089b025b27dee09849fe41ff0"},
+]
+
+[package.dependencies]
+types-setuptools = "*"
+
+[[package]]
+name = "types-pyopenssl"
+version = "24.1.0.20240425"
+description = "Typing stubs for pyOpenSSL"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types-pyOpenSSL-24.1.0.20240425.tar.gz", hash = "sha256:0a7e82626c1983dc8dc59292bf20654a51c3c3881bcbb9b337c1da6e32f0204e"},
+    {file = "types_pyOpenSSL-24.1.0.20240425-py3-none-any.whl", hash = "sha256:f51a156835555dd2a1f025621e8c4fbe7493470331afeef96884d1d29bf3a473"},
+]
+
+[package.dependencies]
+cryptography = ">=35.0.0"
+types-cffi = "*"
+
+[[package]]
 name = "types-pytz"
 version = "2022.5.0.0"
 description = "Typing stubs for pytz"
@@ -1901,14 +1930,18 @@ files = [
 
 [[package]]
 name = "types-redis"
-version = "4.3.21.3"
+version = "4.6.0.20240425"
 description = "Typing stubs for redis"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "types-redis-4.3.21.3.tar.gz", hash = "sha256:2e1f184056188c8754ded0b5173dc01824d2bfe41975fe318068a68beedfb62c"},
-    {file = "types_redis-4.3.21.3-py3-none-any.whl", hash = "sha256:77ee5b8ca3a779e09807348c7f0b33c0f38a46096cd6c8a2e0176b28b3784b34"},
+    {file = "types-redis-4.6.0.20240425.tar.gz", hash = "sha256:9402a10ee931d241fdfcc04592ebf7a661d7bb92a8dea631279f0d8acbcf3a22"},
+    {file = "types_redis-4.6.0.20240425-py3-none-any.whl", hash = "sha256:ac5bc19e8f5997b9e76ad5d9cf15d0392d9f28cf5fc7746ea4a64b989c45c6a8"},
 ]
+
+[package.dependencies]
+cryptography = ">=35.0.0"
+types-pyOpenSSL = "*"
 
 [[package]]
 name = "types-requests"
@@ -1923,6 +1956,17 @@ files = [
 
 [package.dependencies]
 types-urllib3 = "<1.27"
+
+[[package]]
+name = "types-setuptools"
+version = "70.1.0.20240627"
+description = "Typing stubs for setuptools"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "types-setuptools-70.1.0.20240627.tar.gz", hash = "sha256:385907a47b5cf302b928ce07953cd91147d5de6f3da604c31905fdf0ec309e83"},
+    {file = "types_setuptools-70.1.0.20240627-py3-none-any.whl", hash = "sha256:c7bdf05cd0a8b66868b4774c7b3c079d01ae025d8c9562bfc8bf2ff44d263c9c"},
+]
 
 [[package]]
 name = "types-urllib3"
@@ -2170,4 +2214,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "39dd2b84fb2914a8def6996b931e39e61ac3b4122872acb6521891af2d3dcda7"
+content-hash = "f528aea99b85f31719fae3350024545fc454bcc3a37f79c442e10464b133435f"
