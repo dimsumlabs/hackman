@@ -38,14 +38,17 @@ def button() -> None:
                     # toggle keep open (i.e. unlock)
                     keepopen = not keepopen
                     if keepopen:
+                        lastopen = time.time()
                         print(
-                            "unlock pressed, will open for %d seconds"
+                            "unlock button pressed, will open for %d seconds"
                             % unlock_max_time,
                             flush=True,
                         )
                         r.publish("door_action", "OPEN")
                     else:
-                        print("unlock pressed while unlocked, locking", flush=True)
+                        print(
+                            "unlock button pressed while unlocked, locking", flush=True
+                        )
                         r.publish("door_action", "CLOSE")
                 elif d[3] == 0x36:  # KEY_COMMA
                     # bell, TODO
