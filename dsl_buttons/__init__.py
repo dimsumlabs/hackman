@@ -46,7 +46,9 @@ def button() -> None:
                         )
                         r.publish("door_action", "OPEN")
                     else:
-                        print("unlock button pressed while unlocked, locking", flush=True)
+                        print(
+                            "unlock button pressed while unlocked, locking", flush=True
+                        )
                         r.publish("door_action", "CLOSE")
                 elif d[3] == 0x36:  # KEY_COMMA
                     # bell, TODO
