@@ -1,6 +1,12 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs, poetry2nix }:
+
 let
-  pythonEnv = pkgs.python39.withPackages(_: []);
+  pythonEnv = poetry2nix.mkPoetryEnv {
+    python = pkgs.python39;
+    projectDir = ./.;
+    overrides = poetry2nix.overrides.withDefaults (import ./python-overrides.nix pkgs);
+  };
+
 in
 pkgs.mkShell {
   packages = [
