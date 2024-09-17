@@ -249,7 +249,7 @@ def payment_submit(request: HttpRequest, r: bool = False) -> HttpResponse:
         return http.HttpResponseBadRequest("Form error")
 
     year, month = form.cleaned_data["year_month"]
-    payment_api.payment_submit(user_id, year, month)
+    payment_api.payment_claim(user_id, year, month)
 
     notification_api.notify_subject(
         b"door_event",
